@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Release Notes - Version 3.00</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib</span><br />
+<span class="topicTitle">Release Notes - Version 3.00</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ExpLib_Index.htm">ExpTreeLib Index</a>&lt;--
+	Release Notes - Version 3.00
+	--&gt;<a href="V301 Release Notes.htm">Release Notes - Version 3.01</a>
+	--&gt;<a href="../ExpDemo/ImprovingResponsiveness.htm">Improving Responsiveness</a>
+	</p>
+</div>
+<div id="main">
+<h2><a id = "BkMrk_1">Version 3.00 Release Notes</a></h2>
+    <p>The improvements in Version 3.00 beyond Version 2.14 are:</p>
+    <ul>
+        <li>All changes needed to compensate for differences between various versions of 
+            Windows - Win7, Vista, XP.</li>
+        <li>Significant improvements in GUI responsiveness for applications running on Windows7 and Vista systems and 
+            accessing Remote Folders.</li>
+        <li>Replaced the Demo Forms with new Demo Forms which incorporate changes to improve
+            responsiveness and to be easier to modify and/or extract from for use in applications.<br />
+            Added a C# version of the most complex Demo Form to illustrate how to use <code>ExpTreeLib</code>
+            from C#.</li>        <li>Very significant improvements to the Documentation of both <code>ExpTreeLib</code> and the 
+            Demo Forms. This includes provision of a Help File and corresponding 
+            improvements in the XML comments within the code.</li>
+        <li>Modified <code>ExpTree</code> to use Win7/Vista Themes.</li>
+        <li>Bug fixes.</li>
+    </ul>
+<h3><a id = "BkMrk_2">Changes to CShItem to improve Responsiveness</a></h3>
+    <p>The Analysis and resulting changes are discussed in depth 
+        <a href="../ExpDemo/Responsiveness.htm">elsewhere</a>. Most such changes were 
+        made to the Demo Forms, but certain changes were required in ExpTreeLib to 
+        support those changes. </p>
+<h4><a id = "BkMrk_3">Redefined the CShItem.Attributes Property - A breaking change</a></h4>
+    <p>In all releases through V2.14 the CShItem.Attributes Property contained the 
+        Attributes of a File or Directory as reported in the SFGAO enumeration format. 
+        This is different from the standard FileAttributes enumeration format, as is 
+        returned by FileInfo/DirectoryInfo, the W32_Find_Data structure, and by the 
+        GetAttr Function. The CShItem.Attributes Property was of limited (no) usefulness 
+        since all interesting flags that it returns are exposed as separate CShItem 
+        Properties (eg - IsFolder, IsHidden, etc.). I have redefined the 
+        CShItem.Attributes Property to return the standard FileAttributes information. </p>
+    <p>In the unlikely event that the original version is needed, it is availabile in 
+        the new CShItem.SFGAO_Attributes Property.</p>
+<h4><a id = "BkMrk_4">Added the ShellDll.ShellAPI.W32Find_Data Class</a></h4>
+    <p>As discussed <a href = "../ExpDemo/Responsiveness.htm">elsewhere</a>, using the 
+        FindFirstFile/FindNextFile API rather than the FileInfo/DirectoryInfo Classes 
+        can dramatically improve GUI responsiveness. This new Class adds all the 
+        declarations and code needed to support this use. The W32_Find_Data structure 
+        definition was also retained, under its&#39; own name.</p>
+<h4><a id = "BkMrk_5">Added the W32Data Property</a></h4>
+    <p>Property saves the W32Find_Data returned by FindFirstFile/FindNextFile for this instance. May be set
+       by the application and is used by 
+        CShItem to optimize finding certain File/Folder information. Once CShItem has 
+        extracted that information, it clears the Property. This usage is normally completed 
+        prior to other user activities with the CShItem instance.</p>
+<h4><a id = "BkMrk_6">Recast the CShItem.GetItems Method</a></h4>
+    <p>The GetItems Method is defined to return a sorted ArrayList of CShItems, one 
+        CShItem for 
+        each File and Folder in a given Folder. The previous version built this list by 
+        calling the Directories and Files methods of the CShItem instance. On the first 
+        reference to a Folder&#39;s Content, this caused two separate calls to 
+        GetContentPtrs, each of which would enumerate over the instance&#39;s Content. The 
+        revised version of GetItems gathers this information in a single enumeration 
+        over the Contents on the first reference. </p>
+    <p>In theory, eliminating a complete enumeration of the Contents should result in a 
+        noticible reduction in the time to obtain this information. In practice, there 
+        is an improvement, but it is very small, even for large, remote folders. By very 
+        small, I mean less than 1/10<sup>th</sup> of a Second in even the most extreme 
+        case. For normal Folders, the improvement is measured in 10s of milliseconds, 
+        perhaps 20 ms.</p>
+<h4><a id = "BkMrk_7">Added the IsRemote Property and Redefined HasSubFolders Property</a></h4>
+    <p>The <code>HasSubFolders</code> Property is used by ExpTree to determine if a TreeNode should be Expandable. 
+       In Vista/Win7 the underlying Windows API slightly redefined how that Property should be returned. The effect of
+       that change was a significant performance hit when referencing Remote Folders and a much larger performance hit when
+       the Remote Folder has sub-Folders. The potential for a performance penalty has 
+        always been present. Pre Vista versions of Windows avoided the performance 
+        penalty by always returning <code>True</code> for Remote Folders. Vista and beyond versions 
+        of Windows interact with the Remote system to obtain an accurate value to 
+        return. This access to Remote systems coould result in a totally unacceptable 
+        performance penalty. </p>
+    <p>As discussed <a href="../ExpDemo/OptimizingFolderReference.htm">here</a>, I modified CShItem to determine if each CShItem was located on 
+        a Remote system and modified <code>HasSubFolders</code> to always return <code>True</code> in that case, 
+        restoring behavior to that of XP. 
+        In test cases, this change reduced delay from 26 seconds to expand a node to 1 
+        second.</p>
+    <p>Since I had to determine if a CShItem represented a File/Folder on a Remote 
+        system for the <code>HasSubFolders</code> change, I added the <code>IsRemote</code> Property to CShItem 
+        for application use. <code>IsRemote</code> returns True if the File/Folder is referenced via 
+        a Mapped Drive or via a UNC pointing to a Server other than the Local system.</p>
+<h3><a id = "BkMrk_8">Improvements to Notification</a></h3>
+    <ul>
+        <li>Improved handling of UPDATEDIR Notification messages to properly handle Asynchronous Copy/Move operation reporting. On at least 
+            some OSes, a large Copy/Move will only be reported with a single UPDATEDIR 
+            message. That single UPDATEDIR reports the PIDL of the <i>monitored</i> Folder, 
+            not the Folder that was actually modified! In my case, the <i>monitored</i> 
+            Folder is the Desktop! This was incorrectly handled in earlier versions of CShItem and 
+            CShItemUpdater. Version 3.00 will detect all changes made to <i>items of 
+            interest</i> as reported by UPDATEDIR. Neither the Demo Forms or ExpTree process 
+            UPDATEDIR. Changes that are signaled by UPDATEDIR are detected by UpdateRefresh 
+            as called by CShItem.Update and are reported individually to the client Forms 
+            and ExpTree.</li>
+        <li>Modified UpdateRefresh to detect Items whose Date/Length attributes had changed 
+            since originally added to the internal tree. These cases now Raise an Updated 
+            event. Ensured that the Demo Forms handled those cases correctly (they did, 
+            without modification).</li>
+        <li>Modified the Demo Forms and ExpTree itself to ensure that the displayed/expanded 
+            items remain in sort order following a CREATE, MKDIR or RENAME message. The new item 
+            will be properly placed.</li>
+    </ul>
+<h3><a id = "BkMrk_9">Other Changes to CShItem</a></h3>
+    <p>Added the user settable .Tag Property which is defined to be a single Object. It may be used for any application defined purpose.</p>
+
+<h3><a id = "BkMrk_10">Changes to Demo Forms</a></h3>
+    <p>Removed frmExplorerLike and frmDragDrop. Replaced them with frmTemplate and 
+        frmThread. </p>
+</div>
+</body>
+</html>

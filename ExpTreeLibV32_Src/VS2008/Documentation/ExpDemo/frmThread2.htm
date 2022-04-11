@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>frmThread - Background Processing</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib Demo</span><br />
+<span class="topicTitle">frmThread - Background Processing</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ExpDemo_Index.htm">Exp Demo Index</a>&lt;--
+	<a href="BuildingApp.htm">Building an App</a>&lt;--
+	frmThread - Background Processing
+	--&gt;<a href="LVColSorter.htm">LVColSorter</a>
+	--&gt;<a href="../ExpTreeLib/ExpLib_Index.htm">ExpTreeLib Index</a>
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">Background Processing</a></h3>
+    <p>The BackgroundWorker is passed a List of ListViewItems to be filled with missing information. Of couse, it
+        <i>is not permissable</i> for a Worker Thread to directly modify ListViewItems that are contained in a ListView that is managed by the GUI
+       Thread. It <i>is permissable</i> to modify the CShItem that is contained in the ListViewItem's .Tag Property.</p>
+    <p>The critical data structure used by the BackgroundWorker is <code>ItemInfo</code>, a 
+        Dictionary(Of String, ShellDll.ShellApi.W32Find_Data) where the Key is the File or 
+        Directory(distinguished by a trailing &quot;\&quot;) Name, and the Value is a somewhat 
+        enhanced version of the Win32_Find_Data structure. This Dictionary is used to associate CShItems with the matching ShellDll.ShellApi.W32Find_Data.</p>
+    <p>When the BackgroundWorker is started (<code>Do_Work</code> Event Handler), it proceeds as follows:</p>
+<h3><a id = "BkMrk_2">Code Flow - BackgroundWorker</a></h3>
+    <ol>
+        <li>After some setup, if the Selected Folder is a FileSystem Folder, <code>Do_Work</code> calls 
+            <code>GetItemDatas</code> passing in the CShItem of the Selected Folder and the List of 
+            ListViewItems to be filled with information. <code>GetItemDatas</code> then:
+            <ol style="list-style-type:lower-alpha">
+                <li>Initializes a New version of <code>ItemInfo</code>.</li>
+                <li>Calls <code>GetInfos</code>, a routine which, using the FFF/FNF API, obtains ShellDll.ShellApi.W32Find_Data instances for 
+                    each item in the Selected Folder and stores them in <code>ItemInfo</code>.</li>
+                <li>Iterates over the List of incompletely filled ListViewItems and sets the .w32Data 
+                    Property of the associated CShItem with the proper ShellDll.ShellApi.W32Find_Data, using 
+                    <code>ItemInfo</code> for the match process.</li>
+            </ol>
+        </li>
+        <li>After obtaining and setting the CShItem.W32Data Properties (or not, in the case of non-FileSystem Folders), <code>Do_Work</code> 
+            then iterates over the list of incompletely filled ListViewItems. For each Item, 
+            it sets the IconIndex Property of the corresponding CShItem and adds the ListViewItem to a temporary list. </li>
+        <li>When the temporary list has reached <b>WorkUpdateInterval</b> in length, <code>Do_Work</code> Raises 
+            the BackgroundWorker&#39;s <code>ReportProgress Event</code>, passing it the temporary list of 
+            ListViewItems. It then clears the temporary list and continues the iteration.</li>
+        <li>The BackgroundWorker&#39;s <code>ReportProgress Event</code> is listened for and handled by the method <code>BGW2_ProgressChanged</code> 
+            which executes on the GUI Thread. That handler will simply iterate over the 
+            temporary list that is passed to it, calling the <code>SetLvi</code> method for each.</li>
+        <li><code>SetLvi</code> sets the ListViewItem&#39;s IconIndex with the value obtained in 
+            step 2. It then calls <code>RefreshLvi</code> passing it the ListViewItem. 
+            <code>RefreshLvi</code> obtains the missing data from the associated CShItem. 
+            That CShItem will obtain the desired information from the W32Data Property if 
+            present or from a new instance of FileInfo/DirectoryInfo if W32Data is not set.</li>
+        <li>When <code>Do_Work</code> exits, a <code>RunWorkerCompleted</code> Event is Raised. This is listened for 
+            and handled by the method <code>BGW2_RunWorkerCompleted</code> which executes on the GUI 
+            Thread. That handler will process any items remaining in the List of 
+            incompletely filled ListViewItems in the same fashion as steps 4 and 5 above.</li>
+    </ol>
+    <p>
+        The result of this processing is that for those ListViewItems that were not 
+        initially set up will have the proper IconIndex and the rest of the SubItem 
+        values set without impacting the responsiveness of the GUI.</p>
+</div>
+</body>
+</html>

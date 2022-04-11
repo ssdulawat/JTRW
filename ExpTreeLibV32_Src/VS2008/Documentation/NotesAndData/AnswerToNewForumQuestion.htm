@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <link href="../Styles/global.css" type="text/css" rel="stylesheet" />
+    <title>"New" MenuItem problem resolved</title>
+</head>
+<body>
+<p>I do not plan to ask this question in any other forum since I have, empirically, discovered how NewMenu worked prior to Vista and how it 
+now works. In case anyone else is looking for this information, I will post it here:
+</p>
+<p>In XP, NewMenu simply behaves in a non-standard way. When you InvokeCommand on a NewMenu, it ignores the contents of cmi.lpverb and obtains 
+its' information from the menu itself. It knows which MenuItem was selected and creates a new instance of whatever was selected.
+</p>
+<p>In Vista, NewMenu was radically changed, primarily in ways that do not affect this question. However, it now behaves more like a normal 
+ContextWindow, paying attention to cmi.lpVerb. In this case, the return from TrackPopUpMenu should be treated as 
+    an offset(by 1, the assumed max &quot;system&quot; reserved area) to the ordinal index into 
+the list of MenuItems. To pass it back as an lpVerb in the cmi parameter of InvokeCommand, one must subtract 1 from it to get the actual 
+    ordinal (one-based) index into the NewMenu's list of MenuItems.
+</p>
+<p>In my case -- Given that cmdID is the return from TrackPopUpMenu and that IsVista is a boolean which is true if the OS is Vista or above: 
+the relevant code is:</p>
+<pre>
+<code>
+                Case Else
+                    If CShItem.IsVista Then cmdID -= 1    'New Code
+                    cmi.lpVerb = CType(cmdID, IntPtr)
+</code>
+</pre>
+<h3>Additional Change</h3>
+    <p>While reviewing this code while diagnosing this problem, I discovered an additional change:    </p>
+
+    <pre>
+    <code>
+        End If                      'Changed to relocate to here 12/15/2010
+CLEANUP:
+        m_WindowsContextMenu.ReleaseNewMenu()
+
+        Marshal.Release(comContextMenu)
+        comContextMenu = IntPtr.Zero
+        Marshal.Release(viewSubMenu)
+        viewSubMenu = IntPtr.Zero
+        ' End If                     'Changed to comment out 12/15/2010
+
+    </code>
+    </pre>
+    <p>The original code would, in certain circumstances, cause a memory leak. By relocating the "End If", the memory leak is avoided.</p>
+
+</body>
+</html>

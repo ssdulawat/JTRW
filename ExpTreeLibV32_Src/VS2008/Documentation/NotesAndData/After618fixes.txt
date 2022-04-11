@@ -1,0 +1,106 @@
+After 6/18 changes. Dragged dir 18 to Testing.
+		Renamed to ZZZZZZZ
+		Deleted same dir.
+
+Expanding Testing 0ms
+Visible Testing 0ms
+Enter WndProc -- Counter = 5 UPDATEITEM
+ -- Counter = 5 dwItem1:  (4653120) Not Found
+ -- Counter = 5 dwItem2: Is Empty
+Leave WndProc -- Counter = 5
+Enter WndProc -- Counter = 6 UPDATEITEM
+ -- Counter = 6 dwItem1:  (4653120) Not Found
+ -- Counter = 6 dwItem2: Is Empty
+Leave WndProc -- Counter = 6
+Enter WndProc -- Counter = 7 UPDATEITEM
+ -- Counter = 7 dwItem1:  (4653120) Not Found
+ -- Counter = 7 dwItem2: Is Empty
+Leave WndProc -- Counter = 7
+Enter WndProc -- Counter = 8 UPDATEITEM
+ -- Counter = 8 dwItem1:  (4653120) Not Found
+ -- Counter = 8 dwItem2: Is Empty
+Leave WndProc -- Counter = 8
+Enter WndProc -- Counter = 9 UPDATEDIR
+ -- Counter = 9 dwItem1:  (40042560)Desktop\
+ -- Counter = 9 dwItem2: Is Empty
+Enter frmThread DoItemUpdate -- Testing - Updated
+Enter ExpTree OnItemUpdate -- Testing - Updated
+Located Parent Node Local Disk (C:) of Item C:\Testing
+Enter frmThread DoItemUpdate -- Local Disk (C:) - Updated
+Enter ExpTree OnItemUpdate -- Local Disk (C:) - Updated
+Located Parent Node Computer of Item C:\
+Enter frmThread DoItemUpdate -- 18 - Created
+Enter ExpTree OnItemUpdate -- 18 - Created
+Located Parent Node Testing of Item C:\Testing\18
+Adding Node 18\
+Enter frmThread DoItemUpdate -- Testing - Updated
+Enter ExpTree OnItemUpdate -- Testing - Updated
+Located Parent Node Local Disk (C:) of Item C:\Testing
+Leave WndProc -- Counter = 9
+Enter WndProc -- Counter = 10 UPDATEITEM
+ -- Counter = 10 dwItem1:  (454688832) Not Found
+ -- Counter = 10 dwItem2: Is Empty
+Leave WndProc -- Counter = 10
+Enter WndProc -- Counter = 11 UPDATEITEM
+ -- Counter = 11 dwItem1:  (454688832) Not Found
+ -- Counter = 11 dwItem2: Is Empty
+Leave WndProc -- Counter = 11
+Enter WndProc -- Counter = 12 UPDATEITEM
+ -- Counter = 12 dwItem1:  (454688832) Not Found
+ -- Counter = 12 dwItem2: Is Empty
+Leave WndProc -- Counter = 12
+Enter WndProc -- Counter = 13 UPDATEITEM
+ -- Counter = 13 dwItem1:  (454688832) Not Found
+ -- Counter = 13 dwItem2: Is Empty
+Leave WndProc -- Counter = 13
+'ExpTree_Demo.vshost.exe' (Managed): Loaded 'C:\Program Files (x86)\PC Magazine Utilities\Shred\shellmenu.exe'
+Enter WndProc -- Counter = 14 RENAMEFOLDER
+ -- Counter = 14 dwItem1:  (38600768)Desktop\Computer\Local Disk (C:)\Testing\18\
+ -- Counter = 14 parent1: Desktop\Computer\Local Disk (C:)\Testing\
+ -- Counter = 14 dwItem2:  (38600968) Not Found
+Enter frmThread DoItemUpdate -- ZZZZZZZZZ - Renamed
+Enter ExpTree OnItemUpdate -- ZZZZZZZZZ - Renamed
+Located Parent Node Testing of Item C:\Testing\ZZZZZZZZZ
+Leave WndProc -- Counter = 14
+Enter WndProc -- Counter = 15 UPDATEITEM
+ -- Counter = 15 dwItem1:  (38600768)Desktop\Computer\Local Disk (C:)\Testing\
+ -- Counter = 15 parent1: Desktop\Computer\Local Disk (C:)\
+ -- Counter = 15 dwItem2: Is Empty
+Enter frmThread DoItemUpdate -- Testing - Updated
+Enter ExpTree OnItemUpdate -- Testing - Updated
+Located Parent Node Local Disk (C:) of Item C:\Testing
+Leave WndProc -- Counter = 15
+Enter WndProc -- Counter = 16 UPDATEDIR
+ -- Counter = 16 dwItem1:  (480968768)Desktop\
+ -- Counter = 16 dwItem2: Is Empty
+Enter frmThread DoItemUpdate -- Testing - Updated
+Enter ExpTree OnItemUpdate -- Testing - Updated
+Located Parent Node Local Disk (C:) of Item C:\Testing
+Enter frmThread DoItemUpdate -- Local Disk (C:) - Updated
+Enter ExpTree OnItemUpdate -- Local Disk (C:) - Updated
+Located Parent Node Computer of Item C:\
+Removing C:\Testing\ZZZZZZZZZ From C:\Testing
+Enter frmThread DoItemUpdate -- ZZZZZZZZZ - Deleted
+Enter ExpTree OnItemUpdate -- ZZZZZZZZZ - Deleted
+Located Parent Node Testing of Item C:\Testing\ZZZZZZZZZ
+Removing Node Desktop\Computer\Local Disk (C:)\Testing\ZZZZZZZZZ\
+Enter frmThread DoItemUpdate -- Testing - Updated
+Enter ExpTree OnItemUpdate -- Testing - Updated
+Located Parent Node Local Disk (C:) of Item C:\Testing
+Leave WndProc -- Counter = 16
+Enter WndProc -- Counter = 17 UPDATEITEM
+ -- Counter = 17 dwItem1:  (471269440)Desktop\Computer\Local Disk (C:)\Testing\
+ -- Counter = 17 parent1: Desktop\Computer\Local Disk (C:)\
+ -- Counter = 17 dwItem2: Is Empty
+Enter frmThread DoItemUpdate -- Testing - Updated
+Enter ExpTree OnItemUpdate -- Testing - Updated
+Located Parent Node Local Disk (C:) of Item C:\Testing
+Leave WndProc -- Counter = 17
+Enter WndProc -- Counter = 18 UPDATEITEM
+ -- Counter = 18 dwItem1:  (471269440) Not Found
+ -- Counter = 18 dwItem2: Is Empty
+Leave WndProc -- Counter = 18
+Enter WndProc -- Counter = 19 UPDATEITEM
+ -- Counter = 19 dwItem1:  (471269440) Not Found
+ -- Counter = 19 dwItem2: Is Empty
+Leave WndProc -- Counter = 19

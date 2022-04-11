@@ -1,0 +1,123 @@
+﻿Timing tests done on Expanding a Node on WHS1 with Directory containing 2000 sub-Folders.
+
+Test done on XP using Unmodified version of V2.14 - NOT optimized in any way
+ExExpand \\Whs1\Users\parsellj\SubDirTest
+ExGetDirs  2078.125 ms
+ExSorting   296.875 ms
+ExMakeNode 3109.375 ms
+
+Test done on Win7 using Unmodified version of V2.14 - NOT optimized in any way
+ExExpand \\WHS1\Users\parsellj\SubDirTest
+ExGetDirs  12417.6218 ms
+ExSorting     62.4001 ms
+ExMakeNode 12667.2223 ms
+
+Test done on Win7 using V3.00 - Optimized using HasSubFolders
+ExExpand \\WHS1\Users\parsellj\SubDirTest
+ExGetDirs 327.6006 ms
+ExSorting 62.4001 ms
+ExMakeNode 13166.4231 ms
+
+Test done on Win7 using V3.00 - Optimized using item.Directories
+ExExpand \\WHS1\Users\parsellj\SubDirTest
+ExGetDirs 0 ms
+ExSorting 46.8 ms
+ExMakeNode 13197.6232 ms
+
+
+Test done on Win7 using V3.00 - Optimized - After displaying contents in ListView (and building internal tree)
+ExExpand \\WHS1\Users\parsellj\SubDirTest
+ExGetDirs 0 ms
+ExSorting 15.6001 ms
+ExMakeNode 12963.6227 ms
+
+Expansion using item.Directories (two almost identical timings for first access since reboot - though prior access to Server)
+ExExpand \\WHS1\Users\parsellj\Personal
+ExGetDirs 0 ms
+ExSorting 0 ms
+ExMakeNode 811.2014 ms
+
+Expansion using item.Directories - first access after reboot
+ExExpand \\WHS1\Users\parsellj\Personal
+ExGetDirs 0 ms
+ExSorting 0 ms
+ExMakeNode 858.0015 ms
+
+Expansion using HasSubFolders (no reboot since last one)
+ExExpand \\WHS1\Users\parsellj\Personal
+ExGetDirs 15.6 ms
+ExSorting 0 ms
+ExMakeNode 561.601 ms
+
+Expansion using HasSubFolders (With reboot since last one)
+ExExpand \\WHS1\Users\parsellj\Personal
+ExGetDirs 31.2001 ms
+ExSorting 0 ms
+ExMakeNode 1201.2021 ms
+
+=======================================================================
+Testing SetRoot - Using TreeViewNodeSorter
+
+SetRoot: D:\SubDirTest
+SetRoot-Get Dirs: 296.4005ms
+SetRoot-BuildTree: 343.2006ms
+SetRoot-Before Add(Root): 0ms
+SetRoot-After Add(Root): 40170.0706ms
+SetRoot-Expand: 62.4001ms
+Visible SubDirTest 109.2002ms
+SetRoot-SelectNode: 109.2002ms
+SetRoot: 41043.6721ms
+Total  702.0012ms
+1968 Items set in BGW2
+
+SetRoot: \\WHS1\Users\parsellj\SubDirTest
+SetRoot-Get Dirs: 374.4007ms
+SetRoot-BuildTree: 140.4002ms
+SetRoot-Before Add(Root): 0ms
+SetRoot-After Add(Root): 40341.6709ms
+SetRoot-Expand: 62.4001ms
+Visible SubDirTest 421.2007ms
+SetRoot-SelectNode: 421.2007ms
+SetRoot: 41652.0731ms
+Total  1092.0019ms
+1968 Items set in BGW2
+
+=======================================================================
+Testing SetRoot - Not using TreeViewNodeSorter
+
+SetRoot: D:\SubDirTest
+SetRoot-Get Dirs: 296.4005ms
+SetRoot-BuildTree: 343.2006ms
+SetRoot-Before Add(Root): 0ms
+SetRoot-After Add(Root): 15.6ms
+SetRoot-Expand: 62.4001ms
+Visible SubDirTest 109.2002ms
+SetRoot-SelectNode: 109.2002ms
+SetRoot: 904.8016ms
+Total  717.6013ms
+
+SetRoot: \\WHS1\Users\parsellj\SubDirTest
+SetRoot-Get Dirs: 374.4006ms
+SetRoot-BuildTree: 140.4003ms
+SetRoot-Before Add(Root): 0ms
+SetRoot-After Add(Root): 46.8ms
+SetRoot-Expand: 62.4001ms
+Visible SubDirTest 421.2008ms
+SetRoot-SelectNode: 421.2008ms
+SetRoot: 1435.2025ms
+Total  1076.4019ms
+1968 Items set in BGW2
+
+==========================================================================
+
+Testing SetRoot with unoptimized 2.14 on Win7
+
+Set Root: 78405.7377 ms
+
+Testing SetRoot with unoptimized 2.11Plus on Win7
+
+Set Root: 42088.8739 ms
+
+Testing SetRoot with unoptimized 2.11 on XP
+
+Set Root: 35828.125 ms

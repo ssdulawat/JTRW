@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>ControlDropWrapper</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib Demo</span><br />
+<span class="topicTitle">ControlDropWrapper</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ExpDemo_Index.htm">Exp Demo Index</a>&lt;--
+	<a href="DemoForms.htm">Demo Forms</a>&lt;--
+	<a href="frmDragToControl.htm">frmDragToControl</a>&lt;--
+	ControlDropWrapper
+	--&gt;<a href="BuildingApp.htm">Building an App</a>
+	--&gt;<a href="../ExpTreeLib/ExpLib_Index.htm">ExpTreeLib Index</a>
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">Summary</a></h3>
+    <p>This Class will accept a Control (in the Demo Form&#39;s case a DataGridView) and a 
+        Folder to be associated with that Control for Drop purposes. Once this 
+        association is made, the Class will handle all Drag and Drop processing for the 
+        associated Control for any Drag that contains data formatted in the FileDrop 
+        format or equivalent. Valid Drop Sources include Windows Explorer, many email 
+        clients, and any ExpTreeLib based application (including the application that 
+        contains the associated Control). </p>
+    <p>Files, Email messages, Directories Dropped on the associated Control will be 
+        Copied or Moved to the associated Folder. In essence, this Class allows any 
+        Control in an application to act like Windows Explorer&#39;s TreeView and ListView 
+        panes do when receiving a DragDrop.</p>
+<h3><a id = "BkMrk_2">Details</a></h3>
+    <p>A new instance of this class will Register itself to receive Drags for the specified Control. 
+       It can only do that because it Implements the IDropTarget Interface - has handlers for DragEnter, DragOver, DragLeave, and DragDrop.
+       The class also obtains a IDropTarget Interface from the associated Target Folder. The Target Folder may be changed by the app that 
+       owns this instance of ControlDropWrapper. When the Target Folder is changed to another Folder 
+       (by setting the FullPath Property of the class), the class discards (properly) the previous Target's IDropTarget Interface 
+       and obtains one from the new Target Folder.</p>
+    <p>As a Drag enters (or Moves or Leaves or Drops) the DataGridView, the appropriate handler in ControlDropWrapper is called 
+       by the Shell (that's why we Registered). The class's handler then calls the Target Folder's appropriate IDropTarget interface handler
+       to let it handle the event. In most cases, all that really does is set the pdwEffect to whatever the Target Folder sets it to be.
+       On a Drop, the Target Folder does whatever it wants to, using the IDataObject that is pointed to by pDataObj, which came from 
+       whatever initiated the Drag.</p>
+</div>
+</body>
+</html>

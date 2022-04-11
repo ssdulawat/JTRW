@@ -1,0 +1,1035 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\NUnit.3.13.2\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.13.2\build\NUnit.props')" />
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{768168D3-57EF-4C3F-95E1-DF049A7CD943}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>JobTracker</RootNamespace>
+    <AssemblyName>JobTracker</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\Output\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\Output\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>TrackingICO.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.6.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
+      <HintPath>..\packages\Portable.BouncyCastle.1.8.6\lib\net40\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="cli_basetypes, Version=1.0.18.0, Culture=neutral, PublicKeyToken=ce2cb7e279207b9e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SupportedDlls\CLI_64\cli_basetypes.dll</HintPath>
+    </Reference>
+    <Reference Include="cli_cppuhelper, Version=1.0.21.0, Culture=neutral, PublicKeyToken=ce2cb7e279207b9e, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SupportedDlls\CLI_64\cli_cppuhelper.dll</HintPath>
+    </Reference>
+    <Reference Include="cli_oootypes, Version=1.0.7.0, Culture=neutral, PublicKeyToken=ce2cb7e279207b9e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SupportedDlls\CLI_64\cli_oootypes.dll</HintPath>
+    </Reference>
+    <Reference Include="cli_ure, Version=1.0.21.0, Culture=neutral, PublicKeyToken=ce2cb7e279207b9e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SupportedDlls\CLI_64\cli_ure.dll</HintPath>
+    </Reference>
+    <Reference Include="cli_uretypes, Version=1.0.7.0, Culture=neutral, PublicKeyToken=ce2cb7e279207b9e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SupportedDlls\CLI_64\cli_uretypes.dll</HintPath>
+    </Reference>
+    <Reference Include="ComponentFactory.Krypton.Design, Version=4.4.1.0, Culture=neutral, PublicKeyToken=a87e673e9ecb6e8e, processorArchitecture=MSIL">
+      <HintPath>..\packages\KryptonWinFormControls.4.4.1.0\lib\net40\ComponentFactory.Krypton.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="ComponentFactory.Krypton.Docking, Version=4.4.1.0, Culture=neutral, PublicKeyToken=a87e673e9ecb6e8e, processorArchitecture=MSIL">
+      <HintPath>..\packages\KryptonWinFormControls.4.4.1.0\lib\net40\ComponentFactory.Krypton.Docking.dll</HintPath>
+    </Reference>
+    <Reference Include="ComponentFactory.Krypton.Navigator, Version=4.4.1.0, Culture=neutral, PublicKeyToken=a87e673e9ecb6e8e, processorArchitecture=MSIL">
+      <HintPath>..\packages\KryptonWinFormControls.4.4.1.0\lib\net40\ComponentFactory.Krypton.Navigator.dll</HintPath>
+    </Reference>
+    <Reference Include="ComponentFactory.Krypton.Ribbon, Version=4.4.1.0, Culture=neutral, PublicKeyToken=a87e673e9ecb6e8e, processorArchitecture=MSIL">
+      <HintPath>..\packages\KryptonWinFormControls.4.4.1.0\lib\net40\ComponentFactory.Krypton.Ribbon.dll</HintPath>
+    </Reference>
+    <Reference Include="ComponentFactory.Krypton.Toolkit, Version=4.4.1.0, Culture=neutral, PublicKeyToken=a87e673e9ecb6e8e, processorArchitecture=MSIL">
+      <HintPath>..\packages\KryptonWinFormControls.4.4.1.0\lib\net40\ComponentFactory.Krypton.Toolkit.dll</HintPath>
+    </Reference>
+    <Reference Include="ComponentFactory.Krypton.Workspace, Version=4.4.1.0, Culture=neutral, PublicKeyToken=a87e673e9ecb6e8e, processorArchitecture=MSIL">
+      <HintPath>..\packages\KryptonWinFormControls.4.4.1.0\lib\net40\ComponentFactory.Krypton.Workspace.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.CrystalReports.Design, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SupportedDlls\1\CrystalDecisions.CrystalReports.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SupportedDlls\1\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.Data.AdoDotNetInterop, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\SAP BusinessObjects\Crystal Reports for .NET Framework 4.0\Common\SAP BusinessObjects Enterprise XI 4.0\win64_x64\dotnet\CrystalDecisions.Data.AdoDotNetInterop.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportAppServer.CommLayer, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\SupportedDlls\1\CrystalDecisions.ReportAppServer.CommLayer.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SupportedDlls\1\CrystalDecisions.ReportSource.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SupportedDlls\1\CrystalDecisions.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.Windows.Forms, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SupportedDlls\1\CrystalDecisions.Windows.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="DevComponents.DotNetBar2, Version=8.1.0.7, Culture=neutral, PublicKeyToken=5fd520d36328f741, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SupportedDlls\DevComponents.DotNetBar2.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.2.0.246, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.1.2.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>..\SupportedDlls\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Windows\assembly\GAC_64\log4net\1.2.10.0__692fbea5521e1304\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Word, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Windows\assembly\GAC_MSIL\Microsoft.ReportViewer.Common\10.0.0.0__b03f5f7f11d50a3a\Microsoft.ReportViewer.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.DataVisualization, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Windows\assembly\GAC_MSIL\Microsoft.ReportViewer.DataVisualization\10.0.0.0__b03f5f7f11d50a3a\Microsoft.ReportViewer.DataVisualization.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.ProcessingObjectModel, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Windows\assembly\GAC_MSIL\Microsoft.ReportViewer.ProcessingObjectModel\10.0.0.0__b03f5f7f11d50a3a\Microsoft.ReportViewer.ProcessingObjectModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ReportViewer.WinForms, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Windows\assembly\GAC_MSIL\Microsoft.ReportViewer.WinForms\10.0.0.0__b03f5f7f11d50a3a\Microsoft.ReportViewer.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.ConnectionInfo, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.SqlServer.ConnectionInfo.dll.1.0.1\lib\Microsoft.SqlServer.ConnectionInfo.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.SqlServer.Smo, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.SqlServer.Smo.dll.1.0.1\lib\Microsoft.SqlServer.Smo.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="Microsoft.VisualBasic.Compatibility" />
+    <Reference Include="NPOI, Version=2.5.2.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.5.2\lib\net45\NPOI.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OOXML, Version=2.5.2.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.5.2\lib\net45\NPOI.OOXML.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXml4Net, Version=2.5.2.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.5.2\lib\net45\NPOI.OpenXml4Net.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOI.OpenXmlFormats, Version=2.5.2.0, Culture=neutral, PublicKeyToken=0df73ec7942b34e1, processorArchitecture=MSIL">
+      <HintPath>..\packages\NPOI.2.5.2\lib\net45\NPOI.OpenXmlFormats.dll</HintPath>
+    </Reference>
+    <Reference Include="NPOIUtility, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\SupportedDlls\NPOIUtility.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=3.13.2.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.13.2\lib\net45\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="PDFEditor">
+      <HintPath>..\SupportedDlls\PDFEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApplicationTool\frmAppSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ApplicationTool\frmAppSettings.Designer.cs">
+      <DependentUpon>frmAppSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationTool\frmColorSetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ApplicationTool\frmColorSetting.Designer.cs">
+      <DependentUpon>frmColorSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationTool\frmEditAddress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ApplicationTool\frmEditAddress.Designer.cs">
+      <DependentUpon>frmEditAddress.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationTool\FrmImportData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ApplicationTool\FrmImportData.Designer.cs">
+      <DependentUpon>FrmImportData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationTool\FrmPageLoadSetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ApplicationTool\FrmPageLoadSetting.Designer.cs">
+      <DependentUpon>FrmPageLoadSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationTool\frmSendDueInvoiceMail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ApplicationTool\frmSendDueInvoiceMail.Designer.cs">
+      <DependentUpon>frmSendDueInvoiceMail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationTool\frmSendPMPending.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ApplicationTool\frmSendPMPending.Designer.cs">
+      <DependentUpon>frmSendPMPending.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationTool\frmTrafficEmail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ApplicationTool\frmTrafficEmail.Designer.cs">
+      <DependentUpon>frmTrafficEmail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationTool\FrmUserDefinedSetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ApplicationTool\FrmUserDefinedSetting.Designer.cs">
+      <DependentUpon>FrmUserDefinedSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationTool\PendingItemEmail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ApplicationTool\PendingItemEmail.Designer.cs">
+      <DependentUpon>PendingItemEmail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationTool\rptWordTrasnmittal.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>rptWordTrasnmittal.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ApplicationTool\VEAutoInsertSetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ApplicationTool\VEAutoInsertSetting.Designer.cs">
+      <DependentUpon>VEAutoInsertSetting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Calender\CalenderGridl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Calender\CalenderGridl.Designer.cs">
+      <DependentUpon>CalenderGridl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Calender\frmCalender.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Calender\frmCalender.Designer.cs">
+      <DependentUpon>frmCalender.cs</DependentUpon>
+    </Compile>
+    <Compile Include="cGlobal.cs" />
+    <Compile Include="Classes\BackupDatabase.cs" />
+    <Compile Include="Classes\CalculateRevenu.cs" />
+    <Compile Include="Classes\CommonUtility.cs" />
+    <Compile Include="Classes\EmailUtils.cs" />
+    <Compile Include="Classes\JobtrackModule.cs" />
+    <Compile Include="Classes\KeywordContainer.cs" />
+    <Compile Include="Classes\NPOIExcelUtility.cs" />
+    <Compile Include="Classes\TSTime.cs" />
+    <Compile Include="ConnectionStringSetting\ConnectionStringsSetting.cs" />
+    <Compile Include="cProgramInfo.cs" />
+    <Compile Include="Document Generator\frmTxtDocBuilder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Document Generator\frmTxtDocBuilder.Designer.cs">
+      <DependentUpon>frmTxtDocBuilder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmInvoiceList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmInvoiceList.Designer.cs">
+      <DependentUpon>frmInvoiceList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmTasklist.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmTasklist.Designer.cs">
+      <DependentUpon>frmTasklist.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Installer1.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Installer1.Designer.cs">
+      <DependentUpon>Installer1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InvoiceReport\AllGroupBy.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AllGroupBy.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InvoiceReport\AllInOneItemExpensesTime.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AllInOneItemExpensesTime.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InvoiceReport\FrmAging.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InvoiceReport\FrmAging.Designer.cs">
+      <DependentUpon>FrmAging.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InvoiceReport\frmAgingEmail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InvoiceReport\frmAgingEmail.Designer.cs">
+      <DependentUpon>frmAgingEmail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InvoiceReport\frmBillableJobsDisableSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InvoiceReport\frmBillableJobsDisableSearch.Designer.cs">
+      <DependentUpon>frmBillableJobsDisableSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InvoiceReport\frmBillableJobSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InvoiceReport\frmBillableJobSearch.Designer.cs">
+      <DependentUpon>frmBillableJobSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InvoiceReport\frmInvoiceEditRPT.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InvoiceReport\frmInvoiceEditRPT.Designer.cs">
+      <DependentUpon>frmInvoiceEditRPT.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InvoiceReport\frmInvoiceTool.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InvoiceReport\frmInvoiceTool.Designer.cs">
+      <DependentUpon>frmInvoiceTool.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InvoiceReport\frmSearchInvoice.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InvoiceReport\frmSearchInvoice.Designer.cs">
+      <DependentUpon>frmSearchInvoice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InvoiceReport\frmShowInvoice.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InvoiceReport\frmShowInvoice.Designer.cs">
+      <DependentUpon>frmShowInvoice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InvoiceReport\ImportExcelInvoiceDue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InvoiceReport\ImportExcelInvoiceDue.Designer.cs">
+      <DependentUpon>ImportExcelInvoiceDue.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InvoiceReport\ItemExpensestime.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ItemExpensestime.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InvoiceReport\JTQBInvCompareSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InvoiceReport\JTQBInvCompareSearch.Designer.cs">
+      <DependentUpon>JTQBInvCompareSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InvoiceReport\JTSearchAllGroupBy.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>JTSearchAllGroupBy.rpt</DependentUpon>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InvoiceReport\rptInvoice.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>rptInvoice.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InvoiceReport\RptInvoiceView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InvoiceReport\RptInvoiceView.Designer.cs">
+      <DependentUpon>RptInvoiceView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InvoiceReport\rptTimeExpenses.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>rptTimeExpenses.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InvoiceReport\rptTimeInvoice.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>rptTimeInvoice.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InvoiceReport\TEst.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TEst.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="JobTrackingForm\AddContactsCompany.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="JobTrackingForm\AddContactsCompany.Designer.cs">
+      <DependentUpon>AddContactsCompany.cs</DependentUpon>
+    </Compile>
+    <Compile Include="JobTrackingForm\frmAgingHistoryLog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="JobTrackingForm\frmAgingHistoryLog.Designer.cs">
+      <DependentUpon>frmAgingHistoryLog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="JobTrackingForm\frmCraneInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="JobTrackingForm\frmCraneInfo.Designer.cs">
+      <DependentUpon>frmCraneInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="JobTrackingForm\frmInvoice.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="JobTrackingForm\frmInvoice.Designer.cs">
+      <DependentUpon>frmInvoice.cs</DependentUpon>
+    </Compile>
+    <Compile Include="JobTrackingForm\JobStatus.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="JobTrackingForm\JobStatus.Designer.cs">
+      <DependentUpon>JobStatus.cs</DependentUpon>
+    </Compile>
+    <Compile Include="JobTrackingMDIForm\JobAndTrackingMDI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="JobTrackingMDIForm\JobAndTrackingMDI.Designer.cs">
+      <DependentUpon>JobAndTrackingMDI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Login\JTLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Login\JTLogin.Designer.cs">
+      <DependentUpon>JTLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MasterTackListItem\frmConfirmation.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MasterTackListItem\frmConfirmation.Designer.cs">
+      <DependentUpon>frmConfirmation.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MasterTackListItem\frmDescription.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MasterTackListItem\frmDescription.Designer.cs">
+      <DependentUpon>frmDescription.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MasterTackListItem\frmDocTypicalTxtList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MasterTackListItem\frmDocTypicalTxtList.Designer.cs">
+      <DependentUpon>frmDocTypicalTxtList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MasterTackListItem\frmTMPMEmpList.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MasterTackListItem\frmTMPMEmpList.Designer.cs">
+      <DependentUpon>frmTMPMEmpList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MasterTackListItem\MasterTrackSubItem.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MasterTackListItem\MasterTrackSubItem.Designer.cs">
+      <DependentUpon>MasterTrackSubItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PDFeditTools\frmApplicant.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PDFeditTools\frmApplicant.Designer.cs">
+      <DependentUpon>frmApplicant.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PDFeditTools\frmCommunityBoard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PDFeditTools\frmCommunityBoard.Designer.cs">
+      <DependentUpon>frmCommunityBoard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PDFeditTools\frmCraneInfoFill.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PDFeditTools\frmCraneInfoFill.Designer.cs">
+      <DependentUpon>frmCraneInfoFill.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PDFeditTools\frmCraneUser_subInfo.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PDFeditTools\frmCraneUser_subInfo.Designer.cs">
+      <DependentUpon>frmCraneUser_subInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PDFeditTools\PDFeditClass\CD16pdf.cs" />
+    <Compile Include="PDFeditTools\PDFeditClass\CD8pdf.cs" />
+    <Compile Include="PDFeditTools\PDFeditClass\PW5class.cs" />
+    <Compile Include="PDFeditTools\PdfEditTable\pdfEditTable.cs">
+      <DependentUpon>pdfEditTable.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="PDFeditTools\PdfEditTable\pdfEditTable.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>pdfEditTable.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Setting.cs" />
+    <Compile Include="TimeSheetData\AddtimeANDExpense.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TimeSheetData\AddtimeANDExpense.Designer.cs">
+      <DependentUpon>AddtimeANDExpense.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TimeSheetData\frmPCHoursVSJTHours.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TimeSheetData\frmPCHoursVSJTHours.Designer.cs">
+      <DependentUpon>frmPCHoursVSJTHours.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TimeSheetData\frmShowTimeData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TimeSheetData\frmShowTimeData.Designer.cs">
+      <DependentUpon>frmShowTimeData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TimeSheetData\frmShowTimeExpanseData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TimeSheetData\frmShowTimeExpanseData.Designer.cs">
+      <DependentUpon>frmShowTimeExpanseData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\JTTextBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\JTTextBox.Designer.cs">
+      <DependentUpon>JTTextBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="VEUserSettingInvoiceEdit\EditInvoiceSetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="VEUserSettingInvoiceEdit\EditInvoiceSetting.Designer.cs">
+      <DependentUpon>EditInvoiceSetting.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="ApplicationTool\frmAppSettings.resx">
+      <DependentUpon>frmAppSettings.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationTool\frmColorSetting.resx">
+      <DependentUpon>frmColorSetting.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationTool\frmEditAddress.resx">
+      <DependentUpon>frmEditAddress.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationTool\FrmImportData.resx">
+      <DependentUpon>FrmImportData.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationTool\FrmPageLoadSetting.resx">
+      <DependentUpon>FrmPageLoadSetting.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationTool\frmSendDueInvoiceMail.resx">
+      <DependentUpon>frmSendDueInvoiceMail.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationTool\frmSendPMPending.resx">
+      <DependentUpon>frmSendPMPending.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationTool\frmTrafficEmail.resx">
+      <DependentUpon>frmTrafficEmail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationTool\FrmUserDefinedSetting.resx">
+      <DependentUpon>FrmUserDefinedSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationTool\PendingItemEmail.resx">
+      <DependentUpon>PendingItemEmail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationTool\rptWordTrasnmittal.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>rptWordTrasnmittal.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ApplicationTool\VEAutoInsertSetting.resx">
+      <DependentUpon>VEAutoInsertSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Calender\CalenderGridl.resx">
+      <DependentUpon>CalenderGridl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Calender\frmCalender.resx">
+      <DependentUpon>frmCalender.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Document Generator\frmTxtDocBuilder.resx">
+      <DependentUpon>frmTxtDocBuilder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmInvoiceList.resx">
+      <DependentUpon>frmInvoiceList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmTasklist.resx">
+      <DependentUpon>frmTasklist.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\AllGroupBy.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>AllGroupBy.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\AllInOneItemExpensesTime.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>AllInOneItemExpensesTime.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\FrmAging.resx">
+      <DependentUpon>FrmAging.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\frmAgingEmail.resx">
+      <DependentUpon>frmAgingEmail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\frmBillableJobsDisableSearch.resx">
+      <DependentUpon>frmBillableJobsDisableSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\frmBillableJobSearch.resx">
+      <DependentUpon>frmBillableJobSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\frmInvoiceEditRPT.resx">
+      <DependentUpon>frmInvoiceEditRPT.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\frmInvoiceTool.resx">
+      <DependentUpon>frmInvoiceTool.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\frmSearchInvoice.resx">
+      <DependentUpon>frmSearchInvoice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\frmShowInvoice.resx">
+      <DependentUpon>frmShowInvoice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\ImportExcelInvoiceDue.resx">
+      <DependentUpon>ImportExcelInvoiceDue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\ItemExpensestime.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>ItemExpensestime.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\JTQBInvCompareSearch.resx">
+      <DependentUpon>JTQBInvCompareSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\JTSearchAllGroupBy.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>JTSearchAllGroupBy.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\rptInvoice.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>rptInvoice.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\RptInvoiceView.resx">
+      <DependentUpon>RptInvoiceView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\rptTimeExpenses.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>rptTimeExpenses.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\rptTimeInvoice.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>rptTimeInvoice.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InvoiceReport\TEst.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>TEst.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JobTrackingForm\AddContactsCompany.resx">
+      <DependentUpon>AddContactsCompany.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JobTrackingForm\frmAgingHistoryLog.resx">
+      <DependentUpon>frmAgingHistoryLog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JobTrackingForm\frmCraneInfo.resx">
+      <DependentUpon>frmCraneInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JobTrackingForm\frmInvoice.resx">
+      <DependentUpon>frmInvoice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JobTrackingForm\JobStatus.resx">
+      <DependentUpon>JobStatus.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JobTrackingMDIForm\JobAndTrackingMDI.resx">
+      <DependentUpon>JobAndTrackingMDI.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Login\JTLogin.resx">
+      <DependentUpon>JTLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MasterTackListItem\frmConfirmation.resx">
+      <DependentUpon>frmConfirmation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MasterTackListItem\frmDescription.resx">
+      <DependentUpon>frmDescription.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MasterTackListItem\frmDocTypicalTxtList.resx">
+      <DependentUpon>frmDocTypicalTxtList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MasterTackListItem\frmTMPMEmpList.resx">
+      <DependentUpon>frmTMPMEmpList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MasterTackListItem\MasterTrackSubItem.resx">
+      <DependentUpon>MasterTrackSubItem.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PDFeditTools\frmApplicant.resx">
+      <DependentUpon>frmApplicant.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PDFeditTools\frmCommunityBoard.resx">
+      <DependentUpon>frmCommunityBoard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PDFeditTools\frmCraneInfoFill.resx">
+      <DependentUpon>frmCraneInfoFill.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PDFeditTools\frmCraneUser_subInfo.resx">
+      <DependentUpon>frmCraneUser_subInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="TimeSheetData\AddtimeANDExpense.resx">
+      <DependentUpon>AddtimeANDExpense.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimeSheetData\frmPCHoursVSJTHours.resx">
+      <DependentUpon>frmPCHoursVSJTHours.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimeSheetData\frmShowTimeData.resx">
+      <DependentUpon>frmShowTimeData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TimeSheetData\frmShowTimeExpanseData.resx">
+      <DependentUpon>frmShowTimeExpanseData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\JTTextBox.resx">
+      <DependentUpon>JTTextBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VEUserSettingInvoiceEdit\EditInvoiceSetting.resx">
+      <DependentUpon>EditInvoiceSetting.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="PDFeditTools\PdfEditTable\pdfEditTable.xsc">
+      <DependentUpon>pdfEditTable.xsd</DependentUpon>
+    </None>
+    <None Include="PDFeditTools\PdfEditTable\pdfEditTable.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>pdfEditTable.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="PDFeditTools\PdfEditTable\pdfEditTable.xss">
+      <DependentUpon>pdfEditTable.xsd</DependentUpon>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CheckFile.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ConnectionStringSetting\ConnectionString.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ConnectionStringSetting\VESoftwareSetting_default.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Icon\112_ArrowCurveBlue_Right.ico" />
+    <Content Include="Icon\112_RefreshArrow_Blue.ico" />
+    <Content Include="Icon\112_RefreshArrow_Blue1.ico" />
+    <Content Include="Icon\arrow_left.ico" />
+    <Content Include="Icon\base_cog_32.ico" />
+    <Content Include="Icon\cancel.ico" />
+    <Content Include="Icon\CloseBtn.ico" />
+    <Content Include="Icon\Computer1.ico" />
+    <Content Include="Icon\delete_16.png" />
+    <Content Include="Icon\delete_16x.ico" />
+    <Content Include="Icon\delete_ico.ico" />
+    <Content Include="Icon\desktop.ico" />
+    <Content Include="Icon\edit_16.png" />
+    <Content Include="Icon\edit_ico.ico" />
+    <None Include="Icon\Excel Icon.png" />
+    <Content Include="Icon\ExportIff.ico" />
+    <None Include="Icon\First.png" />
+    <Content Include="Icon\Folder.ico" />
+    <Content Include="Icon\folder_new.ico" />
+    <Content Include="Icon\FormBack.png" />
+    <Content Include="Icon\FrmBack.png" />
+    <Content Include="Icon\FrmBkLight.png" />
+    <Content Include="Icon\Generic Folder   Open.ico" />
+    <Content Include="Icon\Generic Folder   Open1.ico" />
+    <Content Include="Icon\Header.jpg" />
+    <Content Include="Icon\icon_update-16x16.gif" />
+    <Content Include="Icon\Image1.bmp" />
+    <Content Include="Icon\images.ico" />
+    <Content Include="Icon\importExcel.ico" />
+    <None Include="Icon\Last.png" />
+    <Content Include="Icon\Max.ico" />
+    <Content Include="Icon\MaximizeBtn.ico" />
+    <Content Include="Icon\MaximizeBtnpng.png" />
+    <Content Include="Icon\Min.ico" />
+    <Content Include="Icon\MinimizeBtn.ico" />
+    <None Include="Icon\Next.png" />
+    <Content Include="Icon\NOTEL.ICO" />
+    <Content Include="Icon\Pngfolder_new.png" />
+    <Content Include="Icon\POSTL.ICO" />
+    <None Include="Icon\Previous.png" />
+    <Content Include="Icon\PrintDOC.bmp" />
+    <Content Include="Icon\printer.ico" />
+    <Content Include="Icon\RECL.ICO" />
+    <Content Include="Icon\refresh.ico" />
+    <Content Include="Icon\SaveHL.bmp" />
+    <Content Include="Icon\search_icon.png" />
+    <Content Include="Icon\TrackingICO.ico" />
+    <Content Include="Icon\Upload Prcess.gif" />
+    <Content Include="Icon\UploadProcess.gif" />
+    <Content Include="TrackingICO.ico" />
+    <None Include="Resources\UploadProcess.gif" />
+    <None Include="Resources\Upload Prcess.gif" />
+    <None Include="Resources\search_icon.png" />
+    <None Include="Resources\SaveHL.bmp" />
+    <None Include="Resources\RECL.ICO" />
+    <None Include="Resources\printer.ico" />
+    <None Include="Resources\PrintDOC.bmp" />
+    <None Include="Resources\POSTL.ICO" />
+    <None Include="Resources\Pngfolder_new.png" />
+    <None Include="Resources\NOTEL.ICO" />
+    <None Include="Resources\MinimizeBtn.ico" />
+    <None Include="Resources\Min.ico" />
+    <None Include="Resources\MaximizeBtnpng.png" />
+    <None Include="Resources\MaximizeBtn.ico" />
+    <None Include="Resources\Max.ico" />
+    <None Include="Resources\importExcel.ico" />
+    <None Include="Resources\images.ico" />
+    <None Include="Resources\Image1.bmp" />
+    <None Include="Resources\icon_update-16x16.gif" />
+    <None Include="Resources\Header.jpg" />
+    <None Include="Resources\Generic Folder   Open1.ico" />
+    <None Include="Resources\Generic Folder   Open.ico" />
+    <None Include="Resources\FrmBkLight.png" />
+    <None Include="Resources\FrmBack.png" />
+    <None Include="Resources\FormBack.png" />
+    <None Include="Resources\folder_new.ico" />
+    <None Include="Resources\Folder.ico" />
+    <None Include="Resources\ExportIff.ico" />
+    <None Include="Resources\edit_ico.ico" />
+    <None Include="Resources\edit_16.png" />
+    <None Include="Resources\desktop.ico" />
+    <None Include="Resources\delete_ico.ico" />
+    <None Include="Resources\delete_16x.ico" />
+    <None Include="Resources\delete_16.png" />
+    <None Include="Resources\Computer1.ico" />
+    <None Include="Resources\CloseBtn.ico" />
+    <None Include="Resources\cancel.ico" />
+    <None Include="Resources\base_cog_32.ico" />
+    <None Include="Resources\arrow_left.ico" />
+    <None Include="Resources\112_RefreshArrow_Blue1.ico" />
+    <None Include="Resources\112_RefreshArrow_Blue.ico" />
+    <None Include="Resources\112_ArrowCurveBlue_Right.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Commen2\Commen2.csproj">
+      <Project>{c24e06e0-404f-4677-84e5-a9871e5d8a78}</Project>
+      <Name>Commen2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj">
+      <Project>{1542d7a3-0f1f-4ed5-897a-1286ac3b7f23}</Project>
+      <Name>DataAccessLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ExpTreeLibV32_Src\VS2008\ExpTree_Demo_CS\ExpTree_Demo_CS.csproj">
+      <Project>{c0c9e1e0-c52b-4373-8a44-c7ad984bd853}</Project>
+      <Name>ExpTree_Demo_CS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\JTToaster\JTToaster.csproj">
+      <Project>{080d8a83-a910-4e3c-972d-8d58b1296984}</Project>
+      <Name>JTToaster</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Open Dilaogue Frm\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('..\packages\NUnit.3.13.2\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.13.2\build\NUnit.props'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
+</Project>

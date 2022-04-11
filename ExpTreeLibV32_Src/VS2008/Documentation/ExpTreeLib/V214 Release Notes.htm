@@ -1,0 +1,519 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Release Notes - Version 2.14</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib</span><br />
+<span class="topicTitle">Release Notes - Version 2.14</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ExpLib_Index.htm">ExpTreeLib Index</a>&lt;--
+	Release Notes - Version 2.14
+	--&gt;<a href="V300 Release Notes.htm">Release Notes - Version 3.00</a>
+	--&gt;<a href="../ExpDemo/ImprovingResponsiveness.htm">Improving Responsiveness</a>
+	</p>
+</div>
+<div id="main">
+<h2><a id = "BkMrk_1">Release Notes - Version Overview</a></h2>
+    <p>The last published version of <code>ExpTreeLib</code> was Version 2.11, recently 
+        updated to Version 2.12, a roll up of bug fixes and some optimization.  
+       Version 2.14 was a major enhancement to Version 2.11/2.12. To understand the differences between Version 2.11/2,12 and Version 
+        3.00, you must
+       <em>first</em> understand this differences between Version 2.11/2.12 and Version 2.14.</p>
+<h2><a id = "BkMrk_2">Version 2.14 Release Notes</a></h2>
+    <p>The following discussion is relative to the <a href="http://www.codeproject.com/Articles/8546/An-All-VB-NET-Explorer-Tree-Control-with-ImageList">first article</a>.
+       This discussion contains information vital to the understanding of <code>ExpTreeLib</code>, especially <code>CShItem</code>.</p>
+<h3><a id = "BkMrk_3">Dynamic Monitoring of FileSystem Changes</a></h3>
+    <p>
+        In previous versions of <code>ExpTreeLib</code>, there was no Dynamic monitoring of changes to
+        the File System. This necessitated a complicated set of methods and techniques to
+        Refresh the Treeview to handle changes that <code>ExpTreeLib</code> knew about (Drag/Drop, etc.)
+        and facilities for user initiated Refresh. This version incorporates a <em>FileSystemWatcher-like</em>
+        facility to detect changes. This new facility was inspired
+        by <a href="http://www.codeproject.com/Articles/15059/C-File-Browser">FileBrowser</a> by Steven Roebert,
+        which, in turn, was inspired by earlier versions of <code>ExpTreeLib</code>. This facility eliminates the need for those complicated
+        methods and is able to detect changes to the file system made outside of the application.</p>
+<h4><a id = "BkMrk_4">Changes to CShItem</a></h4>
+    <p>
+        The CShItem class is the primary class of <code>ExpTreeLib</code>. An individual instance of
+        the CShItem class represents an item in Windows Shell Namespace. The most common
+        items in that Namespace are FileSystem Files or Folders.&nbsp; In many respects,
+        a CShItem may be thought of as a replacement for .Net's FileInfo and DirectoryInfo
+        classes. Unlike those classes, CShItem instances may represent non-FileSystem
+        items. For documentation of CShItem's public face, see 
+        <a href=" http://www.codeproject.com/Articles/8546/An-All-VB-NET-Explorer-Tree-Control-with-ImageList">part 1 of this article series</a>
+        as updated below.
+        </p>
+    <p>
+        Internally, the CShItem class maintains a single Shared tree of CShItems, rooted
+        in the Windows Desktop Folder. This is an internal representation or <strong>cache</strong>
+        of the familiar Explorer TreeView, which <code>ExpTree</code> of this library duplicates.
+        At any given time, there will be, at most, one CShItem in the internal tree for
+        any File, Folder, or Virtual item in the Shell Namespace.&nbsp; This is a change
+        from Version 2.11 in which CShItems not located in the internal tree were discouraged
+        but possible to make.</p>
+    <p>
+        The major conceptual change to CShItem is that in previous versions, changes to
+        the cache were only made in response to calls to various CShItem methods made by
+        the application. &nbsp;In this version, changes to FileSystem Folders (Delete a file, Move
+        a Folder, etc.) are reported to the CShItem cache by Windows WM_Notify messages
+        and reported to the consumers of CShItems via Events raised by the CShItem
+        class. &nbsp;</p>
+    <p>
+        A <strong>significant change</strong> to CShItem is that in earlier versions CShItems
+        representing Files were not kept in the cache at all. In this version, all items, including
+        Files are kept in the cache. In applications which may potentially display the contents
+        of many Folders or even a few large folders, this can consume substantial amounts
+        of memory and impact performance. To avoid this impact, <b>applications should explicitly discard unneeded
+        (not displayed) CShItems representing Files</b>. To implement this, a new Method has
+        been added to CShItem:</p>
+<pre lang="vbnet">    Public Sub ClearItems(ByVal ClearFiles As Boolean, Optional ByVal ClearDirectories As Boolean = False)
+</pre>
+<p>In the Demo, the following code is inserted into the code that executes whenever the ListView should be displaying
+ the contents of a new Folder, <code>AfterNodeSelect</code></p>
+ <pre lang = "vbnet">            If LastSelectedCSI IsNot Nothing AndAlso LastSelectedCSI IsNot CSI Then
+                LastSelectedCSI.ClearItems(True)
+            End If
+</pre>
+<p>Where <code>LastSelectedCSI</code> is the CShItem of the previously displayed Folder.</p>
+    <h4><a id = "BkMrk_5">Change Notification</a></h4>
+   <p>
+       Forms and Controls which display information based on CShItems and which should dynamically
+       change to reflect changes in the contents of the Windows Shell Namespace must subscribe
+        to and handle <code>CShItemUpdate</code> events. There are several included 
+       Classes to simplify and to ensure proper operation of Notification. Those 
+       Classes are described below. ExpTree itself as well as each of the included Demo 
+       Forms make use of those Classes. </p>
+     <h5>Subscribing to Change Notification</h5>
+    <p>
+        All notification events are reported through CShItem&#39;s Public Shared Event 
+        CShItemUpdate, therefore a Handler must be assigned in the Form&#39;s Load Event 
+        Handler:</p>
+        <pre lang = "vbnet">        AddHandler CShItemUpdate, AddressOf UpdateInvoke</pre>
+    <p>Since the Event CShItemUpdate is a Shared (static in C#) Event, it is also necessary include the following in the
+       Form's FormClosing Event Handler:</p>
+       <pre lang="vbnet">        RemoveHandler CShItemUpdate, AddressOf UpdateInvoke</pre>
+     <p>This is handled a little differently in C#. See the C# version of <code>frmThread</code> for 
+         details.</p>
+ <h5>Method of Notification</h5>
+    <p>The notification method is implemented by the Desktop CShItem subscribing to 
+        Windows Shell WM_Notify messages for all Shell Items under the Desktop. This is 
+        actually implemented by a class internal to ExpTreeLib. The WndProc message 
+        handling Sub in that class runs on the main thread of the application. 
+        Therefore, the events that the application receives also run on the main thread. 
+        Since this notification method is dependent on receiving Windows WM_Notify 
+        messages and since, in rare cases, not all actions external to the application reliably 
+        generate such messages, it is possible that some File related updates will 
+        not be detected. In rare cases, SaveAs actions from common applications may not 
+        reliably be reflected in messages received. All Folder changes (Create, Delete, 
+        Move, etc.) are reliably reported. This problem apparently does not happen in 
+        recent versions of Windows, and when it does occur, it affects Windows Explorer 
+        the same way.</p>
+    <p>
+        Notification is <strong>started automatically</strong> at the first creation of any CShItem.
+        <br />Notification may be turned off and restarted by the following new CShItem
+        methods:
+    </p>
+    <ul>
+        <li><code>StopGlobalNotification</code> -- Stops the receipt of Windows notification messages and
+            therefore stops all notification of change to both the internal cache and to the
+            application.</li>
+        <li><code>StartGlobalNotification</code> -- Restarts the receipt of Windows notification
+            message and
+            therefore starts change notification to both the internal cache and to the application.
+            Changes between a call to <code>StopGlobalNotification</code> and restarting with a call to <code>StartGlobalNotification</code>
+            will be lost.</li>
+    </ul>
+    <h5>Handling Notification Events</h5>
+        <p>For historical reasons and to allow for future changes that may run on separate 
+            threads, I suggest you code the Event Handler as follows. </p>
+        <pre lang="vbnet">    Private Delegate Sub InvokeUpdate(ByVal sender As Object, ByVal e As ShellItemUpdateEventArgs)
+
+    Private m_InvokeUpdate As New InvokeUpdate(AddressOf DoItemUpdate)
+
+    ' Returns the last CShItem Selected.
+    ' Required by Optional Notification Method.
+    Public ReadOnly Property SelectedItem() As CShItem
+        Get
+            Return LastSelectedCSI
+        End Get
+    End Property
+
+    Private Sub UpdateInvoke(ByVal sender As Object, ByVal e As ShellItemUpdateEventArgs) Handles DeskTopItem.CShItemUpdate
+        If Me.InvokeRequired Then
+            Invoke(m_InvokeUpdate, sender, e)
+        Else
+            DoItemUpdate(sender, e)
+        End If
+    End Sub
+    Private Sub DoItemUpdate(ByVal sender As Object, ByVal e As ShellItemUpdateEventArgs)
+        .
+        . Application dependent code
+        .
+    End Sub
+</pre>
+        <h5>CShItemUpdate Event</h5>
+    <p>
+        The signature of the CShItemUpdate Event is:</p>
+    <pre lang = "vbnet"> Public Shared Event CShItemUpdate(ByVal sender As Object, ByVal e As ShellItemUpdateEventArgs)<br />&nbsp; &nbsp;&nbsp; Where:<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Sender is the CShItem of the changed Folder<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; e &nbsp; &nbsp;&nbsp; is an instance of the ShellItemUpdateEventArgs class which provides further information</pre>
+<h5>ShellItemUpdateEventArgs</h5>
+<p>The ShellItemUpdateEventArgs class provides the following information:</p>
+    <ul>
+        <li><code>Item</code> -- the CShItem of the changed Item.</li>
+        <li><code>UpdateType</code> -- A member of the CShItemUpdateType enumeration indicating what change
+            is being reported.</li>
+    </ul>
+    <p>The interpretation of <code>sender</code> and <code>Item</code> varies somewhat with the 
+    <code>UpdateType</code> of the event as described in the next table.
+        </p>
+    <div style="text-align: left">
+        <table style="text-align: left" border="3">
+            <caption>
+                UpdateTypes</caption>
+            <tr>
+                <td style="width: 100px">
+                    <strong>UpdateType</strong></td>
+                <td style="width: 181px">
+                    <strong>sender</strong></td>
+                <td style="width: 202px">
+                    <strong>Item</strong></td>
+                <td style="width: 295px">
+                    <strong>
+                    Occurs when:</strong></td>
+            </tr>
+            <tr>
+                <td style="width: 100px">
+                    <code>Created</code> &nbsp;
+                </td>
+                <td style="width: 181px">
+                    Folder of Item</td>
+                <td style="width: 202px">
+                    Newly Created Item</td>
+                <td style="width: 295px">
+                    Item has been created</td>
+            </tr>
+            <tr>
+                <td style="width: 100px">
+                    <code>Deleted</code>
+                </td>
+                <td style="width: 181px">
+                    Folder of Item</td>
+                <td style="width: 202px">
+                    Newly Deleted Item</td>
+                <td style="width: 295px">
+                    Item has been Deleted</td>
+            </tr>
+            <tr>
+                <td style="width: 100px">
+                    <code>Renamed</code>
+                </td>
+                <td style="width: 181px">
+                    Original Folder of Item</td>
+                <td style="width: 202px">
+                    Item that has been Renamed</td>
+                <td style="width: 295px">
+                    Item has been Renamed or Moved<span style="font-size: 8pt; vertical-align: super;
+                        font-family: Courier New">1</span></td>
+            </tr>
+            <tr>
+                <td style="width: 100px">
+                    <code>Updated</code>
+                </td>
+                <td style="width: 181px">
+                    Folder of Item</td>
+                <td style="width: 202px">
+                    Item that has changed</td>
+                <td style="width: 295px">
+                    Attributes of Item have changed</td>
+            </tr>
+            <tr>
+                <td style="width: 100px">
+                    <code>UpdateDir</code>
+                </td>
+                <td style="width: 181px">
+                    Folder that has Changed</td>
+                <td style="width: 202px">
+                    Folder that has Changed</td>
+                <td style="width: 295px">
+                    A Folder has had Items Added/Deleted<span style="font-size: 8pt; vertical-align: super;
+                        font-family: Courier New">2</span></td>
+            </tr>
+            <tr>
+                <td style="width: 100px">
+                    <code>MediaChange</code></td>
+                <td style="width: 181px">
+                    Folder of Item</td>
+                <td style="width: 202px">
+                    CShItem of Media</td>
+                <td style="width: 295px">
+                    When Media has been inserted or removed</td>
+            </tr>
+            <tr>
+                <td style="width: 100px">
+                    <code>IconChange</code></td>
+                <td style="width: 181px">
+                    Folder of Item</td>
+                <td style="width: 202px">
+                    Item that has changed</td>
+                <td style="width: 295px">
+                    When Icon has changed</td>
+            </tr>
+        </table>
+      </div>
+    <p>
+            <span style="font-size: 8pt; vertical-align: super; font-family: Courier New">1</span>
+            In the <code>Renamed</code> case, <code>sender</code> is the Folder of the Item before it
+            was <code>Renamed</code> (or Moved). The Item may have moved to a new Folder, in which case,
+            the new Folder may be determined by <code>e.Item.Parent</code>.
+    </p>
+    <p>
+        <span style="font-size: 8pt; vertical-align: super; font-family: Courier New">2</span>
+        The <code>UpdateDir</code> UpdateType normally may be ignored since any Add or Deletes of Items
+        will have been already reported with previous <code>Created</code> and/or <code>Deleted</code> Events.
+        </p>
+<h3><a id = "BkMrk_6">Other Change to CShItem</a></h3>
+    <br /><br />
+<h4><a id = "BkMrk_7">Methods Deleted</a></h4>
+    <br />
+    <br />
+    <div style="text-align: left">
+        <table border="1">
+            <tr>
+                <td style="width: 100px">
+                    <strong>Name</strong></td>
+                <td style="width: 636px">
+                    <strong>Remarks</strong></td>
+            </tr>
+            <tr>
+                <td style="width: 100px">
+                    <code>RefreshDirectories</code></td>
+                <td style="width: 636px">
+                    Replaced by Change Notification. Use <code>Item.UpdateRefresh</code> to force a refresh operation.</td>
+            </tr>
+            <tr>
+                <td style="width: 100px">
+                    <code>GetLastID</code></td>
+                <td style="width: 636px">
+                    Replaced by <code>ILFindLastID</code></td>
+            </tr>
+            <tr>
+                <td style="width: 100px">
+                    <code>New</code></td>
+                <td style="width: 636px">
+                    No Public Constructors are needed or allowed.</td>
+            </tr>
+        </table>
+    </div>
+    <br />
+<h4><a id = "BkMrk_8">Methods Added</a></h4>
+    <br />
+<pre lang = "vbnet">Public Sub <code>ClearItems</code>(ByVal ClearFiles As Boolean, _
+                           Optional ByVal ClearDirectories As Boolean = False)</pre>
+    <dl><dd>
+        Clear File and/or Folder items from the CShItem internal cache. <strong>Typically used to discard CShItems representing Files that are no 
+        longer displayed in the GUI.</strong></dd></dl>       
+    <pre lang =  "vbnet">Public Function <code>GetLinkTarget</code> As String</pre>
+    <dl><dd>If the current instance is a Link then return the name of the Target of this link.
+          Otherwise return the empty String.</dd></dl>
+
+<pre lang = "vbnet">Public Function <code>UpdateRefresh</code>(Optional ByVal UpdateFiles As Boolean = True, _
+                              Optional ByVal UpdateFolders As Boolean = True) As Boolean</pre> 
+    <dl><dd>Causes a refresh of the files and/or directories contained within this instance of a Folder. Any changes
+            in the requested items will cause a CShItemUpdate Event to be raised. Returns True if any changes were made. 
+            Typically called in response to a user-initiated Refresh action.</dd></dl>
+
+    <pre lang = "vbnet"> Public Shared Function <code>ILFindLastID</code>(pidl As IntPtr) As IntPtr</pre>
+    <dl><dd>
+        Given a well formed PIDL, return a pointer to the last Item in that PIDL.&nbsp;
+        The returned PIDL must not be released since it points to the actual last Item within
+        the input PIDL.</dd></dl>
+<h4><a id = "BkMrk_9">ReadOnly Properties Added</a></h4>
+    <br />
+    <br />
+    <div style="text-align: left">
+        <table border="1">
+            <tr>
+                <td style="width: 100px">
+                    <strong>Property</strong></td>
+                <td style="width: 145px">
+                    <strong>Type</strong></td>
+                <td style="width: 528px">
+                    <strong>Remarks</strong></td>
+            </tr>
+            <tr>
+                <td style="width: 100px">
+                    <code>CanRename</code></td>
+                <td style="width: 145px">
+                    Boolean</td>
+                <td style="width: 528px">
+                    True if File/Folder can be Renamed.
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 100px">
+                    <code>Directories</code></td>
+                <td style="width: 145px">
+                    Array of CShItems</td>
+                <td style="width: 528px">
+                    Array of Folders contained in current instance.</td>
+            </tr>
+            <tr>
+                <td style="width: 100px">
+                    <code>Files</code></td>
+                <td style="width: 145px">
+                    Array of CShItems</td>
+                <td style="width: 528px">
+                    Array of non-Folder items contained in current instance.</td>
+            </tr>
+            <tr>
+                <td style="width: 100px">
+                    <code>ItemPath</code></td>
+                <td style="width: 145px">
+                    String</td>
+                <td style="width: 528px">
+                    Equivalent to instance.Path. Used to avoid conflict with System.IO.Path.</td>
+            </tr>
+            <tr>
+                <td style="width: 100px">
+                    <code>Size</code></td>
+                <td style="width: 145px">
+                    String</td>
+                <td style="width: 528px">
+                    A formatted version of instance.<code>Length</code>.</td>
+            </tr>
+            <tr>
+                <td style="width: 100px">
+                    <code>Text</code></td>
+                <td style="width: 145px">
+                    String</td>
+                <td style="width: 528px">
+                    Equivalent to instance.<code>DisplayName</code>.</td>
+            </tr>
+        </table>
+    </div>
+    <br />
+<h3><a id = "BkMrk_10">Drag/Drop Related Changes to ExpTreeLib</a></h3>  
+    <p>
+        Since the notification methods described above handle ALL changes
+        to the CShItem cache and, via Events raised, to the GUI, all code relating to updating
+        the GUI following a Drag/Drop operation has been removed.&nbsp;
+    </p>
+        <table border="1">
+            <caption>
+                Drag and Drop Classes</caption>
+            <tr>
+                <td style="width: 138px">
+                    <strong>Class</strong></td>
+                <td style="width: 627px">
+                    <strong>Function</strong></td>
+            </tr>
+            <tr>
+                <td style="width: 138px">
+                    <code>CDragWrapper</code></td>
+                <td style="width: 627px">
+                    Supports ALL aspects of "drag from" for ListView and TreeView controls.</td>
+            </tr>
+            <tr>
+                <td style="width: 138px">
+                    <code>CtvDropWrapper</code></td>
+                <td style="width: 627px">
+                    Handles DragEnter, DragOver, DragLeave, and DragDrop for any TreeView, including
+                    ExpTree</td>
+            </tr>
+            <tr>
+                <td style="width: 138px">
+                    <code>ClvDropWrapper</code></td>
+                <td style="width: 627px">
+                    Handles DragEnter, DragOver, DragLeave, and DragDrop for ListViews.
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 138px">
+                    <code>ControlDropWrapper</code></td>
+                <td style="width: 627px">
+                    Handles DragEnter, DragOver, DragLeave and DragDrop for other Controls.<span style="font-size: 8pt; vertical-align: super;
+                        font-family: Courier New">1</span></td>
+            </tr>
+        </table>
+        <p><span style="font-size: 8pt; vertical-align: super;
+                        font-family: Courier New">1</span><code>ControlDropWrapper</code> is 
+            actually a Version 3.00 addition, listed here for completeness.</p>
+<h4><a id = "BkMrk_11">CDragWrapper</a></h4>
+    <p>
+        <code>CDragWrapper</code> fully supports all "drag from" operations from any TreeView or ListView which has a CShItem contained in
+        its <code>Item.Tag</code>. To use:</p>
+    <ul>
+        <li>Remove any existing ItemDrag handlers for the control that <code>CDragWrapper</code> is to serve.</li>
+        <li>Add Form global variable to the Form which you wish to serve with this class:
+            <pre lang = "vbnet">    Private DragHandler As CDragWrapper</pre></li>
+        <li> Add the instantiation of this instance at Form_Load or control_HandleCreated processing:
+            <pre lang = "vbnet">   DragHandler = New CDragWrapper(Me.lv1)</pre></li></ul>
+    <p>All <code>ItemDrag</code> events of the ListView or TreeView will be handled by the class. 
+        No Events are raised by this Class.</p>
+
+<h4><a id = "BkMrk_12">CtvDropWrapper</a></h4>
+<p><code>CtvDropWrapper</code> is a reworked version of the old, mis-named TVDragWrapper class which has 
+been removed. It handles DragEnter, DragOver, DragLeave, and DragDrop for any TreeView, including ExpTree,
+in which all <code>TreeNode.Tag</code>s contains a CShItem.
+Like the old TVDragWrapper, it raises corresponding events to inform the TreeView of the occurance of these
+events. <code>ExpTree</code> uses these events to provide visual cues in response to Drag related 
+occurances. <code>CtvDropWrapper</code> does nothing to provide visual cues, aside from cursor modification, as the
+    Drag passes over the TreeView. Normally this Class is not used outside of <code>ExpTree</code>.</p>
+    <p>To use:</p>
+    <ul>
+        <li>Remove any existing ItemDrag handlers for the control that <code>CtvDropWrapper</code> is to serve.</li>
+        <li>Add a Global, WithEvents, variable to the Form or Control which you wish to serve with this class:
+           <pre lang = "vbnet">    Private WithEvents DropHandler As CtvDropWrapper</pre></li>
+        <li> Add the instantiation of this instance at Form_Load or control_HandleCreated processing:
+           <pre lang = "vbnet">   DropHandler = New CtvDropWrapper(Me.tv1)</pre></li>
+        <li>Ensure that each TreeNode's .Tag Property contains the CShItem of the Item that the TreeNode represents.</li>
+    </ul>
+    <p>The Events raised by <code>CtvDropWrapper</code> have been described elsewhere. For more information see
+       the code of <code>ExpTree</code>.</p>
+<h4><a id = "BkMrk_13">ClvDropWrapper</a></h4>
+    <p><code>ClvDropWrapper</code> handles DragEnter, DragOver, DragLeave, and DragDrop for any simple ListView in
+        which all <code>ListViewItem.Tag</code>s contains a CShItem. Unlike <code>CtvDropWrapper</code>, <code>ClvDropWrapper</code> 
+        raises no Events to permit the Control to manage visual cues. Rather, it does an elementary form of managing
+        visual cues itself.</p>
+    <p>Usage is similar to <code>CtvDropWrapper</code>. in that one declares a Form global variable and instantiates
+       that variable to an instance of <code>ClvDropWrapper</code> at Form_Load. Note that since <code>ClvDropWrapper</code> raises no events, then the Global variable
+       need not be declared <code>WithEvents</code>.</p>
+    <p>
+        To use:</p>
+    <ul>
+        <li>Remove any existing ItemDrag handlers for the control that <code>ClvDropWrapper</code>
+            is to serve.</li>
+        <li>Ensure that the ListView Property "Allow Drop" is set to <code>False</code>. ClvDropWrapper must handle all Drop Events.</li>
+        <li>Add a Global variable to the Form or Control which you wish to serve with this class:
+            <pre lang="vbnet">    Private DropHandler As ClvDropWrapper</pre>
+        </li>
+        <li>Add the instantiation of this instance at Form_Load or control_HandleCreated processing:
+            <pre lang="vbnet">   DropHandler = New ClvDropWrapper(Me.tv1)</pre>
+        </li>
+        <li>Ensure that the ListView's .Tag Property always contains the CShItem of the Folder containing the contents of the ListView.</li>
+        <li>Ensure that each ListViewItem's .Tag Property contains the CShItem of the Item that the ListViewItem represents.</li>
+    </ul>
+    <p>
+        <code>ClvDropWrapper</code> does not directly Raise any Events. The addition of items Dropped will be reported by the Change Notification
+        system.
+        For more information see the code of <code>frmThread</code> or <code>frmTemplate</code>.</p>
+    <h4><a id = "BkMrk_14">ControlDropWrapper</a></h4>
+    <p><code>ControlDropWrapper</code> handles DragEnter, DragOver, DragLeave, and DragDrop for any Control, <i>except</i> TreeViews or ListViews, that
+        is, by the rules of the application, associated with a <b>single</b> Folder. Given the Control and the associated Folder's Path, 
+       <code>ControlDropWrapper</code> will do all processing associated with a Drag into and Drop on of any Drag operation whose Data is 
+       supported by the associated Folder's Drop handler.</p>
+    <p>The implicit assumption of this Class is that the application will be notified of changes to the associated Folder via the CShItem
+       change notification mechanism since the Class itself has no facilities for reporting Drop operations to the application. 
+    </p>
+    <p>Usage is exactly like <code>ClvDropWrapper</code> in that one declares a Form global variable and instantiates
+       that variable to an instance of <code>ControlDropWrapper</code> at Form_Load. The 
+        Demo Form <code>frmDragToControl</code> illustrates the use of <code>ControlDropWrapper</code> 
+        associated with a <code>DataGridView</code> which displays some information about Files in the associated Folder.</p>
+
+
+</div>
+</body>
+</html>

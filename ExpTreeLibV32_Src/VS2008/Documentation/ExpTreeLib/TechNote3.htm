@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Tree Search</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+<style type="text/css">
+p.note
+{
+     background-color:#E0EBEB
+}
+span.note
+{
+    background-color:#E0EBEB
+}
+</style>
+</head>
+<body>
+<div id="control">
+    <span class="productTitle">ExpTreeLib</span><br />
+    <span class="topicTitle">Searching the Internal Tree</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ExpLib_Index.htm">ExpTreeLib Index</a>&lt;--
+	Tree Search
+	--&gt;<a href="TechNote4.htm">Comparing PIDLs</a>
+	--&gt;<a href="../ExpDemo/ImprovingResponsiveness.htm">Improving Responsiveness</a>
+	</p>
+</div>
+<div id="main">
+    <p>
+        In the discussion below, text blocks marked like <span class="note">this text</span>
+        is additional information that is related to the main text, but may be skipped to
+        follow the main line of the discussion. Text in <b>bold</b> contains the main points
+        of the discussion.</p>
+<h3><a id="TreeSearch_BkMk">Searching the Internal Tree</a></h3>
+    <p>All CShItems, like all ShellItems in the Shell Namespace, are contained in a 
+        Folder (except the Desktop). Each Folder CShItem contains two Collections, one 
+        for Folders and one for Files. Thus the tree consists of the Desktop CShItem, 
+        which contains a Collection of Folder, each of which also contains a Collection 
+        of Folders, and so on. The entire internal tree then consists of the Desktop 
+        CShItem. All CShItems will reside in the Desktop or in one of the Folders 
+        contained within one of the Folders contained by the Desktop.</p>
+    <p><b>Every CShItem has its&#39; own PIDL Property containing an Absolute PIDL which 
+        fully describes its&#39; location in the Shell Namespace</b>. This Absolute PIDL 
+        also fully describes its&#39; location in the internal tree. Therefore, it is 
+        possible to determine if one PIDL (PIDL_A) is an <b>Ancestor</b> of another PIDL 
+        (PIDL_C) - that is - does PIDL_C fall somewhere under PIDL_A in the tree. It is 
+        also possible to determine if PIDL_A is the Parent of PIDL_C where <b>Parent</b> 
+        means that PIDL_C is directly contained within PIDL_A. It is also possible to 
+        determine if PIDL_C is <b>Equal</b> to PIDL_A.</p>
+    <p>Given the nature of the internal tree, the following code is used to locate 
+        a PIDL in the tree, returning Nothing if the PIDL does not exist in the 
+        tree:</p>
+<pre lang="vbnet">
+    Public Shared Function FindCShItem(ByVal BaseItem As CShItem, ByVal Abs As IntPtr) As CShItem
+        FindCShItem = Nothing
+        If IsEqual(BaseItem.PIDL, Abs) Then Return BaseItem
+        If BaseItem.FilesInitialized AndAlso IsAncestorOf(BaseItem.PIDL, Abs, True) Then
+            For Each FItem As CShItem In BaseItem.FileList
+                If IsEqual(FItem.PIDL, Abs) Then Return FItem
+            Next
+        End If
+        If BaseItem.FoldersInitialized Then
+            For Each DItem As CShItem In BaseItem.DirectoryList
+                If IsEqual(DItem.PIDL, Abs) Then Return DItem
+                If IsAncestorOf(DItem.PIDL, Abs) Then
+                    Return FindCShItem(DItem, Abs)
+                End If
+            Next
+        End If
+    End Function
+</pre>        
+    <p>A few notes may be needed about the Code:</p>
+    <ul>
+        <li>This code is the base CShItem.FindCShItem used for all searches that do not expand the internal tree.</li>
+        <li>The Function is initially called with the Desktop as the BaseItem. The function
+            calls itself recursively to walk down the internal tree, only looking at Folders
+            that are known to be Ancestors of the desired item.</li>
+        <li>The Properties BaseItem.xxxInitialized return False if the application has 
+            never, directly or indirectly, expressed an interest in that Collection of Files 
+            and Folders. Remember we are not looking for the actual Files/Folders, just 
+            their CShItems as they exist in the tree.</li>
+        <li>The IsAncestor call in line 4 prevents querying BaseItem.FileList unless the 
+            BaseItem is the immediate (Parent) ancestor of Abs.</li>
+        <li>The functions 
+            <see cref = "M:ExpTreeLib.CShItem.IsAncestorOf">
+            IsAncestorOf</see> and
+            <see cref = "M:ExpTreeLib.CShItem.IsEqual">
+            IsEqual</see> base their results on the Absolute PIDLs 
+            that are given to them. These functions are the key to searching the tree and 
+            are discussed on the <a href="TechNote4.htm">next page</a>.</li>
+    </ul>
+    <p>
+        &nbsp;</p>
+    <p>
+        <b>See Next:</b></p>
+    <p style="margin-left: 2em">
+        <a href="TechNote4.htm">Comparing PIDLs</a></p>
+</div>
+</body>
+</html>

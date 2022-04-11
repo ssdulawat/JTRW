@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Deriving from a Demo Form</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib Demo</span><br />
+<span class="topicTitle">Deriving from a Demo Form</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ExpDemo_Index.htm">Exp Demo Index</a>&lt;--
+	<a href="BuildingApp.htm">Building an App</a>&lt;--
+	Deriving from a Demo Form
+	--&gt;<a href="frmThread1.htm">frmThread - Foreground</a>
+	--&gt;<a href="LVColSorter.htm">LVColSorter</a>
+	--&gt;<a href="../ExpTreeLib/ExpLib_Index.htm">ExpTreeLib Index</a>
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">Making a New, Application specific Form</a></h3>
+    <p><a href="BuildingApp.htm">Previously</a>, I described how to modify a Demo Form to serve as a Form in an Application. In many cases, this does not fully
+       suit the needs of the application. It may be more useful to move the functionality of the Demo Form to a new Form that has
+       been designed specifically for the application.</p>
+    <p>I suggest that the developer use <code>frmThread</code> as the base, though <code>frmTemplate</code> may 
+        also be used. Although this process should be within the capabilites of most 
+        developers, here are the steps to do this. The process is tailored to avoid 
+        traps specific to the Demo Forms.</p>
+    <ol>
+        <li style = "margin-bottom:.25em">Create a new VB.Net Windows Forms solution (or open an existing one to which you 
+            are adding the new Form).</li>
+        <li style = "margin-bottom:.25em">If a new solution, rename Form1 to something meaningful (not required, but....). 
+            If adding this Form to an existing solution, then add the new Form.</li>
+        <li style = "margin-bottom:.25em">Add a Reference to the ExpTreeLib.dll to your Project.</li>
+        <li style = "margin-bottom:.25em">Add the ExpTree Control to your ToolBox. Obviously, add the same .dll you just 
+            added a Reference to.</li>
+        <li style = "margin-bottom:.25em">Open the solution containing ExpTree_Demo in another copy of Visual Studio or, 
+            if desired, add the ExpTree_Demo as a Project in your solution.</li>
+        <li style = "margin-bottom:.25em">Copy StatusStrip1 from the Demo Form and Paste it onto your new Form. It is 
+            handy and there will be (easily fixed) errors if you don&#39;t have it.</li>
+        <li style = "margin-bottom:.25em">If desired, Copy MenuStrip1 from the Demo Form and Paste it onto your new Form. It is 
+            handy and there will be (easily fixed) errors if you don&#39;t have it.</li>
+        <li style = "margin-bottom:.25em">Note: It is possible (and common) to build a Form with no ListView or no 
+            ListView with the functionality of Lv1. If that is the case, then modify the 
+            balance of these instructions to fit your case.</li>
+        <li style = "margin-bottom:.25em">ExpTree1 and Lv1 on the Demo Form are located in the Left and Right Panels of 
+            SplitContainer2. You will be Copying SplitContainer2 to your new Form. Now is 
+            the time to decide where you want to put it relative to you application-specific 
+            Controls. It is also possible to Copy/Paste ExpTree1 and Lv1 separately to 
+            different parts of your new Form. For example, you might want ExpTree1 to be 
+            located on one side of your Form with Lv1 on a TabPage where other TabPages of 
+            the TabControl have other, application-specific displays.
+            <br />
+            No matter the design, you should get the Form designed and ExpTree1 and Lv1 
+            Copy/Pasted onto your new Form before proceeding. They should be named the same 
+            as in the Demo Form (ExpTree1 and Lv1).</li>
+        <li style = "margin-bottom:.25em">If needed, Change the StartUpDirectory Property of ExpTree1 using the Property 
+            window of the IDE. Sometimes you have to change this twice to get it to show 
+            correctly in the IDE.</li>
+        <li style = "margin-bottom:.25em">Change the ColumnHeaders in Lv1 to suit your application. Remember that Column(0) must be the 
+            Name of the File/Folder being displayed.</li>
+        <li style = "margin-bottom:.25em">Open the CodeEditor window for your new Form. At this point, it should be empty 
+            of any code other than the Class and End Class statements.</li>
+        <li style = "margin-bottom:.25em">Open the CodeEditor window for the Form you are using as a base (<code>frmThread</code>).</li>
+        <li style = "margin-bottom:.25em">Copy the Imports statements from the base Form and Paste at the top of the 
+            CodeEditor for your new Form. Fix any errors - there shouldn&#39;t be any, but...</li>
+        <li style = "margin-bottom:.25em">Copy everything following the Class declaration <i>through</i> the end of 
+            the &quot;Keyboard Events&quot; Region and Paste into your new Form.</li>
+        <li style = "margin-bottom:.25em">There should be no errors at this point. If there are, fix them.</li>
+        <li style = "margin-bottom:.25em">Modify <code>RefreshLvi</code> or, if using <code>frmTemplate</code> as a base, <code>MakeLVItem</code>, 
+            to match your new ColumnHeaders. </li>
+        <li style = "margin-bottom:.25em">I recommend enclosing everything that you just Pasted - From the &quot;ExplorerTree 
+            Event Handling -- AfterNodeSelect&quot; Region thru the &quot;Keyboard Events&quot; Region as 
+            another #Region - #End Region block and then collapsing the block.</li>
+        <li>Add your application specific code.</li>
+    </ol>
+</div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Release Notes - Version 3.01</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+</head>
+<body>
+<div id="control">
+    <span class="productTitle">ExpTreeLib</span><br />
+    <span class="topicTitle">Release Notes - Version 3.01</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ExpLib_Index.htm">ExpTreeLib Index</a>&lt;--
+	Release Notes - Version 3.01
+	--&gt;<a href="TechNote1.htm">Basic Concepts</a>
+	--&gt;<a href="../ExpDemo/ImprovingResponsiveness.htm">Improving Responsiveness</a>
+	</p>
+</div>
+<div id="main">
+<h2><a id = "BkMrk_1">Version 3.01 Release Notes</a></h2>
+    <p>Version 3.01 includes several bug fixes to Version 3.0, an additional CShItem 
+        Property signature, and an additional Project containing several test Forms that 
+        may be of interest to a developer. The major takeaway from this Release is that 
+        some early users of ExpTreeLib have put it to some extreme tests and have only 
+        found a few problems in some fairly extreme cases.</p>
+<h3><a id = "BkMrk_2">Bug Fixes</a></h3>
+    <ul>
+        <li>Two fixes dealing with situations that may arise when multiple Forms, each using 
+            ExpTreeLib, are running from the same application. This includes both MDI and 
+            non-MDI cases. </li>
+        <li>GIven a Folder that was included in an ExpTree Control <i>and</i> that Folder 
+            had never been Expanded <i>and</i> an external application (eg Windows Explorer) 
+            was used to add a sub-Folder to that Folder, then other sub-Folders of that 
+            Folder would not be shown in the ExpTree when the Folder was Expanded. This is 
+            now fixed.</li>
+        <li>In a few cases, in the IDE, it was necessary to set the ExpTree.StartupDirectory Property to something other than the Desktop and then
+            change back to the Desktop before an ExpTree Control would show the Desktop content in the IDE. This has been fixed.</li>
+    </ul>
+<h3><a id = "BkMrk_3">Variant of CShItem.GetFiles</a></h3>
+    <p>
+        Added CShItem.GetFiles(Filter as String) This was in response to a question from
+        a user who had used a similar routine in Version 2.11. 
+        This is a much improved version relative to the 2.11 version of this code.</p>
+    <p>
+        This method will only return those Files whose FileName matches the Filter. 
+        Pattern matching with the Filter is done using the VB &quot;Like&quot; operator so 
+        wildcards are accepted. For example a Filter of &quot;*w*.txt&quot; will only return Text 
+        files whose FileName contains a &quot;w&quot;. Pattern matching is case-insensitive so 
+        &quot;AnyWay.txt&quot; and &quot;wilson.txt&quot; will both match the pattern.</p>
+    <p>
+        Normally the application will not use this, but rather will apply its&#39; own 
+        Filter to match its&#39; own requirements.</p>
+<h3><a id = "BkMrk_4">Added Project</a></h3>
+    <p>
+                The Version 3.01 Source download now includes an additional Project - ExpTree_Test. That project contains several additional
+       Forms that may be of interest to a developer.</p>
+    <ul>
+        <li>frmDisplay - A simple Form containing a TextBox which may be used for displaying 
+            additional information during the development process. It is used by one of the 
+            test routines in frmThread_TestVersion.</li>
+        <li>frmThread_TestVersion - is basically frmThread with instrumentation and a number 
+            of little test routines, all of which were of use at some point in the 
+            developement of frmThread but were removed from the normal frmThread in 
+            ExpTree_Demo.</li>
+        <li>frmSearchBox - a limited variant of frmThread which displays a SearchBox for 
+            excercising the GetFiles(Filter) added method. The limit in this Form is that 
+            all Dynamic Updating has been disabled.</li>
+        <li>frmTestMulti - A simple Form which will launch as many copies of frmThread as 
+            desired - one for each time the one and only button on frmTestMulti is Clicked.</li>
+    </ul>
+</div>
+</body>
+</html>

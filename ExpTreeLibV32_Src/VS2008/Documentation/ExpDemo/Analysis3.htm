@@ -1,0 +1,371 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Analysis - Beyond FileInfo</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+    <style type="text/css">
+
+td
+	{border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-top:1px;
+	        padding-right:1px;
+	        padding-left:1px;
+	        color:black;
+	        font-size:11.0pt;
+	        font-weight:400;
+	        font-style:normal;
+	        text-decoration:none;
+	        font-family:Calibri, sans-serif;
+	        text-align:general;
+	        vertical-align:bottom;
+	        white-space:nowrap;
+	}
+        .style1
+        {
+            height: 15.0pt;
+            width: 83pt;
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: general;
+            vertical-align: bottom;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style2
+        {
+            width: 48pt;
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: center;
+            vertical-align: top;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style3
+        {
+            width: 56pt;
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: center;
+            vertical-align: top;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style4
+        {
+            width: 53pt;
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: center;
+            vertical-align: top;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style5
+        {
+            height: 15.0pt;
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: general;
+            vertical-align: bottom;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style6
+        {
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: center;
+            vertical-align: bottom;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style7
+        {
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 400;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: general;
+            vertical-align: bottom;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style8
+        {
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 400;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: center;
+            vertical-align: bottom;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+    </style>
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib Demo</span><br />
+<span class="topicTitle">Beyond FileInfo</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ImprovingResponsiveness.htm">Improving Responsiveness</a>&lt;--
+	<a href="Responsiveness.htm">Responsiveness Analysis</a>&lt;--
+	Analysis - Beyond FileInfo
+	--&gt;<a href="OptimizationResults.htm">Optimization Results</a>
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">Alternative to FileInfo</a></h3>
+    <p>From previous work, I knew that the most useful alternative to 
+        DirectoryInfo/FileInfo is the FindFirstFile/FindNextFile APIs (FFF/FNF). In 
+        order to gain any benefit from the use of FFF/FNF it is necessary to obtain the 
+        information for all items in a Folder by calling FindFirstFile and then, using 
+        the returned SafeFindHandle, get the information for all other items by calling 
+        FindNextFile, <i>with the returned SafeFindHandle</i>, until all items have been 
+        returned. In this fashion, the cost of obtaining the SafeFindHandle is only paid for the 
+        first item, not for each item.</p>
+    <p>To test this hypothesis, I modified the test Form to use FFF/FNF to gather this 
+        information. For this test, I called FFF/FNF in ExpTree1_AfterNodeSelect after 
+        the initial build of the CShItem list of the selected Folder&#39;s Content, but 
+        before building the ListViewItems. I also modified the GenItems routine 
+        (MakeLvi) to use the FFF/FNF data rather than using the CShItem Properties that 
+        cause FileInfo to be referenced. The results were:</p>
+        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:440pt;margin-left:6em;" width="586">
+            <colgroup>
+                <col style="width:83pt" 
+                    width="111" />
+                <col span="4" style="width:48pt" width="64" />
+                <col style="width:56pt" 
+                    width="74" />
+                <col style="width:53pt" 
+                    width="71" />
+                <col style="width:56pt" 
+                    width="74" />
+            </colgroup>
+            <tr  style="height:15.0pt">
+                <td class="style1" height="20" width="111">
+                </td>
+                <td class="style2" width="64">
+                    Avg ms</td>
+                <td class="style2" width="64">
+                    Avg ms</td>
+                <td class="style2" width="64">
+                    Avg ms</td>
+                <td class="style2" width="64">
+                    Avg ms</td>
+                <td class="style3" width="74">
+                    Avg ms</td>
+                <td class="style4" width="71">
+                    Avg ms</td>
+                <td class="style3" width="74">
+                    % FFF/</td>
+            </tr>
+            <tr  style="height:15.0pt">
+                <td class="style5" height="20">
+                    System</td>
+                <td class="style6">
+                    GetItems</td>
+                <td class="style6">
+                    Sort</td>
+                <td class="style6">
+                    FFF/FNF</td>
+                <td class="style6">
+                    GenTime</td>
+                <td class="style6">
+                    IconTime</td>
+                <td class="style6">
+                    Total</td>
+                <td class="style6">
+                    Original</td>
+            </tr>
+            <tr  style="height:15.0pt">
+                <td height="20" style="height:15.0pt">
+                    Win7 Desktop</td>
+                <td align="right" class="style7">
+                    41.6</td>
+                <td align="right" class="style7">
+                    57.2</td>
+                <td align="right" class="style7">
+                    5.2</td>
+                <td align="right" class="style7">
+                    249.6</td>
+                <td align="right" class="style7">
+                    301.6</td>
+                <td align="right" class="style7">
+                    670.8</td>
+                <td class="style8">
+                    81.1%</td>
+            </tr>
+            <tr  style="height:15.0pt">
+                <td height="20" style="height:15.0pt">
+                    Vista Laptop</td>
+                <td align="right" class="style7">
+                    208.0</td>
+                <td align="right" class="style7">
+                    93.6</td>
+                <td align="right" class="style7">
+                    156.0</td>
+                <td align="right" class="style7">
+                    234.0</td>
+                <td align="right" class="style7">
+                    2,116.4</td>
+                <td align="right" class="style7">
+                    2,813.2</td>
+                <td class="style8">
+                    27.0%</td>
+            </tr>
+            <tr  style="height:15.0pt">
+                <td height="20" style="height:15.0pt">
+                    XP Desktop</td>
+                <td align="right" class="style7">
+                    816.4</td>
+                <td align="right" class="style7">
+                    98.8</td>
+                <td align="right" class="style7">
+                    11,398.4</td>
+                <td align="right" class="style7">
+                    228.8</td>
+                <td align="right" class="style7">
+                    3,504.8</td>
+                <td align="right" class="style7">
+                    16,047.2</td>
+                <td class="style8">
+                    47.5%</td>
+            </tr>
+            <tr  style="height:15.0pt">
+                <td height="20" style="height:15.0pt">
+                    WHS</td>
+                <td align="right" class="style7">
+                    612.3</td>
+                <td align="right" class="style7">
+                    93.6</td>
+                <td align="right" class="style7">
+                    89.7</td>
+                <td align="right" class="style7">
+                    230.1</td>
+                <td align="right" class="style7">
+                    6,271.2</td>
+                <td align="right" class="style7">
+                    7,316.4</td>
+                <td class="style8">
+                    10.8%</td>
+            </tr>
+        </table>
+<p>It is obvious from these results that using FFF/FNF produces a much more 
+    responsive GUI. It is also obvious that the benefits are much greater (as much 
+    as 10x faster) for a Remote Folder than for a Local Folder (20% faster). 
+    Unfortunately, it is also obvious that in this rather extreme test case, the GUI 
+    is still not responsive enough. For example, although 16 seconds of &quot;freeze 
+    time&quot; is far better than 30 seconds, it is still too long. It is also true that 
+    the contribution of IconTime to the overall &quot;freeze&quot; becomes more significant in 
+    this approach. In absolute terms, IconTime is not changed in this approach, but 
+    in some cases it has become the dominant contributor to the &quot;freeze&quot;.</p>
+<h3><a id = "BkMrk_2">Learning So Far</a></h3>
+    <ul>
+        <li>In actual practise, the original code, working against Local small to medium 
+            sized Folders will not &quot;freeze&quot; the GUI to an unacceptable or even noticible 
+            degree.</li>
+        <li>In the case of Large and/or Remote Folders, the GUI may &quot;freeze&quot; to a totally 
+            unacceptable degree.</li>
+        <li>A significant contributor to this &quot;freeze&quot; is CShItem&#39;s use of 
+            FileInfo/DirectoryInfo Classes to obtain certain Properties of Files/Directories 
+            (Length, Dates, etc.).</li>
+        <li>Obtaining the Values of those properties without using FileInfo/DirectoryInfo 
+            will <i>always</i> decrese the &quot;freeze&quot; time.</li>
+        <li>The best alternative method of obtaining these Property Values is the 
+            FindFirstFile/FindNextFile (FFF/FNF) APIs.</li>
+        <li>The time savings in using FFF/FNF is directly proportional to the number of 
+            FindNextFile calls that can be made for a single FindFirstFile. Specifically, 
+            calling FindFirstFile for each File/Directory is pointless and possibly 
+            counter-productive. This is an untested assertion, but both logic and empirical 
+            observation support it.</li>
+        <li>Even using FFF/FNF, an application will, in some cases, &quot;freeze&quot; 
+            for times that are not acceptable.</li>
+        <li>The best way to limit the &quot;freezing&quot; of the GUI is to obtain the Values of these 
+            File/Directory Properties in a thread other than the GUI thread.</li>
+        <li>It is possible that further optimization may reduce the time to 
+            obtain an IconIndex, the second largest contributor to the overall time delay. I 
+            did investigate an alternate approach as described <a href = "MoreOptimizations.htm#Getting_the_IconIndex_">here</a>. 
+            This did provide a  substantial 
+            reduction in time but also resulted in incorrect Icons in some 
+            cases. I have decided to drop further investigation.</li>
+    </ul>
+    <p>
+        &nbsp;</p>
+    <p><b>See Also:</b></p>
+    <p style="margin-left:2em"><a href="frmThread1.htm">frmThread</a></p>
+</div>
+</body>
+</html>

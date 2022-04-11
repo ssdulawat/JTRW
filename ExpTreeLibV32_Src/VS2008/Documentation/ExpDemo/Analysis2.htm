@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Analysis - Exploring Improvements</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib Demo</span><br />
+<span class="topicTitle">Exploring Improvements</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ImprovingResponsiveness.htm">Improving Responsiveness</a>&lt;--
+	<a href="Responsiveness.htm">Responsiveness Analysis</a>&lt;--
+	Analysis - Exploring Improvements
+	--&gt;<a href="Analysis3.htm">Analysis - Beyond FileInfo</a>
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">Exploring Improvements</a></h3>
+    <p>The Table on the <a href="Analysis1.htm">previous page</a> clearly shows that the
+        <b>GenItems</b> phase is the major contributor to any delay in responsiveness. 
+        The major activities of this phase for the Demo Forms are:</p>
+    <ol>
+        <li>Acquiring the File Length and Date information by querying those properties for 
+            each of the relevant CShItem instance. CShItem obtains the values of those 
+            Properties by creating a FileInfo instance. Any reference to these properties 
+            will, if the Value has not previously been obtained, create a FileInfo, extract 
+            all File Length and Date Values, and Set the Property Values with those obtained 
+            from the FileInfo. Note that any reference to any of the Properties in question 
+            will fill all relevant Property Values. In short, a new FileInfo will be created 
+            exactly once for the lifetime of the CShItem.</li>
+        <li>Using the <code>GetAttr</code> VB.Net function to obtain the <code>FileAttributes</code> of each of the 
+            required Files and Directories. Note that most applications will not need to 
+            know the state of the Archive bit for any File. Most Attribute information is 
+            already available from existing CShItem Properties (IsSystem, IsReadOnly, 
+            IsHidden, etc.). The Archive bit is not reported by the mechanism that CShItem 
+            uses to obtain the other Attribute information and is the sole reason for using 
+            <code>GetAttr</code>. However, the Demo Forms display these Attributes and therefore do call 
+            <code>GetAttr</code>.*</li>
+        <li>Building the ListViewItems that are displayed in the ListView. This portion of
+            <b>GenItems</b> does not contribute in a noticible way to any delay and is 
+            unavoidable in any case.</li>
+    </ol>
+<h3><a id = "BkMrk_2">FileInfo</a></h3>
+    <p>As described above, an instance of the FileInfo Class is created the <i>first</i> time any of several CShItem Properties
+       is queried by the application. Note that certain reported changes to a File may cause another FileInfo creation, but that
+       is rare and of no interest to this discussion.</p>
+    <p>Previous investigation had shown that when <i>each</i> FileInfo instance is 
+        created, the FileInfo constructor will call the GetFileAttributesEX API to 
+        obtain a Win32_File_Attribute_Data structure. This structure is a subset of the 
+        Win32_Find_Data structure and is probably obtained by using the 
+        FindFirstFile/FindNextFile API (FFF/FNF) routines or close variant. In effect, a 
+        SafeFindHandle for the item&#39;s parent Folder must be obtained to obtain the 
+        desired data. It is during the creation of that SafeFindHandle that almost all 
+        checks are made to determine if the calling application/user is Authorized to 
+        obtain this information. In the case of a Local parent Folder, these check are 
+        performed fairly quickly. In the case of a Remote parent Folder, the time to 
+        create the Handle (and check for Authorization) can increase dramatically.</p>
+    <p>To test how much improvement was possible using FFF/FNF in the test cases, I 
+        modified my testing Form. The results are discussed on the
+        <a href="Analysis3.htm">next page</a>.</p>
+        
+<h3><a name = "GetAttr">GetAttr</a></h3>
+        <p>The use of the GetAttr function in the Demo Forms stems from a design issue in 
+        CShItem. The Attributes Property of CShItem reports the attributes found using 
+        using the IShFolder.GetAttributesOf function. This is exactly what is needed for 
+        CShItem&#39;s purposes, but has little relationship to the .Net FileAttributes Class 
+        as returned by GetAttr or by FileInfo.Attributes or in the Win32_Find_Data 
+        structure (all of which are identical). The problem is that CShItem.Attributes 
+        as currently implemented is of no use outside of CShItem. That property should 
+        be built by CShItem at the same time as all other CShItem Properties that are 
+        extracted from a FileInfo. </p>
+    <p>As related to the time tests, the use of GetAttr will have an effect on the time 
+        spent in <b>GenItems</b>. In the last phase of this effort, I modified CShItem to obtain Attribute 
+        information from the FileInfo, eliminating the need for a separate GetAtt call. 
+        In limited testing, this reduced the time until the GUI was responsive by 7% to 
+        16%.</p>
+    <p>&nbsp;</p>
+    <p><b>See Also:</b></p>
+    <p style="margin-left:2em"><a href="Analysis3.htm">Alternatives&nbsp;</a></p>
+</div>
+</body>
+</html>

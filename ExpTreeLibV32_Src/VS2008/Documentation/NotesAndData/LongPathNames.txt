@@ -1,0 +1,30 @@
+
+
+From a discussion in http://blogs.msdn.com/b/bclteam/archive/2007/02/13/long-paths-in-net-part-1-of-3-kim-hamilton.aspx
+The bcl team was a Framework team and Kim Hamilton was a member. Discussion of long file names in .Net.
+
+The below is from part 1 of a 3 part blog series, all of which is quite interesting. 
+
+Steve Dinn
+
+6 Mar 2007 8:48 AM
+
+I ran into this problem about a year ago, and I found I couldn't get around it, even when passing in the shortened path (using filena~1 style filenames).  Even after I had p-invoked GetShortFileName() and shortened every part of the path, the exception thrown from the framework mentioned the full, expanded path.
+ 
+I had absolutely no desire to rewrite System.IO, so I ended up changing my directory structure.  To a user of the framework, it just seems like a lot of work that I shouldn't have to go through.
+ 
+
+Kim Hamilton
+
+6 Mar 2007 4:17 PM
+
+Steve, 
+
+I'm glad you mentioned this. A few users have attempted this appealing workaround, but we foil it because we expand short paths as part of file name normalization, throwing once it exceeds MAX_PATH.
+ 
+We definitely agree that users shouldn't have to handle the workarounds we're forcing -- i.e. rewriting System.IO or changing the dir structure.
+ 
+Thanks,
+ 
+Kim
+

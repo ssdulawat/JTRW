@@ -1,0 +1,140 @@
+Results of copying large dir (17) to DMTest which causes only an UPDATEDIR notification. The notification points to the Desktop!? which is
+not a really useful thing, but is, unfortunately normal. I had preconditioned (caused to be loaded into the tree by selecting 
+C:\Users\parsellj which is where NTUSER.DAT and ntuser.dat.LOG1 live (note: those two files are frequently updated, so were noted by
+the UPDATEDIR processing in UpdateRefresh as having some bytes changed in their PIDLs). The OnItemUpdate entries for them from ExpTree were
+caused by the UPDATEDIR processing in UpdateRefresh.
+Note that to keep this log somewhat clean, I suppressed the UPDATEITEM notifications for those two files (code in EventDump cuts them off). 
+The only change processing of those two files - in this run - occurs when the change is noted in UpdateRefresh.
+
+Enter WndProc -- Counter = 1 UPDATEITEM
+Leave WndProc -- Counter = 1
+Enter WndProc -- Counter = 2 UPDATEITEM
+Leave WndProc -- Counter = 2
+Enter WndProc -- Counter = 3 UPDATEITEM
+ -- Counter = 3 dwItem1:  (458883136) Not Found
+ -- Counter = 3 dwItem2: Is Empty
+Leave WndProc -- Counter = 3
+Enter WndProc -- Counter = 4 UPDATEITEM
+ -- Counter = 4 dwItem1:  (458883136) Not Found
+ -- Counter = 4 dwItem2: Is Empty
+Leave WndProc -- Counter = 4
+Enter WndProc -- Counter = 5 UPDATEITEM
+Leave WndProc -- Counter = 5
+Enter WndProc -- Counter = 6 UPDATEITEM
+Leave WndProc -- Counter = 6
+Enter WndProc -- Counter = 7 UPDATEITEM
+ -- Counter = 7 dwItem1:  (7471168) Not Found
+ -- Counter = 7 dwItem2: Is Empty
+Leave WndProc -- Counter = 7
+Enter WndProc -- Counter = 8 UPDATEITEM
+ -- Counter = 8 dwItem1:  (7471168) Not Found
+ -- Counter = 8 dwItem2: Is Empty
+Leave WndProc -- Counter = 8
+Expanding Computer 0ms
+Expanding Local Disk (C:) 15.6ms
+Expanding Users 15.6ms
+Enter WndProc -- Counter = 9 UPDATEITEM
+Leave WndProc -- Counter = 9
+Enter WndProc -- Counter = 10 UPDATEITEM
+Leave WndProc -- Counter = 10
+Enter WndProc -- Counter = 11 UPDATEITEM
+ -- Counter = 11 dwItem1:  (38207552) Not Found
+ -- Counter = 11 dwItem2: Is Empty
+Leave WndProc -- Counter = 11
+Enter WndProc -- Counter = 12 UPDATEITEM
+ -- Counter = 12 dwItem1:  (38207552) Not Found
+ -- Counter = 12 dwItem2: Is Empty
+Leave WndProc -- Counter = 12
+Expanding Testing 15.6001ms
+Expanding DMTest 15.6001ms
+Enter WndProc -- Counter = 13 UPDATEITEM
+Leave WndProc -- Counter = 13
+Enter WndProc -- Counter = 14 UPDATEITEM
+Leave WndProc -- Counter = 14
+Enter WndProc -- Counter = 15 UPDATEITEM
+ -- Counter = 15 dwItem1:  (38207552) Not Found
+ -- Counter = 15 dwItem2: Is Empty
+Leave WndProc -- Counter = 15
+Enter WndProc -- Counter = 16 UPDATEITEM
+ -- Counter = 16 dwItem1:  (38207552) Not Found
+ -- Counter = 16 dwItem2: Is Empty
+Leave WndProc -- Counter = 16
+Enter WndProc -- Counter = 17 UPDATEDIR
+ -- Counter = 17 dwItem1: Is Empty
+ -- Counter = 17 dwItem2: Is Empty
+Enter ExpTree OnItemUpdate -- DMTest - Updated
+Located Parent Node Testing of Item C:\Testing\DMTest
+The thread 0x19a0 has exited with code 0 (0x0).
+Enter ExpTree OnItemUpdate -- 17 - Created
+Located Parent Node DMTest of Item C:\Testing\DMTest\17
+Adding Node 17\
+The thread 0xdbc has exited with code 0 (0x0).
+Enter ExpTree OnItemUpdate -- NTUSER.DAT - Updated
+Enter ExpTree OnItemUpdate -- ntuser.dat.LOG1 - Updated
+Enter ExpTree OnItemUpdate -- Desktop - UpdateDir
+Located Parent Node Desktop of Item ::{00021400-0000-0000-c000-000000000046}
+Leave WndProc -- Counter = 17
+Enter WndProc -- Counter = 18 UPDATEITEM
+Leave WndProc -- Counter = 18
+Enter WndProc -- Counter = 19 UPDATEITEM
+Leave WndProc -- Counter = 19
+Enter WndProc -- Counter = 20 UPDATEITEM
+ -- Counter = 20 dwItem1:  (7340096) Not Found
+ -- Counter = 20 dwItem2: Is Empty
+Leave WndProc -- Counter = 20
+Enter WndProc -- Counter = 21 UPDATEITEM
+ -- Counter = 21 dwItem1:  (7340096) Not Found
+ -- Counter = 21 dwItem2: Is Empty
+Leave WndProc -- Counter = 21
+Enter WndProc -- Counter = 22 UPDATEITEM
+Leave WndProc -- Counter = 22
+Enter WndProc -- Counter = 23 UPDATEITEM
+Leave WndProc -- Counter = 23
+Enter WndProc -- Counter = 24 UPDATEITEM
+ -- Counter = 24 dwItem1:  (7340096) Not Found
+ -- Counter = 24 dwItem2: Is Empty
+Leave WndProc -- Counter = 24
+Enter WndProc -- Counter = 25 UPDATEITEM
+ -- Counter = 25 dwItem1:  (7340096) Not Found
+ -- Counter = 25 dwItem2: Is Empty
+Leave WndProc -- Counter = 25
+Enter WndProc -- Counter = 26 UPDATEITEM
+Leave WndProc -- Counter = 26
+Enter WndProc -- Counter = 27 UPDATEITEM
+Leave WndProc -- Counter = 27
+Enter WndProc -- Counter = 28 UPDATEITEM
+ -- Counter = 28 dwItem1:  (7340096) Not Found
+ -- Counter = 28 dwItem2: Is Empty
+Leave WndProc -- Counter = 28
+Enter WndProc -- Counter = 29 UPDATEITEM
+ -- Counter = 29 dwItem1:  (7340096) Not Found
+ -- Counter = 29 dwItem2: Is Empty
+Leave WndProc -- Counter = 29
+Enter WndProc -- Counter = 30 UPDATEITEM
+Leave WndProc -- Counter = 30
+Enter WndProc -- Counter = 31 UPDATEITEM
+Leave WndProc -- Counter = 31
+Enter WndProc -- Counter = 32 UPDATEITEM
+ -- Counter = 32 dwItem1:  (7340096) Not Found
+ -- Counter = 32 dwItem2: Is Empty
+Leave WndProc -- Counter = 32
+Enter WndProc -- Counter = 33 UPDATEITEM
+ -- Counter = 33 dwItem1:  (7340096) Not Found
+ -- Counter = 33 dwItem2: Is Empty
+Leave WndProc -- Counter = 33
+Enter WndProc -- Counter = 34 UPDATEITEM
+Leave WndProc -- Counter = 34
+Enter WndProc -- Counter = 35 UPDATEITEM
+Leave WndProc -- Counter = 35
+Enter WndProc -- Counter = 36 UPDATEITEM
+ -- Counter = 36 dwItem1:  (7340096) Not Found
+ -- Counter = 36 dwItem2: Is Empty
+Leave WndProc -- Counter = 36
+Enter WndProc -- Counter = 37 UPDATEITEM
+ -- Counter = 37 dwItem1:  (7340096) Not Found
+ -- Counter = 37 dwItem2: Is Empty
+Leave WndProc -- Counter = 37
+Expanding 17 0ms
+The thread 0x1a20 has exited with code 0 (0x0).
+The thread '<No Name>' (0x4dc) has exited with code 0 (0x0).
+The program '[5004] ExpTree_Demo.vshost.exe: Managed' has exited with code 0 (0x0).

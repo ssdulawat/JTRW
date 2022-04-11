@@ -1,0 +1,38 @@
+Timings done 4/23/2012 using frmThread with all optimizations - Also has ExpTree Expand time - First ref after Reboot
+
+Visible Desktop 109.2001ms
+Total  187.2003ms
+22 Items set in BGW2
+Expanding Network 156.0003ms
+Expanding WHS1 31.2001ms
+Expanding Users (\\WHS1) 46.8001ms
+Expanding parsellj 15.6ms
+Visible TestTimer 1014.0018ms
+Total  6536.4115ms
+2968 Items set in BGW2
+Visible SubDirTest 842.4015ms
+Total  1466.4026ms
+1968 Items set in BGW2
+
+Timings done 4/23/2012 using frmThread with all optimizations - Also has ExpTree Expand time - No Reboot
+
+Visible Desktop 109.2002ms
+Total  187.2003ms
+22 Items set in BGW2
+Expanding Network 156.0003ms
+Expanding WHS1 31.2ms
+Expanding Users (\\WHS1) 15.6001ms
+Expanding parsellj 15.6ms
+Visible TestTimer 967.2017ms
+Total  6474.0114ms
+2968 Items set in BGW2
+Visible SubDirTest 842.4015ms
+Total  1466.4025ms
+1968 Items set in BGW2
+Visible TestTimer 780.0014ms
+Total  5990.4106ms
+2968 Items set in BGW2
+Visible SubDirTest 202.8003ms
+Total  780.0013ms
+1968 Items set in BGW2
+

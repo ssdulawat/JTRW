@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <link href="../Styles/global.css" type="text/css" rel="stylesheet" />
+    <title>Problem Description - New Folder in frmDragDrop</title>
+</head>
+<body>
+<p>sent to:
+Windows Client TechCenter > Windows 7 IT Pro Forums > Windows 7 Application Compatibility</p> 
+
+<p>It never received a satisfactory answer.&nbsp;
+</p>
+<p>I have developed a class library in VB.Net which makes very heavy use of Interop with the Windows Shell API. With the one exception that I am asking about, it works well on XP32, Vista64, and Win7 64. Using the library, one can, among other things, create a Form that mimics Classic Windows Explorer.</p>
+
+<p>The question: When a user right clicks on an appropriate area of the WinExplorer mimic, I build and display a Context Menu using normal WinAPI methods. This menu is similar to the menu one would get by right clicking on an unused area in the right panel of a normal WinExp display. One entry in this menu is "New". That entry is associated with the appropriate "New" Context menu provided the Shell as obtained as follows:</p>
+
+<code>CoCreateInstance(CLSID_NewMenu, IntPtr.Zero, CLSCTX.INPROC_SERVER, IID_IContextMenu, newMenuPtr)</code>
+<p>The Primary Context menu is displayed with the following:</p>
+
+<code>Dim cmdID As Integer = _
+         TrackPopupMenuEx(comContextMenu, TPM.RETURNCMD, _
+         pt.X, pt.Y, Me.Handle, IntPtr.Zero)
+</code>
+ <p>If the user selects a menuitem other than "New" then all goes as expected. If the user selects "New", the associated menu is displayed which gives a list of potential "new" things to create. All of this behaves exactly like normal Windows Explorer - try it there to see what I am trying to communicate.
+</p>
+<p>If the user makes a selection from the list of new items, then the expected value of cmdID is from 1 to the number of items in the "New" list -- a user click on the topmost item returns 1 ... etc. 
+The problem is that on Win7 or Vista 64bit, a click on the topmost item returns 2. In fact all items return a cmdID value that is one greater than it should be ... Item n returns n+1. The net result is that when I then pass that value to the appropriate Invoke, the wrong type of item is created -- that is the only thing that is malfunctioning is the value returned to me from the "New" menu.
+</p>
+<p>This is consistently different from the XP 32bit return and from the documentation. Note that I do not build the "New" menu nor do I do anything other than TrackPopUpMenuEx to display the menu. Note also that any other menu selection returns the expected cmdID. 
+</p>
+<p>My questions are then:<br /><br />
+
+Is this a 32bit/64 bit problem or is it a XP/Vista,Win7 problem?<br />
+Is this expected behavior? If so where is it documented.<br />
+Is there an easy way of determining whether I am running in a 64bit environment?<br />
+Can I count on this behavior in the future or is it some kind of bug in the API that will be fixed?</p>
+<p>My environment is: Win7 64 bit - fully patched. VS2008, VBNet targeting FW2.0. Code compiled in both "AnyCPU" and in "x86" configurations (same results).
+</p>
+<p>Any help will be appreciated. If needed, I can supply the full code of the Class Library and the Demo that illustrates the problem. It is fairly bulky, but I know exactly where the problem materializes.
+<br />
+Jim Parsells
+</p>
+</body>
+</html>

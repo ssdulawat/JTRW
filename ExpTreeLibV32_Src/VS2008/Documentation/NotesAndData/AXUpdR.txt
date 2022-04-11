@@ -1,0 +1,165 @@
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\Windows\assembly\GAC_32\mscorlib\2.0.0.0__b77a5c561934e089\mscorlib.dll'
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\Windows\assembly\GAC_MSIL\Microsoft.VisualStudio.HostingProcess.Utilities\9.0.0.0__b03f5f7f11d50a3a\Microsoft.VisualStudio.HostingProcess.Utilities.dll'
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\Windows\assembly\GAC_MSIL\System.Windows.Forms\2.0.0.0__b77a5c561934e089\System.Windows.Forms.dll'
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\Windows\assembly\GAC_MSIL\System\2.0.0.0__b77a5c561934e089\System.dll'
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\Windows\assembly\GAC_MSIL\System.Drawing\2.0.0.0__b03f5f7f11d50a3a\System.Drawing.dll'
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\Windows\assembly\GAC_MSIL\Microsoft.VisualStudio.HostingProcess.Utilities.Sync\9.0.0.0__b03f5f7f11d50a3a\Microsoft.VisualStudio.HostingProcess.Utilities.Sync.dll'
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\Windows\assembly\GAC_MSIL\Microsoft.VisualStudio.Debugger.Runtime\9.0.0.0__b03f5f7f11d50a3a\Microsoft.VisualStudio.Debugger.Runtime.dll'
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\CodeProject\ItsmeYudist\AX Lite 2\ProjectExplorer\bin\ProjectExplorer.vshost.exe'
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\Windows\assembly\GAC_32\System.Data\2.0.0.0__b77a5c561934e089\System.Data.dll'
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\Windows\assembly\GAC_MSIL\System.Xml\2.0.0.0__b77a5c561934e089\System.Xml.dll'
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\Windows\assembly\GAC\Microsoft.Vbe.Interop\12.0.0.0__71e9bce111e9429c\Microsoft.Vbe.Interop.dll'
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\Windows\assembly\GAC_MSIL\Microsoft.VisualBasic\8.0.0.0__b03f5f7f11d50a3a\Microsoft.VisualBasic.dll'
+The thread 0xd94 has exited with code 0 (0x0).
+The thread 0x1548 has exited with code 0 (0x0).
+The thread 0x1b7c has exited with code 0 (0x0).
+The thread 0x1bb0 has exited with code 0 (0x0).
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\CodeProject\ItsmeYudist\AX Lite 2\ProjectExplorer\bin\ProjectExplorer.exe', Symbols loaded.
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\Windows\assembly\GAC_32\System.Transactions\2.0.0.0__b77a5c561934e089\System.Transactions.dll'
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\Windows\assembly\GAC_32\System.EnterpriseServices\2.0.0.0__b03f5f7f11d50a3a\System.EnterpriseServices.dll'
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\Windows\assembly\GAC_32\System.EnterpriseServices\2.0.0.0__b03f5f7f11d50a3a\System.EnterpriseServices.Wrapper.dll'
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\Windows\assembly\GAC_MSIL\System.Configuration\2.0.0.0__b03f5f7f11d50a3a\System.Configuration.dll'
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\CodeProject\ItsmeYudist\AX Lite 2\ProjectExplorer\bin\ExpTreeLib.dll', Symbols loaded.
+'ProjectExplorer.vshost.exe' (Managed): Loaded 'C:\Windows\assembly\GAC_MSIL\System.Management\2.0.0.0__b03f5f7f11d50a3a\System.Management.dll'
+The thread 0x1ad0 has exited with code 0 (0x0).
+The thread 0x143c has exited with code 0 (0x0).
+The thread 0x161c has exited with code 0 (0x0).
+The thread 0x1264 has exited with code 0 (0x0).
+The thread 0x1388 has exited with code 0 (0x0).
+The thread 0x16a0 has exited with code 0 (0x0).
+The thread 0xe08 has exited with code 0 (0x0).
+The thread 0x187c has exited with code 0 (0x0).
+The thread 0x12b0 has exited with code 0 (0x0).
+The thread 0x9f4 has exited with code 0 (0x0).
+The thread 0x1344 has exited with code 0 (0x0).
+ProjectExplorer - Load
+Enter WndProc -- Counter = 1 UPDATEITEM
+ -- Counter = 1 dwItem1:  (90308672) Not Found
+ -- Counter = 1 dwItem2: Is Empty
+Leave WndProc -- Counter = 1
+Enter WndProc -- Counter = 2 UPDATEITEM
+ -- Counter = 2 dwItem1:  (90308672) Not Found
+ -- Counter = 2 dwItem2: Is Empty
+Leave WndProc -- Counter = 2
+Enter WndProc -- Counter = 3 UPDATEITEM
+ -- Counter = 3 dwItem1:  (90308672) Not Found
+ -- Counter = 3 dwItem2: Is Empty
+Leave WndProc -- Counter = 3
+Enter WndProc -- Counter = 4 UPDATEITEM
+ -- Counter = 4 dwItem1:  (90308672) Not Found
+ -- Counter = 4 dwItem2: Is Empty
+Leave WndProc -- Counter = 4
+Enter WndProc -- Counter = 5 UPDATEITEM
+ -- Counter = 5 dwItem1:  (90112064) Not Found
+ -- Counter = 5 dwItem2: Is Empty
+Leave WndProc -- Counter = 5
+Enter WndProc -- Counter = 6 UPDATEITEM
+ -- Counter = 6 dwItem1:  (90112064) Not Found
+ -- Counter = 6 dwItem2: Is Empty
+Leave WndProc -- Counter = 6
+Enter WndProc -- Counter = 7 UPDATEITEM
+Raising Updated based on AreBytesEqual - bin
+ -- Counter = 7 dwItem1:  (90112064)Desktop\Computer\Local Disk (C:)\CodeProject\ItsmeYudist\AX Lite 2\ProjectExplorer\bin\
+ -- Counter = 7 parent1: Desktop\Computer\Local Disk (C:)\CodeProject\ItsmeYudist\AX Lite 2\ProjectExplorer\
+ -- Counter = 7 dwItem2: Is Empty
+Raising Updated based on AreBytesEqual - bin
+Leave WndProc -- Counter = 7
+Enter WndProc -- Counter = 8 CREATE
+Raising Updated based on AreBytesEqual - bin
+ -- Counter = 8 dwItem1:  (90112064) Not Found
+ -- Counter = 8 dwItem2: Is Empty
+Raising Updated based on AreBytesEqual - bin
+Leave WndProc -- Counter = 8
+Enter WndProc -- Counter = 9 UPDATEITEM
+Raising Updated based on AreBytesEqual - bin
+ -- Counter = 9 dwItem1:  (90112064) Not Found
+ -- Counter = 9 dwItem2: Is Empty
+Raising Updated based on AreBytesEqual - bin
+Leave WndProc -- Counter = 9
+Enter WndProc -- Counter = 10 DELETE
+Raising Updated based on AreBytesEqual - bin
+ -- Counter = 10 dwItem1:  (90112064) Not Found
+ -- Counter = 10 dwItem2: Is Empty
+Raising Updated based on AreBytesEqual - bin
+Leave WndProc -- Counter = 10
+Enter WndProc -- Counter = 11 UPDATEITEM
+ -- Counter = 11 dwItem1:  (90112064) Not Found
+ -- Counter = 11 dwItem2: Is Empty
+Leave WndProc -- Counter = 11
+Enter WndProc -- Counter = 12 UPDATEITEM
+ -- Counter = 12 dwItem1:  (90112064) Not Found
+ -- Counter = 12 dwItem2: Is Empty
+Leave WndProc -- Counter = 12
+Enter WndProc -- Counter = 13 UPDATEITEM
+Raising Updated based on AreBytesEqual - bin
+ -- Counter = 13 dwItem1:  (90112064)Desktop\Computer\Local Disk (C:)\CodeProject\ItsmeYudist\AX Lite 2\ProjectExplorer\bin\
+ -- Counter = 13 parent1: Desktop\Computer\Local Disk (C:)\CodeProject\ItsmeYudist\AX Lite 2\ProjectExplorer\
+ -- Counter = 13 dwItem2: Is Empty
+Raising Updated based on AreBytesEqual - bin
+Leave WndProc -- Counter = 13
+ProjectExplorer - Load
+Raising Updated based on AreBytesEqual - bin
+Enter ExpTree OnItemUpdate -- bin - Updated
+Enter ExpTree OnItemUpdate -- ProjectExplorer - Updated
+Expanding PBC 0ms
+Enter WndProc -- Counter = 14 UPDATEITEM
+ -- Counter = 14 dwItem1:  (106561600) Not Found
+ -- Counter = 14 dwItem2: Is Empty
+Leave WndProc -- Counter = 14
+Enter WndProc -- Counter = 15 UPDATEITEM
+ -- Counter = 15 dwItem1:  (106561600) Not Found
+ -- Counter = 15 dwItem2: Is Empty
+Leave WndProc -- Counter = 15
+Enter WndProc -- Counter = 16 UPDATEITEM
+ -- Counter = 16 dwItem1:  (106561600) Not Found
+ -- Counter = 16 dwItem2: Is Empty
+Leave WndProc -- Counter = 16
+Enter WndProc -- Counter = 17 UPDATEITEM
+ -- Counter = 17 dwItem1:  (106561600) Not Found
+ -- Counter = 17 dwItem2: Is Empty
+Leave WndProc -- Counter = 17
+Enter WndProc -- Counter = 18 RMDIR
+Raising Updated based on AreBytesEqual - bin
+Enter ExpTree OnItemUpdate -- bin - Updated
+Enter frmThread DoItemUpdate -- bin - Updated
+Enter ExpTree OnItemUpdate -- ProjectExplorer - Updated
+Enter frmThread DoItemUpdate -- ProjectExplorer - Updated
+Removing C:\CodeProject\ItsmeYudist\AX Lite 2\ProjectExplorer\bin\ROOT\PROJECT\A3TEST\2012\PBC\New folder From C:\CodeProject\ItsmeYudist\AX Lite 2\ProjectExplorer\bin\ROOT\PROJECT\A3TEST\2012\PBC
+Enter ExpTree OnItemUpdate -- New folder - Deleted
+Located Parent Node PBC of Item C:\CodeProject\ItsmeYudist\AX Lite 2\ProjectExplorer\bin\ROOT\PROJECT\A3TEST\2012\PBC\New folder
+Removing Node 2012\PBC\New folder\
+Enter frmThread DoItemUpdate -- New folder - Deleted
+Enter ExpTree OnItemUpdate -- PBC - Updated
+Located Parent Node 2012 of Item C:\CodeProject\ItsmeYudist\AX Lite 2\ProjectExplorer\bin\ROOT\PROJECT\A3TEST\2012\PBC
+Enter frmThread DoItemUpdate -- PBC - Updated
+ -- Counter = 18 dwItem1:  (114556992) Not Found
+ -- Counter = 18 dwItem2: Is Empty
+Raising Updated based on AreBytesEqual - bin
+Enter ExpTree OnItemUpdate -- bin - Updated
+Enter frmThread DoItemUpdate -- bin - Updated
+Enter ExpTree OnItemUpdate -- ProjectExplorer - Updated
+Enter frmThread DoItemUpdate -- ProjectExplorer - Updated
+Raising Updated based on AreBytesEqual - PBC
+Enter ExpTree OnItemUpdate -- PBC - Updated
+Located Parent Node 2012 of Item C:\CodeProject\ItsmeYudist\AX Lite 2\ProjectExplorer\bin\ROOT\PROJECT\A3TEST\2012\PBC
+Enter frmThread DoItemUpdate -- PBC - Updated
+Enter ExpTree OnItemUpdate -- 2012 - Updated
+Enter frmThread DoItemUpdate -- 2012 - Updated
+Leave WndProc -- Counter = 18
+Enter WndProc -- Counter = 19 UPDATEITEM
+ -- Counter = 19 dwItem1:  (90177600) Not Found
+ -- Counter = 19 dwItem2: Is Empty
+Leave WndProc -- Counter = 19
+Enter WndProc -- Counter = 20 UPDATEITEM
+ -- Counter = 20 dwItem1:  (90177600) Not Found
+ -- Counter = 20 dwItem2: Is Empty
+Leave WndProc -- Counter = 20
+Enter WndProc -- Counter = 21 UPDATEITEM
+ -- Counter = 21 dwItem1:  (90177600) Not Found
+ -- Counter = 21 dwItem2: Is Empty
+Leave WndProc -- Counter = 21
+Enter WndProc -- Counter = 22 UPDATEITEM
+ -- Counter = 22 dwItem1:  (90177600) Not Found
+ -- Counter = 22 dwItem2: Is Empty
+Leave WndProc -- Counter = 22
+The program '[4868] ProjectExplorer.vshost.exe: Managed' has exited with code 0 (0x0).

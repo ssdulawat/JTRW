@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>LVColSorter</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib Demo</span><br />
+<span class="topicTitle">LVColSorter</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ExpDemo_Index.htm">Exp Demo Index</a>&lt;--
+	LVColSorter
+	--&gt;<a href="../ExpTreeLib/ExpLib_Index.htm">ExpTreeLib Index</a>
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">Summary</a></h3>
+    <p>LVColSorter is a Class to be used as a ListViewItemSorter. As with any 
+        ListViewItemSorter, it responds to Mouse Clicks on the ColumnHeaders of the 
+        ListView by Sorting the contents of the ListView in order of the contents of the 
+        ListViewItem.SubItems displayed in the Clicked Column. LVColSorter has the 
+        following additional features:</p>
+    <ul>
+        <li>Displays a Sort Glyph in the Sorted ColumnHeader. That Glyph indicates the 
+            direction of Sort that the <i>next</i> Click on that Column will Sort.</li>
+        <li>Column(0) Sorting is a special case.
+            <ul>
+                <li>If the ListViewItem.Tag is set and if the Object in that .Tag supports the IComparable Interface, then
+                    Column(0) will be Sorted on that Tag.</li>
+                <li>If the ListViewItem.Tag is not set (is Nothing) or if it does not support the 
+                    IComparable Interface, then Column(0) will be sorted on the .Tag or .Text 
+                    Property of ListViewItem.SubItem(0). Note that the ListViewItem and its&#39; 
+                    SubItems(0) have separate .Tag Properties.</li>
+                <li>If neither of the .Tag Properties is usable for sorting, then LVColSorter will 
+                    Sort using the .Text Property.</li>
+            </ul></li>
+        <li>Sorts on the .Tag Property of the SubItems corresponding to the Clicked 
+            ColumnHeader, if present and if of a type that 
+            supports the IComparable Interface. If no .Tag is present, Sort will be on the 
+            .Text Property of the SubItem.</li>
+        <li>If the Clicked Column is not Column(0) then Column(0) is used as a Secondary 
+            Sort Key, following Column(0) rules.</li>
+    </ul>
+<h3><a id = "BkMrk_2">Why .Tags and Why is Column(0) special?</a></h3>
+    <p>A common way of linking the individual ListViewItems to their original data 
+        source (eg - a Class instance or a DataRow) is to set the .Tag Property of the 
+        ListViewItem to that original data source. If it is important to Sort the 
+        original data source, it is also likely that it will support the IComparable 
+        Interface and may well support Sorting by its&#39; own Sort rules. Typically, the 
+        ListView is populated in some Sorted order, typically in the Sort order of the 
+        original data source. Sorting Column(0) by the original data source items, will 
+        restore the original Sort order of the ListView.</p>
+    <p>Using Column(0) as the Secondary Sort Key will ensure that when the ListView is 
+        sorted by some other Column, items with equal values in the Sort Column will 
+        also be displayed in the original sort order, grouped by unique values in the 
+        Sort Column.</p>
+    <p>All of these conditions are true for ListViews in the Demo Forms which always have a 
+        CShItem in the .Tag of each ListViewItem and alway build the ListView in the 
+        Sort order of those CShItems. Note that CShItems have a rather complex Sort 
+        which is similar to Windows Explorer&#39;s order.</p>
+    <p>The Textual representation of many Types is not necessarily Sortable by normal 
+        alphnumeric Sorting. For example the common US representation of a Date is 
+        &quot;MM/dd/yyyy&quot;. Dates in this form are not directly sortable. In cases where the 
+        .Text Property, as displayed in the ListView, is not sortable by an alphanumeric 
+        sort, setting the original value into the .Tag Property of the corresponding 
+        SubItem will allow LVColSorter to sort by that value rather than the .Text 
+        Property. In the case of a Date displayed in &quot;MM/dd/yyyy&quot; format, set the 
+        SubItem.Tag Property to the actual <code>Date</code> value.</p>
+<h3><a id = "BkMrk_3">Usage</a></h3>
+    <p>Ensure that the ListView's Sort Property is set to "None" - LVColSort will take care of it.</p>
+    <p>To take full advantage of LVColSort, set the .Tag Properties as described above. 
+        The below example illustrates, assuming that &quot;item&quot; is a CShItem:</p>
+<code><pre>
+         Dim lvi As New ListViewItem(item.DisplayName)
+        lvi.Tag = item
+        lvi.SubItems.Add(item.CreationTime.ToString("MM/dd/yyyy HH:mm:ss"))
+        lvi.SubItems(lvi.SubItems.Count - 1).Tag = item.CreationTime
+</pre></code>
+    <p>To use LVColSorter, simply assign a New instance of LVColSorter to the ListView&#39;s 
+        ListViewColumnSorter Property. </p>
+<code>
+<pre>       ListView1.ListViewItemSorter = New LVColSorter(ListView1)
+</pre></code>
+
+</div>
+</body>
+</html>

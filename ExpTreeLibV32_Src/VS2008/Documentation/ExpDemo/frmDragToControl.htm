@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>frmDragToControl</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib Demo</span><br />
+<span class="topicTitle">frmDragToControl</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ExpDemo_Index.htm">Exp Demo Index</a>&lt;--
+	<a href="DemoForms.htm">Demo Forms</a>&lt;--
+	frmDragToControl
+	--&gt;<a href="ControlDropWrapper.htm">ControlDropWrapper</a>
+	--&gt;<a href="BuildingApp.htm">Building an App</a>
+	--&gt;<a href="../ExpTreeLib/ExpLib_Index.htm">ExpTreeLib Index</a>
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">Summary</a></h3>
+    <p>frmDragToControl is a simple Form which demonstrates how to use the ExpTreeLib Class 
+       <code>ControlDropWrapper</code>. <code>ControlDropWrapper</code> will handle Drops for any native .Net 
+        Control except ListView and TreeView, both of which require different processing 
+        which is provided by other Classes in ExpTreeLib. frmDragToControl features a single Databound DataGridView which is attached
+       to an instance of <code>ControlDropWrapper</code>.</p>
+    <p>With that Class attached, the DataGridView will accept Drag and Drop from any 
+        DragSource that passes a DataObject with, at least,&nbsp; FileDrop formatted 
+        data. Known good Drop Sources include Windows Explorer, most email Clients, and 
+        other <code>ExpTreeLib</code> based applications.&nbsp; Files and Directories Dragged to the DataGridView will be Copied or Moved 
+        to the Folder whose Content is currently displayed in the DataGridView. The 
+        DataGridView display will be updated to display the now current Contents of the 
+        Folder.</p>
+    <p>The response to a Drag/Drop is exactly the same as that of the ListView displayed 
+        in the other Demo Forms - Items Copied/Moved to the Folder and the display 
+        updated to show the new reality.</p>
+    <p>Instead of an ExpTree as found on the other Forms, the Target Folder is chosen by 
+        clicking a &quot;Browse&quot; button to display a FolderBrowser Dialog for chosing the 
+        displayed Target Folder. The FolderBrowserDialog Control&#39;s SelectedPath Property 
+        may be modified at Design Time to designate the initial Directory.</p>
+<h3><a id = "BkMrk_2">Details</a></h3>
+    <ol>
+        <li>When the app is run, modMain executes and Runs frmDragToControl. You have to manually modify modMain to do this.</li>
+        <li>On Form Load, the Load handler examines FolderBrowser1.SelectedPath to get the 
+            Target Directory path, which it places in txtOutputDir.Text. It then calls the 
+            txtOutputDir_Validated handler to set things up.</li>
+        <li>txtOutputDir_Validated then obtains a CShItem for the Target directory, obtains 
+            a list of Files currently in that Directory, Displays those Filenames in the 
+            DataGridView, and obtains (or reuses with a new directory) an instance of 
+            ControlDropWrapper with the DataListView and the Target Directory as parameters.</li>
+        <li>As the user drags/drops onto the DataListView, all related processing is done in 
+            the associated instance of <code>ControlDropWrapper</code>. As files are dropped onto the 
+            DataListView the new Class interacts with the Shell such that the Target Folder 
+            processes the Drop - the Dropped items (Files, Messages, etc.) are Copied or 
+            Moved into the Folder.</li>
+        <li>The CShItem class is notified of changes to the Target directory. Changes to 
+            the Target directory will raise an event that frmDragToControl is listening 
+            for. This happens in the last half of the code of that Form (in the Dynamic 
+            Update Handler region).</li>
+        <li>As files are created in the Target directory, the Event handler (DoItemUpdate) 
+            is notified. It determines that the Update in question is the addition of a file 
+            to the Target directory. In this test form, all that is required is that the new 
+            file is added to the DataGridView&#39;s display. This is accomplished by adding the 
+            CShItem of the new file to the BindingList(Of CShItems) that, through 
+            BindingSource1 is being displayed in the DataGridView. If you need to do more 
+            with that file, then this is the place to do it (call a routine to do read, 
+            process, etc).</li>
+    </ol>
+    <p><b>A key point</b> -- The .AllowDrop Property of the Target Control (if any) must be set to <code>False</code>.
+       ControlDropWrapper will assume all responsibility for Drops.</p>
+    <p><b>Clarification</b> -- Whether a Dragged Item is Copied or Moved is determined 
+        by normal Windows DragDrop rules. Right-Button DragDrops are supported to allow 
+        fine control of this behavior.</p>
+    <p>&nbsp;</p>
+    <p><b>See Also:</b></p>
+    <p style="margin-left:2em"><a href="ControlDropWrapper.htm">ControlDropWrapper</a></p>
+</div>
+</body>
+</html>

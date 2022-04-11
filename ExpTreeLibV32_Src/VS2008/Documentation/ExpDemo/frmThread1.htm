@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>frmThread - Foreground</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib Demo</span><br />
+<span class="topicTitle">frmThread - Foreground</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ExpDemo_Index.htm">Exp Demo Index</a>&lt;--
+	<a href="BuildingApp.htm">Building an App</a>&lt;--
+	frmThread - Foreground
+	--&gt;<a href="frmThread2.htm">frmThread - Background Processing</a>
+	--&gt;<a href="LVColSorter.htm">LVColSorter</a>
+	--&gt;<a href="../ExpTreeLib/ExpLib_Index.htm">ExpTreeLib Index</a>
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">Implementing a Background Thread</a></h3><br />
+<h4><a id = "BkMrk_2">Additional CShItem Property</a></h4>
+    <p>To avoid "freezing" the GUI when displaying the Contents of a Folder in the ListView, it is necessary to do most of the
+       display set up in a BackgroundWorker thread. It is also necessary to obtain the information to be displayed in the most
+       efficient way available. As discussed <a href="Analysis3.htm">elsewhere</a>, the most efficient way to obtain that information is to use the FindFirstFile/FindNextFile
+       API (FFF/FNF) and to link the information obtained by FFF/FNF to the correct 
+        ListViewItem/CShItem that is displayed.</p>
+     <p>To implement the link between information gathered by FFF/FNF and the correct ListViewItem/CShItem, I added the new 
+         <b>.W32Data Property</b>
+        to the CShItem Class. The <b>.W32Data Property</b> is a RW Property which 
+         contains an instance of the W32Find_Data Class containing information about a 
+         Folder or File. This Property of CShItem is filled by frmThread in a 
+         BackgroundWorker and cleared by CShItem once it has extracted that information.</p>
+    <p>I added two Public RW Properties to frmTemplate, <b>InitialLoadLimit</b> and
+        <b>WorkUpdateInterval</b>. These Properties may be adjusted by the application 
+        at run time and perform the following function:</p>
+    <ul>
+        <li><see cref = "P:ExpTree_Demo.frmThread.InitialLoadLimit">InitialLoadLimit</see> - Is the maximum number of ListViewItems that will be 
+            created in the GUI Thread using FileInfo and obtaining the IconIndex 
+            for the Values displayed in the ListViewItems. Any number of Folder Content 
+            Items beyond this limit in the Selected Folder will have those Values set in a BackgroundWorker.</li>
+        <li><see cref="P:ExpTree_Demo.frmThread.WorkUpdateInterval">WorkUpdateInterval</see> -The maximum number of CShItems to have their 
+            Values set in the BackgroundWorker before reporting back to the GUI Thread for 
+            updating the ListViewItems displayed in the ListView. As many reports as necessary will be made to set all 
+            ListViewItems.</li>
+    </ul>
+<h4><a id = "BkMrk_3">Code Flow - AfterNodeSelect - Foreground Processing</a></h4>
+    <p>All action starts with a Node being Selected in ExpTree1, causing the AfterNodeSelect Handler to be entered.</p>
+    <p>After checking for a valid, and of interest, selection different from the most recent 
+        previous selection, the code proceeds as follows:</p>
+    <ol>
+        <li>Check if the BackgroundWorker is busy handling a previous selection. If so, 
+            Cancel the worker and wait for completion.</li>
+        <li>Enumerate and Sort the Contents of the just Selected Folder, with the CShItem results 
+            stored in a local variable, CombList.</li>
+        <li>Clear the ListView&#39;s Items Collection.</li>
+        <li>Clear the previous Folder&#39;s File CShItems from the CShItem cache to avoid excessive memory use.</li>
+        <li>Create, using CShItems FileInfo specific Properties 
+            and IconIndices, the first <b>InitialLoadLimit</b> ListViewItems. Each ListViewItem's .Tag Property
+            is set to contain the matching CShItem. Add these ListViewItems to the 
+            ListView&#39;s Items Collection</li>
+        <li>Create ListViewItems for the balance of the Content of the Selected Folder. 
+            These items are created without the FileInfo specific Properties and without IconIndices, storing the ListViewItems in a 
+            local variable, SparseLoad. Each ListViewItem's .Tag Property
+            is set to contain the matching CShItem. AddRange(SparseLoad) to the ListView&#39;s Items 
+            Collection.</li>
+        <li>Call a routine which Creates and Starts the BackgroundWorker, passing SparseLoad 
+            (the list of incompletly filled ListViewItems) to the BackgroundWorker.</li>
+        <li>Do a bit of housekeeping and exit the AfterNodeSelect Handler. On exit from the 
+            AfterNodeSelect handler, the <i>GUI thread is unblocked and is responsive to the user</i>.</li>
+    </ol>
+    <p>&nbsp;</p>
+<p><b>See Also:</b></p>
+<p style="margin-left:2em"><a href="frmThread2.htm">Background Processing</a></p>
+</div>
+</body>
+</html>

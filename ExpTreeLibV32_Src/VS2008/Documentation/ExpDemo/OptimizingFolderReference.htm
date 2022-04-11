@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Optimizing Folder References</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+    </head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib Demo</span><br />
+<span class="topicTitle">Optimizing Folder References</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ImprovingResponsiveness.htm">Improving Responsiveness</a>&lt;--
+	<a href="Responsiveness.htm">Responsiveness Analysis</a>&lt;--
+	Optimizing Folder References
+	--&gt;<a href="MoreOptimizations.htm">More Optimizations</a>
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">Problem Domain</a></h3>
+    <p>Users of Version 2.11 of ExpTreeLib reported, via the CodeProject Forum, that 
+        under some circumstances it was taking a very long time to accomplish certain 
+        operations. They further reported that this was observed only on Win7/Vista PCs 
+        and that the same operations on XP systems ran acceptably fast. The exact 
+        circumstance varied slightly but, in common, all were related to accessing a 
+        Server based Folder containing a large number of sub-Folders. One basic issue 
+        was reported, and, while investigating it, I discovered a similar one. During the excessive time taken, the application GUI 
+        is &quot;frozen&quot;. All discussion here is for &quot;first access&quot; to the Server&#39;s Folder. </p>
+    <ul>
+        <li>Attempting to directly set one of the sub-Folders as the Root of the TreeView. 
+            The user was using GetCShItem(&quot;pathtosubFolder&quot;) to obtain the CShItem.</li>
+        <li>On Win7, using Version 2.11, replacing GetCShItem with New 
+            CShItem(&quot;pathtosubFolder&quot;) would take about 31 milliseconds. This is not 
+            possible using Version 2.14 or beyond since there is no Public New.</li>
+        <li>Expanding the Node that represented the Folder with many sub-Folders. This I 
+            found while investigating the first one.</li>
+    </ul>
+    <p>I created a Folder on WHS1 and populatated it with 2000 sub-Folders as a test 
+        target. My findings were:</p>
+    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:80%;margin-left:6em">
+        <colgroup>
+            <col style="width:20%; text-align:left"/>
+            <col style="width:20%; text-align:center" />
+            <col style="width:20%; text-align:center" />
+            <col style="width:20%; text-align:center" />
+        </colgroup>
+        <tr>
+            <th >
+                Action</th>
+            <th >
+                Seconds XP</th>
+            <th>
+                Seconds Win7</th>
+            <th>
+                Seconds Win7 Optimized</th>
+        </tr>
+        <tr>
+            <td>
+                Direct Setting Tree Root</td>
+            <td align="center">
+                35.828</td>
+            <td align="center">
+                78.405</td>
+            <td align="center">
+                1.435</td>
+        </tr>
+        <tr>
+            <td >
+                Expand Folder</td>
+            <td align="center" >
+                5.483</td>
+            <td align="center">
+                25.146</td>
+            <td align="center">
+                1.060</td>
+        </tr>
+    </table>
+    <br />
+<h3><a id = "BkMrk_2">Diagnosis - Expand</a></h3>
+    <p>It was apparent that something had changed between XP and Vista/Win7. The 
+        question was what? It was almost as apparent that there was something else 
+        contributing to Folder Expansion delays. Using code analysis and some Internet 
+        searches I came to the conclusion that what had changed had to do with the 
+        Folder Attribute SFGAO.HASSUBFOLDER. That Attribute is exposed by the CShItem 
+        Class as the HasSubFolders Property and is used in ExpTree to determine whether 
+        or not to insert a dummy node into the node representing a sub-Folder of the 
+        Folder being Expanded. In all versions of CShItem, the SFGAO.HASSUBFOLDER 
+        attribute is queried along with a number of other Attributes when a CShItem is 
+        first created. Any change in the OS that increased the cost of determining the 
+        setting of that Attribute would be reflected by a corresponding change in the cost of 
+        creating a CShItem.</p>
+    <p>Research and empirical testing quickly demonstrated that there had been a 
+        dramatic change in determining the setting of that Attribute in OSes after XP! 
+        The Microsoft documentation for that attribute for VS2008 (roughly equivalent to 
+        XP era) states that &quot;since it is costly to obtain an accurate setting of that 
+        Attribute for Remote Folders, it will always be returned as True for such 
+        Folders&quot;. VS2010 documentation omits that sentence! In fact, for Win7 (and 
+        probably Vista), the OS does what is necessary to obtain an accurate setting for 
+        the Attribute. For my test Folder, this costs 12+ Seconds of additional elapsed 
+        time!</p>
+    <p>For all OS versions, the documentation states that if SFGAO.HASSUBFOLDER is False 
+        (not set) then it assured that there are no sub-Folders. This is <b>not</b> 
+        correct in the case of a Hidden Folder with all Hidden content on XP though it 
+        is for Win7. In all versions 
+        of ExpTree prior to 3.00, this is compensated for by an additional check in 
+        <code>ExpTree.MakeNode</code>:</p>
+<pre><code>
+        ElseIf item.HasSubFolders Then
+           newNode.Nodes.Add(New TreeNode(" : "))
+        ElseIf item.GetDirectories.Count > 0 Then
+           newNode.Nodes.Add(New TreeNode(" : "))
+</code></pre>
+    <p>The effect of this code is to Enumerate the content of the Node to be Expanded, 
+        creating Folder CShItems for each sub-Folder. When the CShItems for those Folders are created, then SFGAO.HASSUBFOLDER
+        was also being queried. This effectively doubled the cost of Expanding a Node. </p>
+<h3><a id = "BkMrk_3">The Partial Cure</a></h3>
+    <p>Given that Diagnosis, the cure was fairly easy.</p>
+    <ol>
+        <li>In ExpTree.MakeNode, remove the use of the HasSubFolders Attribute, depending 
+            solely on the item.GetDirectory call to determine if a Node should be 
+            Expandable. This works correctly on all OSes, including XP in all cases. Testing 
+            shows that using the item.GetDirectory call runs slightly faster than the 
+            HasSubDirectories approach (very slightly - they are nearly identical) and gets 
+            a start on the probable next user action, Expanding one or more of the 
+            sub-Folders. This cuts the time in half.</li>
+        <li>In CShItem, make HasSubFolders a &quot;Fill on Demand&quot; Property. Only if that 
+            Property is queried will the system be queried for that Attribute using the API. 
+            The effect of that is shown most clearly in the &quot;Direct Access&quot; case. Win7 is 
+            still slower than XP when accessing a Remote Folder, but the optimization saves 
+            75% of that time relative to the unoptimized code.</li>
+    </ol>
+<h3><a id = "BkMrk_4">The Full Cure</a></h3>
+    <p>Upon reflection, it was obvious that the Partial Cure was inadequate. Further thought and investigation led to a more complex and better
+       approach. If XP behavior was acceptable, then I should rework the definition of CShItem.HasSubFolders to mimic XP on all systems. 
+        I retained the &quot;fill on demand&quot; aspect of HasSubFolders to retain its&#39; benefit, 
+        and then:</p>
+    <ul>
+        <li>Added a new Property to CShItem - IsRemote. This requires a two stage test:
+            <ul>
+                <li>Build a lookup table for all Drives. The table includes, for each Drive, a 
+                    Boolean True if a Network Drive. If so then it is a Mapped Drive and therefore a 
+                    Remote drive. </li>
+                <li>In SetUpAttributes, for each CShItem, look up the Path.Root in the Lookup table - if 
+                    Mapped then IsRemote set True. If a UNC, the test to see if it indicates the 
+                    Local system. If not then Remote set True.</li>
+            </ul>  
+        </li>
+        <li>In HasSubFolders, test if IsRemote is True. If so, always return HasSubFolders = 
+            True. If not, then obtain the HasSubFolders via API call. Actual code is a bit more 
+            elaborate to avoid more than 1 API call per instance (unless some dynamic change 
+            has caused a reset to undetermined).</li>
+    </ul>
+    <p>
+        This set of changes reduced Folder expansion time on my test Folder down to 0.5 
+        - 1 second. This is down from 25 seconds. The downside to all this is that 
+        Remote Folders will always initially show an Expansion mark. An attempt to 
+        expand a Remote Folder with no sub-Folders will simply remove the expansion 
+        mark. This is exactly the same behavior that was always present in XP and below 
+        OSes. Another bad effect is that a Folder containing .zip, .cab, etc. files will 
+        be show as expandable in <code>ExpTree</code> even if there are no actual sub-Folders. The revised code in ExpTree.MakeNode is:</p>
+<pre><code>
+        ElseIf item.HasSubFolders Then
+            newNode.Nodes.Add(New TreeNode(" : "))
+        ElseIf item.IsHidden Then
+            If item.GetDirectories.Count > 0 Then
+                newNode.Nodes.Add(New TreeNode(" : "))
+            End If
+</code></pre>
+    <h3><a id = "BkMrk_5">Diagnosis - Direct SetRoot</a></h3>
+    <p>
+        The performance of setting the ExpTree.RootItem Property - which changes the 
+        TreeView to be rooted in the new RootItem - was badly affected in the Remote 
+        Folder case by the Vista/Win7 change to HASSUBFOLDER. The performance was 
+        correspondingly improved by my changes involving it. The improvement was not to 
+        the expected degree because the .Net handling of adding a Node to the TreeView 
+        when <code>TreeView.TreeViewNodeSorter</code> was set. See 
+        <a href="OtherOptimizations.htm">here</a> for a discussion of this. Removing the use of
+        <code>TreeView.TreeViewNodeSorter</code> completed the optimization.</p>
+</div>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Improving Responsiveness</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib Demo</span><br />
+<span class="topicTitle">Improving Responsiveness</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	Improving Responsiveness
+	--&gt;<a href="Responsiveness.htm">Responsiveness Analysis</a>
+	</p>
+</div>
+<div id="main">
+<h2><a id = "BkMrk_1">Summary</a></h2>
+    <p>Although Versions 2.11 and 2.14 of ExpTreeLib were quite efficient when working with reasonable sized Local Folders, 
+       there has always been a certain sluggishness in populating the ListView with the Content of Remote and/or very large Folders.
+       This sluggishness affected the overall user experience by "freezing" the GUI while the ListView loading was in process.</p>
+    <p>When run under XP, there was never a problem Expanding Nodes in <code>ExpTree</code>, regardless of the size and/or location of the
+       Folder being Expanded. However, when run under Vista/Win7, a very noticible delay occurred when accessing large, Remote Folders with many
+       sub-Folders.</p>
+    <p>I decided to investigate and, if possible, correct these problems.</p>
+<h3><a id = "BkMrk_2">Phase I - Remote Folder with many Files</a></h3>
+    <p>Responsiveness is discussed in terms of an earlier version of frmTemplate, 
+        (<code>frmDragDrop</code>), somewhat rearranged for easy timings, as measured when displaying
+       the Contents of test Folders containing 3,000 files of various types, as determined by the extension of each file
+       (.txt,.jpg, etc.). The Folders were located on the Local system and 3 Remote systems of varying age and "power"<sup>1</sup>. In
+       all cases, the measurements were taken for the <em>first</em> reference to the target Folder. 
+        Observations were also made relative to small to medium sized Folders located on the 
+        Local system and on Remote systems, though not in as systematic fashion as with 
+        the test Folders.</p>
+    <ul>
+        <li>References to small to medium sized Folders on the Local system were acceptably responsive with or without any form
+            of optimization. All forms of optimization improved responsiveness for such Folders, but not to a perceptible degree.</li>
+        <li>References to small to medium sized Folders on Remote systems varied depending 
+            on the &quot;power&quot; of the Remote system. All forms of optimization improved 
+            responsiveness, often to a perceptible degree. Observed differences for such 
+            Folders were about 50% improvement, but that difference was typically 1 
+            Second or less in actual time. Your results may be quite different.<sup>2</sup></li>
+        <li>For test Folders on Remote systems, simple optimization yielded improvements 
+            of 12% to 48%, with absolute reductions of &quot;freeze&quot;<sup>3</sup> time from 1 to 26 Seconds.</li>
+        <li>For the test Folders on Remote systems, the addition of background processing to 
+            simple optimization improved responsiveness by about 95%, or, in absolute 
+            values, reductions of &quot;freeze&quot; time by 9.5 to 66 Seconds. In all cases, the GUI 
+            became usable after 1.4 Seconds or less.</li>
+    </ul>
+    <p><sup>1</sup>The "power" of a system is some combination of the hardware and the Operating System (OS).</p>
+    <p><sup>2</sup>A non-trivial component of the simple optimization is the elimination of the <code>GetAttr</code> Function. That
+                   Function was used in <code>frmDragDrop</code>, but is not commonly used in other applications. Most of the 
+                   information returned by <code>GetAttr</code> is available at no extra cost as CShItem Properties.</p>
+    <p><sup>3</sup>"freeze" time is defined to be that period of time when the GUI is totally unresponsive to user actions.</p>
+    <p>Certain conclusions may be drawn from the above points. Small to medium size 
+        Folders on a Local system will display with little or no impact on responsiveness 
+        no matter which approach is used. Large 
+        and/or Remote Folders will benefit, possibly greatly, from the use of a 
+        BackgroundWorker as done in <a href="frmThread1.htm">frmThread</a>. </p>
+<h3><a id = "BkMrk_3">Phase II - Remote Folder with many sub-Folders</a></h3>
+    <p>A small change to the Windows API can have a major impact on performance on users 
+        of that API. In this case, the SFGAO.HASSUBFOLDER attribute as returned by the 
+        SHGetFileInfo API call was the culprit. In earlier versions of ExpTreeLib, that 
+        attribute was queried for every new CShItem that represented a Folder. In 
+        earlier versions of the API, the Value returned for Remote Folders was always 
+        True. In more recent versions of Windows, the Remote Folder is queried so as to 
+        return an accurate Value. The cost of that query is substantial, especially in 
+        cases where the Remote Folder has a large number of sub-Folders. One user of an 
+        earlier version of ExpTreeLib reported that expanding a Treenode with 32,000 
+        sub-Folders would take over 5 minutes! He also reported the same time lapse 
+        occurs when expanding the same TreeNode in Windows Explorer!</p>
+    <p>I created a test Folder on a small Server 2003 system containing 2,000 
+        sub-Folders. The time to Expand that TreeNode was over 26 seconds - enough to 
+        try some optimizations against. The optimizations were:</p>
+    <ul>
+        <li>Made the CShItem Property HasSubFolders a "fill on demand" Property - no API query for SFGAO.HASSUBFOLDER unless the app explicitly 
+            asked for it.</li>
+        <li>A tweak to <code>ExpTree</code> to eliminate unnescessary calls to CShItem.GetDirectories. This cut the time in half 
+            regardless of other changes.</li>
+        <li>Modified the definition of the returned Value of CShItem.HasSubFolders to always 
+            return True if the Folder was Remote - eliminating a query for 
+            SFGAO.HASSUBFOLDER in that case. </li>
+    </ul>
+    <p>
+        The Result of these optimizations was that Time to Expand of my test Folder from 
+        26+ Seconds to 1.06 seconds, a 26 times improvement in response time.</p>
+</div>
+</body>
+</html>

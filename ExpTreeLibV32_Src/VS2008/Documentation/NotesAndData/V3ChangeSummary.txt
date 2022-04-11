@@ -1,0 +1,20 @@
+Added ControlDropWrapper
+
+Redefined the CShItem.Attributes Property to return normal File/Folder attributes.
+Added SFGAO_Attributes Property to provide Attributes as were returned by old definition of Attributes
+
+Added .Tag
+
+Added W32Find_Data and support for FindFirstFile/FindNextFile API functions.
+
+Added SetWindowTheme to ExpTree.
+
+Added LVColSorter & Sort Glyph
+
+Change to subscribing to Notification
+
+Requires ListView.Tag to be set to LastSelectedCSI
+
+AllowDrop on ExpTree now works
+
+ExpandANode takes parameter

@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Other Optimizations</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib Demo</span><br />
+<span class="topicTitle">Other Optimizations</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ImprovingResponsiveness.htm">Improving Responsiveness</a>&lt;--
+	<a href="Responsiveness.htm">Responsiveness Analysis</a>&lt;--
+	Other Optimizations
+	--&gt;<a href="OptimizingFolderReference.htm">Optimizing Folder References</a>
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">Adding ListViewItems to a ListView</a></h3>
+    <p>Easily the most surprising optimization was found in the mechanism for adding ListViewItems to a ListView. There are two
+       techniques to choose from:</p>
+    <ol>
+        <li>Create a ListViewItem and immediately add it to the ListView in a loop. Surround the loop with LV.BeginUpdate and LV.EndUpdate.</li>
+        <li>Create ListViewItems and add them to a temporary List. When done, AddRange the 
+            temporary List. Surround the entire process with LV.BeginUpdate and 
+            LV.EndUpdate.</li>
+    </ol>
+    <p>
+        Using otherwise identical code to show the identical 3,000 item Folder, Locally! 
+        The results were:</p>
+    <ol>
+        <li>For method 1, Total time to Load - 4025 ms - over 4 Seconds - and this is the best case in several tests!</li>
+        <li>For method 2, Total time to Load -&nbsp;&nbsp; 655 ms - just over one half 
+            Second - repeated several times, consistent result!</li>
+    </ol>
+    <p>
+        I discovered this while working with an unoptimized Form while trying to 
+        determine the contribution of GetAttr to overall delay. In the case of a Local 
+        Folder, this effect completly dominated GetAttr&#39;s contribution - which is 
+        minimal for a Local Folder - about 50 ms (about 8%).</p>
+    <p>
+        The reason for this difference is probably found in the fact that the .Net 
+        ListView is a wrapper for a Windows ListView. Communication between the .Net 
+        wrapper and the native Windows Listview is probably COM based. The fewer COM 
+        calls the better - a lot better.</p>
+<h3><a id = "BkMrk_2">TreeView.TreeViewNodeSorter</a></h3>
+    <p>Version 2.14 included the setting of a <code>TreeView.TreeViewNodeSorter</code> in <code>ExpTree</code>. Its' purpose was to ensure that the TreeNodes were
+       properly sorted - by CShItem. At the last stages of optimization, I examined <code>ExpTree.SetRoot</code> and found that, using my
+       Test Folder containing 2,000 sub-Folders, calling <code>SetRoot</code> took an unacceptable time to display. Investigation showed that
+        98% of that time was spent sorting the sub-nodes of the newly set Root Treenode. 
+        It appears that the .Net TreeView Control (or perhaps the underlying Windows 
+        TreeView) would add nodes one at a time and call the Sort for each addition. The 
+        proper sort was already performed in <code>ExpTree.BuildTree</code> so the <code>TreeView.TreeViewNodeSorter</code> was not required. Removing the use
+        of <code>TreeView.TreeViewNodeSorter</code> reduced the time to display from 41+ Seconds to 1.1 Seconds. The time to display the contents of the Folder in
+        the ListView in <code>frmThread </code>is included in both times.
+       </p>
+    <p>I include this section as a warning about any use of <code>TreeView.TreeViewNodeSorter</code> in any TreeView. Unlike 
+        most of the optimizations discussed, there is no significant difference between 
+        Local and Remote Folders here. The only factor is the number of TreeNodes in the 
+        TreeNode that is added to the TreeView. In my code, I was only adding 1 TreeNode 
+        to the TreeView. That TreeNode had been built containing 2,000 sub-nodes. <b> <code>TreeView.TreeViewNodeSorter</code> should never be used
+        in any TreeView</b>.</p>
+<h3><a id = "BkMrk_3">GetAttr</a></h3>
+    <p>As discussed elsewhere in this documentation, the <code>VisualBasic.GetAttr</code> Function is a potential time waster. It is seldom used in
+       real life, but was used in many of the Demo Forms. Investigating its' impact lead me also to the realization that the 
+       CShItem.Attributes Property did not expose the expected Value. Since the desired Value of CShItem.Attributes is always 
+       present in a FileInfo/DirectoryInfo and since other, more commonly used, CShItem Properties like File Length and LastWriteTime are
+       filled with a Fill-on-Demand mechanism (first reference to any will use a FileInfo/DirectoryInfo to fill them all), I redefined
+       CShItem.Attributes to be a Fill-on-Demand Property, filled from the same FileInfo/DirectoryInfo as the others.</p>
+    <p>Using the new CShItem.Attributes Property instead of <code>GetAttr</code> gives a non-trivial 
+        improvement. In a test of an otherwise unoptimized Form against a 3,000 File 
+        slow Remote Folder the CShItem.Attributes approach saved 16 Seconds (out of a 61 
+        Second overall time to display). Similar percentage savings are likely in 
+        different Folders, though the slow Remote Folder is probably an extreme case.</p>
+    <p>Note that much of this documentation set proves that FileInfo/DirectoryInfo can 
+        be slow relative to FindFirstFile/FindNextFile. The FileAttributes returned by 
+        FFF/FNF is exactly the same as that returned by FileInfo/DirectoryInfo, so where 
+        I have used FFF/FNF, I retreive the FileAttributes from the structure returned 
+        by them. Either FileInfo/DirectoryInfo or FFF/FNF, as implemented in these Forms 
+        is better than calling <code>GetAttr</code> separately.</p>
+</div>
+</body>
+</html>

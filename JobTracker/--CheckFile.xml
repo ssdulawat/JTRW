@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EmailReminder>
+  <CheckBox>
+    <ReminderStatus>False</ReminderStatus>
+    <Hourly>False</Hourly>
+    <Daily>False</Daily>
+    <Weekly>False</Weekly>
+  </CheckBox>
+  <Email>
+    <Username>Accounts@valjato.com</Username>
+    <Password>veaccounts</Password>
+    <Domain>mail.valjato.com</Domain>
+    <SSL>0</SSL>
+  </Email>
+  <PNDEmail>
+    <Username>info@valjato.com</Username>
+    <Password>mypassword</Password>
+    <Domain>mail.valjato.com</Domain>
+    <SSL>0</SSL>
+  </PNDEmail>
+</EmailReminder>

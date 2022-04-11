@@ -1,0 +1,306 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Analysis - Components of Delay</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+    <style type="text/css">
+
+td
+	{border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-top:1px;
+	        padding-right:1px;
+	        padding-left:1px;
+	        color:black;
+	        font-size:11.0pt;
+	        font-weight:400;
+	        font-style:normal;
+	        text-decoration:none;
+	        font-family:Calibri, sans-serif;
+	        text-align:general;
+	        vertical-align:bottom;
+	        white-space:nowrap;
+	}
+        .style1
+        {
+            height: 15.0pt;
+            width: 83pt;
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: general;
+            vertical-align: bottom;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style2
+        {
+            width: 48pt;
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: center;
+            vertical-align: top;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style3
+        {
+            width: 68pt;
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: center;
+            vertical-align: top;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style4
+        {
+            height: 15.0pt;
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: general;
+            vertical-align: bottom;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style5
+        {
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: center;
+            vertical-align: bottom;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style6
+        {
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 400;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: general;
+            vertical-align: bottom;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+    </style>
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib Demo</span><br />
+<span class="topicTitle">Analysis - Components of Delay</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ImprovingResponsiveness.htm">Improving Responsiveness</a>&lt;--
+	<a href="Responsiveness.htm">Responsiveness Analysis</a>&lt;--
+	Analysis - Components of Delay
+	--&gt;<a href="Analysis2.htm">Analysis - Exploring Improvements</a>
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">Components of Delay Time</a></h3>
+    <p>Given that I was fully populating the ListView with the Contents of a large remote Folder, I next tried to identify which 
+        aspects of getting the needed information took the most time.</p>
+    <p>From previous knowledge, code analysis, and empirical testing, I identified 
+        certain actions which were probable culprits. I then modified the code to perform 
+        those actions in clearly separate groups of code with timing counters inserted 
+        to measure the time taken in each code group. The separate code groups, in order 
+        of occurance are:</p>
+    <ol>
+        <li><b>GetItems</b> - enumerating the items in a Folder, creating a minimally 
+            populated CShItem for each item.</li>
+        <li><b>Sort</b> - Sorting the collection of CShItems found. This action forces the 
+            <code>SHGetFileInfo</code> API call to obtain the DisplayName and textual Type CShItem 
+            Property of the item, along with creating the SortKey Property which depends on, 
+            among other things, the DisplayName Property.</li>
+        <li><b>GenTime</b> - Adds the File Length and all Date CShItem Properties from a 
+            FileInfo/DirectoryInfo instance specifically created for this purpose. Building 
+            the required ListViewItems requires all of the information collected in this and 
+            previous steps. Building the ListViewItem also requires a call to the 
+            <code>GetAttr</code> 
+            .Net function which is discussed <a href="Analysis2.htm#GetAttr">here</a>.</li>
+        <li><b>IconTime</b> - The time required to obtain the CShItem Property 
+            IconIndexNormal and the actual Icon associated with the item. Note that the 
+            fetch of Icons is already fully optimized by ExpTreeLib such that second and 
+            subsequent reference to the same Icon (different File, same Icon) are 
+            effectively instantaneous. It only the query for the IconIndex that must be 
+            performed for each File. </li>
+    </ol>
+    <p>
+        I ran multiple tests on each of the test systems, recording the time spent in 
+        each of these code group <i>phases</i>:</p>
+        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:343pt;margin-left:6em;" width="458">
+            <colgroup>
+                <col style="width:83pt" 
+                    width="111" />
+                <col span="4" style="width:48pt" width="64" />
+                <col style="width:68pt" 
+                    width="91" />
+            </colgroup>
+            <tr  style="height:15.0pt">
+                <td class="style1" height="20" width="111">
+                </td>
+                <td class="style2" width="64">
+                    Avg ms</td>
+                <td class="style2" width="64">
+                    Avg ms</td>
+                <td class="style2" width="64">
+                    Avg ms</td>
+                <td class="style2" width="64">
+                    Avg ms</td>
+                <td class="style3" width="91">
+                    Avg ms</td>
+            </tr>
+            <tr  style="height:15.0pt">
+                <td class="style4" height="20">
+                    System</td>
+                <td class="style5">
+                    GetItems</td>
+                <td class="style5">
+                    Sort</td>
+                <td class="style5">
+                    GenTime</td>
+                <td class="style5">
+                    IconTime</td>
+                <td class="style5">
+                    Total</td>
+            </tr>
+            <tr  style="height:15.0pt">
+                <td height="20" style="height:15.0pt">
+                    Win7 Desktop</td>
+                <td align="right" class="style6">
+                    57.2</td>
+                <td align="right" class="style6">
+                    52.0</td>
+                <td align="right" class="style6">
+                    416.0</td>
+                <td align="right" class="style6">
+                    296.4</td>
+                <td align="right" class="style6">
+                    826.8</td>
+            </tr>
+            <tr  style="height:15.0pt">
+                <td height="20" style="height:15.0pt">
+                    Vista Laptop</td>
+                <td align="right" class="style6">
+                    317.2</td>
+                <td align="right" class="style6">
+                    93.6</td>
+                <td align="right" class="style6">
+                    8,387.6</td>
+                <td align="right" class="style6">
+                    1,617.2</td>
+                <td align="right" class="style6">
+                    10,431.2</td>
+            </tr>
+            <tr  style="height:15.0pt">
+                <td height="20" style="height:15.0pt">
+                    XP Desktop</td>
+                <td align="right" class="style6">
+                    946.4</td>
+                <td align="right" class="style6">
+                    88.4</td>
+                <td align="right" class="style6">
+                    29,130.5</td>
+                <td align="right" class="style6">
+                    3,598.4</td>
+                <td align="right" class="style6">
+                    33,779.3</td>
+            </tr>
+            <tr  style="height:15.0pt">
+                <td height="20" style="height:15.0pt">
+                    WHS</td>
+                <td align="right" class="style6">
+                    613.6</td>
+                <td align="right" class="style6">
+                    98.8</td>
+                <td align="right" class="style6">
+                    61,084.5</td>
+                <td align="right" class="style6">
+                    6,110.0</td>
+                <td align="right" class="style6">
+                    67,906.9</td>
+            </tr>
+        </table>
+        <br />
+<h3><a id = "BkMrk_2">Analysis of Phase Timings</a></h3>
+    <ol>
+        <li><b>GetItems</b> - The time for this phase is a very small contributor to the 
+            overall cost of building the information. During code analysis I have noted a 
+            way to, perhaps, reduce this cost by a potential 40% on first reference to a 
+            Folder. However, that optimization would require a change to the CShItem code 
+            which I have not done as of this writing. See <a href="MoreOptimizations.htm">
+            here</a> to see the actual effect.</li>
+        <li><b>Sort</b> - The time for this phase is a trivial contributor to the overall 
+            cost. Either <code>SHGetFileInfo</code> is remarkably efficient or some unexpected code path causes this information to be
+            gathered during the initial <b>GetItems</b> phase. Either way, it is not worth pursuing.</li>
+        <li><b>GenTime</b> - The creation of a FileInfo instance is a very expensive 
+            operation, consuming 50-90% of the delay time. Its&#39; percentage contribution 
+            increases with the overall delay time - the longer the delay time, the greater 
+            the contribution of FileInfo. I had assumed that this would be a large portion 
+            of the delay time but, the amount it contributes was a surprise.</li>
+        <li><b>IconTime</b> - Contributes a substantial amount to the delay time. 
+            I have not discovered a way to improve this process. To show the true Icon for a 
+            file requires one specific API call for each File/Folder and it is that API call 
+            that takes the time. See <a href="MoreOptimizations.htm">here</a> for discussion of 
+            this.</li>
+    </ol>
+    <p>
+        &nbsp;</p>
+    <p><b>See Also:</b></p>
+    <p style="margin-left:2em"><a href="Analysis2.htm">More Analysis</a></p>
+</div>
+</body>
+</html>

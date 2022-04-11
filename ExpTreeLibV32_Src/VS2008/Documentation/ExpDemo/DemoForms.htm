@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Demo Forms</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib Demo</span><br />
+<span class="topicTitle">Demo Forms and Classes</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ExpDemo_Index.htm">Exp Demo Index</a>&lt;--
+	Demo Forms
+	--&gt;<a href="frmTemplate.htm">frmTemplate</a>
+	--&gt;<a href="BuildingApp.htm">Building an App</a>
+	--&gt;<a href="../ExpTreeLib/ExpLib_Index.htm">ExpTreeLib Index</a>
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">Forms in the Demo Project</a></h3>
+    <p>Each of the Forms listed below features some built-in functionality in the 
+        ListView. <code>frmTemplate</code> is a 
+        good place to start for many applications. <code>frmThread</code> is a better starting point 
+        if the application is likely to be working with any Remote Folders. 
+        <code>frmDragToControl</code> illustrates how ExpTreeLib Classes can be used without an 
+        ExpTree (TreeView) or a ListView.</p>
+    <table width="80%" style="margin-left:1.5em">
+      <col valign="top" width="20%" />
+        <tr>
+            <th>
+                Form</th>
+            <th>
+                Description</th>
+        </tr>
+        <tr>
+            <td>
+                <a href="frmTemplate.htm">frmTemplate</a></td>
+            <td>
+                Useful as a simple base to develop applications which need a linked 
+                TreeView and ListView as part of the GUI.</td>
+        </tr>
+        <tr>
+            <td>
+                <a href="frmThread.htm">frmThread</a></td>
+            <td>
+                An optimized version of frmTemplate which includes a fully implemented use of 
+                multi-threading to improve the responsiveness of the GUI when displaying remote 
+                and/or very large Folders in the ListView.</td>
+        </tr>
+        <tr>
+            <td>
+                <a href="frmDragToControl.htm">frmDragToControl</a></td>  
+            <td>
+                A simple Form which demonstrates how to use the new ExpTreeLib Class 
+                ControlDropWrapper. That Class is a wrapper which handles the Drag and Drop of 
+                Files and Directories to Controls other than ListView and TreeView. 
+                frmDragToControl features a Data Bound DataGridView as the Drop Target for such 
+                Drops.</td>
+        </tr>
+        <tr>
+            <td>
+                <see cref = "T:ExpTree_Demo_CS">frmThreadCS</see></td>  
+            <td>
+                A C# implementation of frmThread. It is included as a separate project in the 
+                source Visual Solution that contains ExpTreeLib and the other Forms. It is not 
+                documented separately since it is identical to frmThread in all aspects except 
+                implementation language.</td>
+        </tr>
+    </table><br />
+<h3><a id = "BkMrk_2">Classes Supporting the Demo Forms</a></h3>
+    <p>Included are several Classes that at least one Demo Form uses. All Classes except the MyTimer Class are included in 
+       <code>ExpTreeLib</code> Project and Namespace. MyTimer is included in the <code>ExpTree_Demo</code> Project and Namespace.</p>
+    <table width="80%" style="margin-left:1.5em">
+      <col valign="top" width="20%" />
+        <tr>
+            <th>
+                Class</th>
+            <th>
+                Description</th>
+        </tr>
+        <tr>
+            <td>
+                <see cref = "T:ExpTreeLib.CDragWrapper">CDragWrapper</see>
+            </td>
+            <td>
+                Completely handles all drag from operation for its' associated ListView
+                or TreeView control. All TreeNodes in the associated TreeView must have a valid
+                CShItem in its' .Tag. All ListViewItems in the associated ListView must have a valid
+                CShItem in its' Tag. All ListViewItems and the CShItems in their .Tags must
+                be direct children of the same Folder.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <see cref="T:ExpTreeLib.ClvDropWrapper">ClvDropWrapper</see>
+            </td>
+            <td>
+                The ClvDropWrapper class deals with the mechanics of receiving a
+                Drag/Drop operation for a ListView.  In effect, it implements the IDropTarget interface
+                for a ListView.  It is designed to handle a ListView which <b>must</b>
+                have CShItems in the Tags of the ListViewItems contained in the control.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <see cref="T:ExpTreeLib.CtvDropWrapper">CtvDropWrapper</see>
+            </td>
+            <td>
+                The CtvDropWrapper class deals with the mechanics of receiving a Drag/Drop operation
+                for a TreeView Control. In effect, it implements the IDropTarget interface for
+                a TreeView. It is designed to handle a TreeView which <b>must</b> have CShItems
+                in the Tags of the TreeNodes contained in the control.</td>
+        </tr>
+        <tr>
+            <td>
+                <see cref="T:ExpTreeLib.ControlDropWrapper">ControlDropWrapper</see></td>
+            <td>A Class which will handle all DragDrop's of Files and Directories onto any native .Net Control, 
+                except TreeView and ListView, that is 
+                associated with a FileSystem Folder.</td>
+        </tr>
+        <tr>
+            <td>
+                <a href="LVColSorter.htm">LVColSorter</a></td>
+            <td>
+                A Class to serve as the ListViewItemSorter for any ListView. It responds to 
+                clicks on ColumnHeader of the ListView to Sort the ListView by the Clicked 
+                Column. Appropriate Sort Glyphs are displayed in the ColumnHeader.</td>
+        </tr>
+        <tr>
+            <td>
+                <see cref = "T:ExpTree_Demo.MyTimer">MyTimer</see></td>
+            <td>
+                A simple Class, not documented elsewhere, for measuring and reporting elapsed 
+                time. It maintains two timer variable. One timer measures the time from Class 
+                creation. The other timer, initially with the same value as the first, measures 
+                the time since the last time its&#39; value was queried. The use of this Class is 
+                illustrated in frmTemplate - withTimings.vb and frmThread - withTimings.vb. The code in those Forms that uses this 
+                Class has been removed in frmTemplate.vb and frmThread.vb. I 
+                considered using the .Net StopWatch Class, but it seemed like it would have an 
+                impact on the time being measured. </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

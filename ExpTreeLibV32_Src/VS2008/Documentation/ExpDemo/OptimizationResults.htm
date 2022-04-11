@@ -1,0 +1,547 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Optimization Results</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+    <style type="text/css">
+
+td
+	{border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-top:1px;
+	        padding-right:1px;
+	        padding-left:1px;
+	        color:black;
+	        font-size:11.0pt;
+	        font-weight:400;
+	        font-style:normal;
+	        text-decoration:none;
+	        font-family:Calibri, sans-serif;
+	        text-align:general;
+	        vertical-align:bottom;
+	        white-space:nowrap;
+	}
+        .style1
+        {
+            height: 15.0pt;
+            width: 83pt;
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: general;
+            vertical-align: bottom;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style2
+        {
+            width: 48pt;
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: center;
+            vertical-align: top;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style3
+        {
+            width: 56pt;
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: center;
+            vertical-align: top;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style4
+        {
+            height: 15.0pt;
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: general;
+            vertical-align: bottom;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style5
+        {
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: center;
+            vertical-align: bottom;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style6
+        {
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 400;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: general;
+            vertical-align: bottom;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style7
+        {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib Demo</span><br />
+<span class="topicTitle">Optimization Results</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ImprovingResponsiveness.htm">Improving Responsiveness</a>&lt;--
+	<a href="Responsiveness.htm">Responsiveness Analysis</a>&lt;--
+	Optimization Results
+	--&gt;<a href="OtherOptimizations.htm">Other Optimizations</a>
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">Summary</a></h3>
+    <p>The original version of the Demo Forms as implemented in frmDragDrop provides a 
+        perfectly acceptable user experience when working with Local Folders of a 
+        reasonable size. When working with large and/or Remote Folders, the GUI may 
+        &quot;freeze&quot; for an unacceptable period of time, particulary on first display of a 
+        Folder.</p>
+    <p>After considerable research and investigation I have implemented some 
+        optimization of that code. That optimization is implemented in 
+        <a href="frmTemplate.htm">frmTemplate</a>.</p>
+    <p>In certain cases - primarily very Large Remote Folders - the optimized code still 
+        provides an unacceptably slow GUI, &quot;freezing&quot; for long periods of time. To 
+        overcome this problem, I implemented <a href="frmThread1.htm">frmThread</a> 
+        which performs much of its&#39; work in a BackgroundWorker Thread.</p>
+    <p>The results below are from determining the time for key phases of displaying the 
+        Contents of a Folder in the ListView. The tests are discussed
+        <a href="Responsiveness.htm">here</a>. All time values are in milliseconds of 
+        elapsed time. All tests were run a number of times with the average times 
+        displayed here.</p>
+<h3><a id = "BkMrk_2">Original Demo Form (derived from frmDragDrop)</a></h3>
+    <p>The Form becomes responsive ("unfreezes") after <b>Total</b> time.</p>
+    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:331pt;margin-left:6em" width="441">
+        <colgroup>
+            <col style="width:83pt" 
+                width="111" />
+            <col span="4" style="width:48pt" width="64" />
+            <col style="width:56pt" 
+                width="74" />
+        </colgroup>
+        <tr style="height:15.0pt">
+            <td class="style1" height="20" width="111">
+            </td>
+            <td class="style2" width="64">
+                Avg ms</td>
+            <td class="style2" width="64">
+                Avg ms</td>
+            <td class="style2" width="64">
+                Avg ms</td>
+            <td class="style2" width="64">
+                Avg ms</td>
+            <td class="style3" width="74">
+                Avg ms</td>
+        </tr>
+        <tr style="height:15.0pt">
+            <td class="style4" height="20">
+                Folder Location</td>
+            <td class="style5">
+                GetItems</td>
+            <td class="style5">
+                Sort</td>
+            <td class="style5">
+                GenTime</td>
+            <td class="style5">
+                IconTime</td>
+            <td class="style5">
+                Total</td>
+        </tr>
+        <tr style="height:15.0pt">
+            <td height="20" style="height:15.0pt">
+                Win7 Desktop</td>
+            <td align="right" class="style6">
+                57.2</td>
+            <td align="right" class="style6">
+                52.0</td>
+            <td align="right" class="style6">
+                416.0</td>
+            <td align="right" class="style6">
+                296.4</td>
+            <td align="right" class="style6">
+                826.8</td>
+        </tr>
+        <tr style="height:15.0pt">
+            <td height="20" style="height:15.0pt">
+                Vista Laptop</td>
+            <td align="right" class="style6">
+                317.2</td>
+            <td align="right" class="style6">
+                93.6</td>
+            <td align="right" class="style6">
+                8,387.6</td>
+            <td align="right" class="style6">
+                1,617.2</td>
+            <td align="right" class="style6">
+                10,431.2</td>
+        </tr>
+        <tr style="height:15.0pt">
+            <td height="20" style="height:15.0pt">
+                XP Desktop</td>
+            <td align="right" class="style6">
+                946.4</td>
+            <td align="right" class="style6">
+                88.4</td>
+            <td align="right" class="style6">
+                29,130.5</td>
+            <td align="right" class="style6">
+                3,598.4</td>
+            <td align="right" class="style6">
+                33,779.3</td>
+        </tr>
+        <tr style="height:15.0pt">
+            <td height="20" style="height:15.0pt">
+                WHS</td>
+            <td align="right" class="style6">
+                613.6</td>
+            <td align="right" class="style6">
+                98.8</td>
+            <td align="right" class="style6">
+                61,084.5</td>
+            <td align="right" class="style6">
+                6,110.0</td>
+            <td align="right" class="style6">
+                67,906.9</td>
+        </tr>
+    </table><br />
+<h3><a id = "BkMrk_3">frmTemplate - optimized but with no Background processing</a></h3>
+    <p>The Form becomes responsive ("unfreezes") after <b>Total</b> time.</p>
+    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:488pt;margin-left:6em" width="650">
+        <colgroup>
+            <col width="111" />
+            <col span="2" width="64" />
+            <col width="74" />
+            <col width="71" />
+            <col width="74" />
+            <col width="74" />
+        </colgroup>
+        <tr>
+            <td height="20" width="111">
+            </td>
+            <td class="style2" width="64">
+                Avg ms</td>
+            <td class="style2" width="64">
+                Avg ms</td>
+            <td class="style2" width="74">
+                Avg ms</td>
+            <td class="style2" width="71">
+                Avg ms</td>
+            <td class="style2" width="74">
+                Avg ms</td>
+            <td class="style2" width="74">
+                %Total/</td>
+        </tr>
+        <tr>
+            <td height="20" class="style7">
+                Folder Location</td>
+            <td class="style2">
+                GetItems</td>
+            <td class="style2">
+                Sort</td>
+            <td class="style2">
+                GenTime</td>
+            <td class="style2">
+                IconTime</td>
+            <td class="style2">
+                Total</td>
+            <td class="style2">
+                Original</td>
+        </tr>
+        <tr>
+            <td height="20">
+                Win7 Desktop</td>
+            <td align="right">
+                50.7</td>
+            <td align="right">
+                50.7</td>
+            <td align="right">
+                503.1</td>
+            <td align="right">
+                54.6</td>
+            <td align="right">
+                674.7</td>
+            <td align="right">
+                81.6%</td>
+        </tr>
+        <tr>
+            <td height="20">
+                Vista Laptop</td>
+            <td align="right">
+                202.8</td>
+            <td align="right">
+                93.6</td>
+            <td align="right">
+                8,927.1</td>
+            <td align="right">
+                46.8</td>
+            <td align="right">
+                9,274.2</td>
+            <td align="right">
+                88.9%</td>
+        </tr>
+        <tr>
+            <td height="20">
+                XP Desktop</td>
+            <td align="right">
+                865.8</td>
+            <td align="right">
+                93.6</td>
+            <td align="right">
+                16,606.2</td>
+            <td align="right">
+                50.7</td>
+            <td align="right">
+                17,624.1</td>
+            <td align="right">
+                52.2%</td>
+        </tr>
+        <tr>
+            <td height="20">
+                WHS</td>
+            <td align="right">
+                631.8</td>
+            <td align="right">
+                101.4</td>
+            <td align="right">
+                40,903.3</td>
+            <td align="right">
+                46.8</td>
+            <td align="right">
+                41,691.1</td>
+            <td align="right">
+                61.4%</td>
+        </tr>
+    </table><br />
+<h3><a id = "BkMrk_4">frmThread - optimized and with all but First 32 items filled by BackgroundWorker using FFF/FNF Api</a></h3>
+    <p>The Form becomes responsive ("unfreezes") after <b>GUI Active</b> time.</p>
+
+    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:589pt;margin-left:6em" width="784">
+        <colgroup>
+            <col width="111" />
+            <col span="3" width="64" />
+            <col width="74" />
+            <col width="71" />
+            <col width="74" />
+            <col width="64" />
+            <col width="70" />
+            <col width="64" />
+        </colgroup>
+        <tr>
+            <td height="20" width="111">
+            </td>
+            <td class="style2" width="64">
+                Avg ms</td>
+            <td class="style2" width="64">
+                Avg ms</td>
+            <td class="style2" width="64">
+                Avg ms</td>
+            <td class="style2" width="74">
+                Avg ms</td>
+            <td class="style2" width="71">
+                Avg ms</td>
+            <td class="style2" width="74">
+                Avg ms</td>
+            <td class="style2" width="64">
+                Avg ms</td>
+            <td class="style2" width="70">
+                %GUI/</td>
+            <td class="style2" width="64">
+                %Total/</td>
+        </tr>
+        <tr>
+            <td height="20">
+                System</td>
+            <td class="style2">
+                GetItems</td>
+            <td class="style2">
+                Sort</td>
+            <td class="style2">
+                First32</td>
+            <td class="style2">
+                SparseLoad</td>
+            <td class="style2">
+                GUI Active</td>
+            <td class="style2">
+                InfoTime</td>
+            <td class="style2">
+                All Filled</td>
+            <td class="style2">
+                Original</td>
+            <td class="style2">
+                Original</td>
+        </tr>
+        <tr>
+            <td height="20">
+                Win7 Desktop</td>
+            <td align="right" >
+                120.9</td>
+            <td align="right" >
+                50.7</td>
+            <td align="right" >
+                11.7</td>
+            <td align="right" >
+                132.6</td>
+            <td align="right" >
+                323.7</td>
+            <td align="right" >
+                335.4</td>
+            <td align="right" >
+                1,205.1</td>
+            <td align="right">
+                39.2%</td>
+            <td align="right">
+                145.8%</td>
+        </tr>
+        <tr>
+            <td height="20">
+                Vista Laptop</td>
+            <td align="right" >
+                187.2</td>
+            <td align="right" >
+                105.3</td>
+            <td align="right" >
+                159.9</td>
+            <td align="right" >
+                136.5</td>
+            <td align="right" >
+                592.8</td>
+            <td align="right" >
+                760.5</td>
+            <td align="right" >
+                2,351.7</td>
+            <td align="right">
+                5.7%</td>
+            <td align="right">
+                22.5%</td>
+        </tr>
+        <tr>
+            <td height="20">
+                XP Desktop</td>
+            <td align="right" >
+                822.9</td>
+            <td align="right" >
+                93.6</td>
+            <td align="right" >
+                343.2</td>
+            <td align="right" >
+                132.6</td>
+            <td align="right" >
+                1,400.1</td>
+            <td align="right" >
+                4,410.9</td>
+            <td align="right" >
+                6,996.6</td>
+            <td align="right">
+                4.1%</td>
+            <td align="right">
+                20.7%</td>
+        </tr>
+        <tr>
+            <td height="20">
+                WHS</td>
+            <td align="right" >
+                627.9</td>
+            <td align="right" >
+                101.4</td>
+            <td align="right" >
+                518.7</td>
+            <td align="right" >
+                136.5</td>
+            <td align="right" >
+                1,388.4</td>
+            <td align="right" >
+                1,497.6</td>
+            <td align="right" >
+                6,509.1</td>
+            <td align="right">
+                2.0%</td>
+            <td align="right">
+                9.6%</td>
+        </tr>
+    </table><br />
+<h3><a id = "BkMrk_5">Analysis of Results</a></h3>
+    <p>Note that these results are for an abnormally large Folder. It is worth noting 
+        here that frmTemplate which does no background processing will &quot;unfreeze&quot; in 
+        less than 2 seconds when displaying a Folder of 120 items on the slowest system 
+        (WHS). On the test (3,000 item) Folder on the same system, it takes 41.6 seconds 
+        to &quot;unfreeze&quot;. Your milage may vary.</p>
+    <p>In all cases, the optimizations reduced the time during which the GUI &quot;freezes&quot;. 
+        The amount of reduction varies among PCs and OSes, but is always an improvement. 
+        However, in all but the Local case, the amount of &quot;freeze&quot; time is too long for 
+        an acceptable user experience, when working with the test Folder.</p>
+    <p>frmThread combines the optimizations found in frmTemplate with the use of the 
+        FFF/FNF API in a BackgroundWorker Thread to &quot;unfreeze&quot; the GUI in under 2 
+        Seconds for all systems. Note that in the Local case the difference in time to 
+        &quot;unfreeze&quot; is less, but not noticibly so to the user. Note also that in the 
+        Local case, the time to gather all the infomation is actually longer than in 
+        either of the other two approaches. I attribute this to the overhead of 
+        communicating between threads. </p>
+    <p>&nbsp;</p>
+    <p><b>See Also:</b></p>
+    <p style="margin-left:2em"><a href="OtherOptimizations.htm">Other Optimizations</a></p>
+</div>
+</body>
+</html>

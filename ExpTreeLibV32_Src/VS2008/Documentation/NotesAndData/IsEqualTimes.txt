@@ -1,0 +1,113 @@
+﻿Results of comparing various PIDL equality tests.
+Tests involved comparing the PIDLs of two files in the same Folder for Equality.
+Each test ran 200,000 times and reported the elapsed time for the 200,000 iterations.
+
+Test1 involved testing ILIsEqual with the same PIDL. It took about 20-25 ms - essentially the time to compare two IntPtrs which were the same.
+Test2 involved testing ILIsEqual with 2 different Absolute PIDLS representing files in the same, rather deeply placed, directory.
+Test3 involved testing Folder.CompareIDs with 2 the Relative PIDLS of two different files in the same Folder, using that Folder as the
+      Folder doing the compare.
+Test4 involved testing Folder.CompareIDs with two different Absolute PIDLs representing files in the same, rather deeply placed, directory using the         Desktop.Folder to do the compare.
+Test5 involved testing with a binary comparison (AreBytesEqual) with two different Absolute PIDLs representing files in the same, rather deeply placed,      directory. 
+
+Test2 Elapsed time: 3478.8061ms or about 0.017394 ms per compare
+Test3 Elapsed time:  140.4003ms or about 0.000702 ms per compare
+Test4 Elapsed time: 3510.0061ms or about 0.017550 ms per compare
+
+Same tests but with different files and Folder thru a Symbolic Link to another Volume
+Test2 Elapsed time: 4040.4071ms
+Test3 Elapsed time:  156.0002ms
+Test4 Elapsed time: 4102.8072ms
+
+Same tests with the same files as above but directly accessed, no Symbolic Link involved
+Test2 Elapsed time: 4024.807ms
+Test3 Elapsed time:  171.6003ms
+Test4 Elapsed time: 4009.207ms
+
+Test2 Elapsed time: 3416.406ms
+Test3 Elapsed time:  156.0003ms
+Test4 Elapsed time: 3400.806ms
+Test5 Elapsed time: 2527.2044ms
+
+Conclusions:
+All tests involved 200,000 iterations. An environment which required 200,000 tree lookups in a short period of time would have other time
+costs that would pretty much overwhelm any differences found here. Just causing 200,000 notification messages to be generated is not likely
+to occur on anything but a very busy Server.
+Obviously, using Relative, single item, IDLists is much cheaper than using Absolute Folders (which are always relative to the Desktop).
+Only in the case of finding a File in a Folder will have the Folder information to use PIDLs Relative to the same Folder. 
+Interesting, but not worth the effort to incorporate into ExpTreeLib.
+Although the binary comparison is about 25% faster than IsEqual, it cannot be used since the main goal is to see if the two PIDLs represent the
+same Item in the Shell Namespace. Note well that the binary test failed to match prior to reaching that part of the PIDL that contains the Name of 
+the Item.
+
+The following is a dump of the pair of PIDLs used for testing. Note that there are 6 ItemIds in each and that the first difference is at 
+Byte &H12B (299 decimal) and that Byte is in the 6th ItemID.
+DumpPidl(Pidl1)
+PIDL 502330016 contains 387 bytes
+ItemID #1 Length = 20
+0000). 14 00 1F 50 E0 4F D0 20 EA 3A 69 10 A2 D8 08 00           ...PàOÐ ê:i.¢Ø..
+0010). 2B 30 30 9D                                               +00.
+ItemID #2 Length = 25
+0014). 19 00 2F 43 3A 5C 00 00 00 00 00 00 00 00 00 00           ../C:\..........
+0024). 00 00 00 00 00 00 00 00 00                                .........
+ItemID #3 Length = 82
+002D). 52 00 31 00 00 00 00 00 C1 40 F9 1A 10 00 54 65           R.1.....Á@ù...Te
+003D). 73 74 69 6E 67 00 3C 00 08 00 04 00 EF BE C8 3C           sting.<.....ï¾È<
+004D). 92 05 C1 40 F9 1A 2A 00 00 00 5B 15 00 00 00 00           ’.Á@ù.*...[.....
+005D). 1E 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00           ................
+006D). 54 00 65 00 73 00 74 00 69 00 6E 00 67 00 00 00           T.e.s.t.i.n.g...
+007D). 16 00                                                     ..
+ItemID #4 Length = 80
+007F). 50 00 31 00 00 00 00 00 BC 40 7C 82 10 00 44 4D           P.1.....¼@|‚..DM
+008F). 54 65 73 74 00 00 3A 00 08 00 04 00 EF BE F3 3C           Test..:.....ï¾ó<
+009F). B4 9E BC 40 7C 82 2A 00 00 00 A1 41 01 00 00 00           ´ž¼@|‚*...¡A....
+00AF). 4D 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00           M...............
+00BF). 44 00 4D 00 54 00 65 00 73 00 74 00 00 00 16 00           D.M.T.e.s.t.....
+ItemID #5 Length = 88
+00CF). 58 00 31 00 00 00 00 00 DC 3C 33 28 10 00 4F 52           X.1.....Ü<3(..OR
+00DF). 49 47 49 4E 7E 31 00 00 40 00 08 00 04 00 EF BE           IGIN~1..@.....ï¾
+00EF). C7 3C 25 7E F4 3C D2 23 2A 00 00 00 6F 5D 00 00           Ç<%~ô<Ò#*...o]..
+00FF). 00 00 B5 00 00 00 00 00 00 00 00 00 00 00 00 00           ..µ.............
+010F). 00 00 4F 00 72 00 69 00 67 00 69 00 6E 00 61 00           ..O.r.i.g.i.n.a.
+011F). 6C 00 73 00 00 00 18 00                                   l.s.....
+ItemID #6 Length = 92
+0127). 5C 00 32 00 22 00 00 00 DB 3C 44 16 20 00 48 65           \.2."...Û<D. .He
+0137). 6C 6C 6F 31 2E 74 78 74 00 00 42 00 08 00 04 00           llo1.txt..B.....
+0147). EF BE DC 3C 33 28 F4 3C D2 23 2A 00 00 00 FF AA           ï¾Ü<3(ô<Ò#*...ÿª
+0157). 00 00 00 00 11 01 00 00 00 00 00 00 00 00 00 00           ................
+0167). 00 00 00 00 48 00 65 00 6C 00 6C 00 6F 00 31 00           ....H.e.l.l.o.1.
+0177). 2E 00 74 00 78 00 74 00 00 00 1A 00                       ..t.x.t.....
+DumpPidl(pidl2)
+PIDL 502326416 contains 387 bytes
+ItemID #1 Length = 20
+0000). 14 00 1F 50 E0 4F D0 20 EA 3A 69 10 A2 D8 08 00           ...PàOÐ ê:i.¢Ø..
+0010). 2B 30 30 9D                                               +00.
+ItemID #2 Length = 25
+0014). 19 00 2F 43 3A 5C 00 00 00 00 00 00 00 00 00 00           ../C:\..........
+0024). 00 00 00 00 00 00 00 00 00                                .........
+ItemID #3 Length = 82
+002D). 52 00 31 00 00 00 00 00 C1 40 F9 1A 10 00 54 65           R.1.....Á@ù...Te
+003D). 73 74 69 6E 67 00 3C 00 08 00 04 00 EF BE C8 3C           sting.<.....ï¾È<
+004D). 92 05 C1 40 F9 1A 2A 00 00 00 5B 15 00 00 00 00           ’.Á@ù.*...[.....
+005D). 1E 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00           ................
+006D). 54 00 65 00 73 00 74 00 69 00 6E 00 67 00 00 00           T.e.s.t.i.n.g...
+007D). 16 00                                                     ..
+ItemID #4 Length = 80
+007F). 50 00 31 00 00 00 00 00 BC 40 7C 82 10 00 44 4D           P.1.....¼@|‚..DM
+008F). 54 65 73 74 00 00 3A 00 08 00 04 00 EF BE F3 3C           Test..:.....ï¾ó<
+009F). B4 9E BC 40 7C 82 2A 00 00 00 A1 41 01 00 00 00           ´ž¼@|‚*...¡A....
+00AF). 4D 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00           M...............
+00BF). 44 00 4D 00 54 00 65 00 73 00 74 00 00 00 16 00           D.M.T.e.s.t.....
+ItemID #5 Length = 88
+00CF). 58 00 31 00 00 00 00 00 DC 3C 33 28 10 00 4F 52           X.1.....Ü<3(..OR
+00DF). 49 47 49 4E 7E 31 00 00 40 00 08 00 04 00 EF BE           IGIN~1..@.....ï¾
+00EF). C7 3C 25 7E F4 3C D2 23 2A 00 00 00 6F 5D 00 00           Ç<%~ô<Ò#*...o]..
+00FF). 00 00 B5 00 00 00 00 00 00 00 00 00 00 00 00 00           ..µ.............
+010F). 00 00 4F 00 72 00 69 00 67 00 69 00 6E 00 61 00           ..O.r.i.g.i.n.a.
+011F). 6C 00 73 00 00 00 18 00                                   l.s.....
+ItemID #6 Length = 92
+0127). 5C 00 32 00 2C 00 00 00 DB 3C 62 16 20 00 48 65           \.2.,...Û<b. .He
+0137). 6C 6C 6F 32 2E 74 78 74 00 00 42 00 08 00 04 00           llo2.txt..B.....
+0147). EF BE DC 3C 33 28 F4 3C D2 23 2A 00 00 00 13 AB           ï¾Ü<3(ô<Ò#*....«
+0157). 00 00 00 00 55 00 00 00 00 00 00 00 00 00 00 00           ....U...........
+0167). 00 00 00 00 48 00 65 00 6C 00 6C 00 6F 00 32 00           ....H.e.l.l.o.2.
+0177). 2E 00 74 00 78 00 74 00 00 00 1A 00                       ..t.x.t.....

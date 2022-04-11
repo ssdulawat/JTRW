@@ -1,0 +1,71 @@
+Hi Allen,
+
+A look at the Call Stack leads me to believe that there is a funny Folder on your systems. Funny means that it is not a normal issue Windows Folder, but rather the manifestation of a ShellExtension Folder such as is often used for Cloud storage/backup. Many other such Folders exist, for many other reasons. For example a .zip file is handled as a Shell Extension Folder. .zips I deal with. I also can handle any other such Folder that fully implements all the Interfaces that a normal Windows Folder implements. Developers of Shell Extensions are supposed to implement a pretty large subset of those interfaces, including all those that I need. Most do, some don't.
+
+Another area where developers of Shell Extension mess me up is when they take literally the documentation that says a PIDL is just a bunch of bytes with no mandated content. CShItem depends on a PIDL to follow a "well known" structure. I don't look at the content, but I do look at the structure.
+
+What all this leads to is that I need more information. To obtain that information, I need you to replace the GetContents routine in CShItem.vb with the code given below. The replacement may, in fact, fix your problem, but either way, I would like to see the Output results that a run will produce. Among other things, the Output will help us isolate the problem Folder for a better understanding of what is going on. Even if your problem is fixed, there are a few more places that CShItem will have to be modified to get to a complete fix. Note also that the newly Commented Out line that starts "'Dim content As ArrayList = " is a real, required, bug fix that I spotted while looking for your problem. It doesn't cause your problem, but is a bug.
+
+For your information & learning, there is more text after the replacement routine.
+
+    '''<summary>
+    ''' Returns the requested Items of this Folder as a CShitemCollection
+    '''</summary>
+    ''' <param name="flags">A set of one or more SHCONTF flags indicating which items to return</param>
+    Private Function GetContents(ByVal flags As SHCONTF) As CShItemCollection
+        Dim rVal As New CShItemCollection(Me)
+        If Me.Folder Is Nothing Then Return rVal 'Added 10/22/2011 to deal with certain Virtual Folders
+        Dim ptr As IntPtr
+        Dim itm As CShItem
+        'Debug.WriteLine("GContent " & Me.Path)
+        'Dim StTime As DateTime = Now()
+        'Dim content As ArrayList = GetContentPtrs(flags)       '11/09/2013 - should have been commented out originally
+        'Debug.WriteLine("GPtrRel " & Now().Subtract(StTime).TotalMilliseconds.ToString & " ms")
+        'StTime = Now()
+        'For Each ptr In content
+        For Each ptr In GetContentPtrs(flags)
+            If ptr = IntPtr.Zero Then                                               '11/09/2013 - Investigate other
+                Debug.WriteLine("Content=IntPtr.Zero while filling " & Me.Path)     '11/09/2013 - Investigate other
+                Marshal.FreeCoTaskMem(ptr)                                          '11/09/2013 - Investigate other
+                Continue For                                                        '11/09/2013 - Investigate other
+            Else
+                Try                                         'ASUS Fix 'mod 06/27/09 First fix added
+                    itm = New CShItem(ptr, Me)
+                    rVal.Add(itm)
+                Catch ex As InvalidCastException             'ASUS Fix
+                    Debug.WriteLine("GetContents - InvCast") 'ASUS Fix
+                Catch ex As Exception                                           '11/09/2013 - Investigate other
+                    Debug.WriteLine("GetContents - Exception: " & ex.Message)   '11/09/2013 - Investigate other
+                    Debug.WriteLine("Processing " & Me.Path)                    '11/09/2013 - Investigate other
+                    DumpPidl(ptr)                                               '11/09/2013 - Investigate other
+                Finally           'ASUS Fix
+                    Marshal.FreeCoTaskMem(ptr)
+                End Try           'ASUS Fix
+            End If                                                          '11/09/2013 - Investigate other
+        Next
+        'Debug.WriteLine("BuildItems " & Now().Subtract(StTime).TotalMilliseconds.ToString & " ms")
+        Return rVal
+    End Function
+ 
+================More Info===========================
+
+CShItem builds and maintains a Shared internal tree of CShItems. The tree is shared by all instances of the CShItem Class. The first time a CShItem is created, the CShItem for the Desktop is created via Sub New(), a Private method. This initializes the tree and makes the Desktop CShItem the root of the tree.
+
+As part of the creation of the Desktop item, some other Shared elements are also initialized. One of those elements is the CShItem for the user's Desktop Folder. On Win7 and Win8 systems, that Folder is normally found at C:\Users\username\Desktop. It may be elsewhere, but on normal systems, that's where it is.
+
+In Sub New(), the statement: m_DeskTopDirectory = GetCShItem(CSIDL.DESKTOPDIRECTORY) says to return a CShItem for that Folder. GetCShItem attempts to find the Folder in the internal tree by calling BrowseTo. BrowseTo will start at the root of the tree and search downwards. Since this is the first reference to any CShItem, the tree will be empty below the Desktop item, so BrowseTo will populate the tree with all of the Folders directly below Desktop.
+Populating the tree means creating CShItems for each of those Folders and placing them in the tree by calling BaseItem.Directories. Once that is done, BrowseTo will see which one is an Ancestor of the desired Folder (or the Item itself). It then checks all Folders under that Ancestor to find the next lower Ancestor (or the Item itself). This is done until the Item is created and found.
+
+On success, this process will have created and placed in the tree CShItems for:
+All Folders under Desktop
+All Folders under Computer (or My Computer or ThisPC - the name changes with OS)
+All Folders under C:
+All Folders under \Users\
+All Folders under \username\ (the logged in user)
+and the CSHitem for DESKTOPDIRECTORY (C:\Users\username\Desktop
+
+Your problem occurs while populating the tree. The problem Folder is probably under Computer or Desktop, but could be anywhere down the chain. The purpose of all those Debug.Writeline statements is to determine which one! It is possible that the extra checking in the new version of GetContents will make your problem go away. It should at least tell us what we are dealing with.
+
+The discussion above sounds like a good bit of code to simply get one CShItem, and it is. In fact, this is a simplified description. However, the next time a CShItem is needed that lies somewhere in the already populated tree, none has to be repeated and finding the right Item it very quick. That quickness is absolutely required for Change Notification. Fortunately, Change Notification is not turned on until the entire process is completed for the Desktop CShItem. Otherwise isolating the problem Folder would be potentially much harder.
+
+Jim

@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Notification System</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+<style type="text/css">
+p.note
+{
+     background-color:#E0EBEB
+}
+span.note
+{
+    background-color:#E0EBEB
+}
+</style>
+</head>
+<body>
+<div id="control">
+    <span class="productTitle">ExpTreeLib</span><br />
+    <span class="topicTitle">The Notification System</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ExpLib_Index.htm">ExpTreeLib Index</a>&lt;--
+	Notification System
+	--&gt;<a href="ChangeLog.htm">ChangeLog For Version 2.14 And Creation of Version 3.00</a>
+	--&gt;<a href="../ExpDemo/ImprovingResponsiveness.htm">Improving Responsiveness</a>
+	</p>
+</div>
+<div id="main">
+    <p>
+        In the discussion below, text blocks marked like <span class="note">this text</span>
+        is additional information that is related to the main text, but may be skipped to
+        follow the main line of the discussion. Text in <b>bold</b> contains the main points
+        of the discussion.</p>
+    <h3><a id = "BkMrk_1">Purpose</a></h3>
+    <p>The purpose of the Notification System is to inform the application of changes to
+        the Shell Namespace. The application can then do whatever is needed to display or
+        otherwise take action to reflect those changes. As implemented in <code>ExpTree</code>
+        and the Demo Forms, changes are displayed as they happen.</p>
+<h3><a id = "BkMrk_2">What you already know</a></h3>
+    <p>Parts of the Notification system have been discussed already:</p>
+    <table border="0" cellpadding="1em" cellspacing="0" style="border-collapse: collapse;
+        width: 90%; margin-left: 3em; ">
+        <col valign="top" />
+        <col valign="top" />
+        <tr>
+            <td>
+                <a href="V214%20Release%20Notes.htm">Version 2.14 Release Notes</a></td>
+            <td>
+                Discusses the public face of the notification system and how to use it in your 
+                application.</td>
+        </tr>
+        <tr>
+            <td>
+                <a href="TechNote1.htm">Folders and PIDLs</a></td>
+            <td>
+                Defines Folders and PIDL objects as used in <code>ExpTreeLib</code>.</td>
+        </tr>
+        <tr>
+            <td>
+                <a href="TechNote2.htm">The Internal Tree</a></td>
+            <td>
+                Describes the structure and use of CShItem&#39;s internal tree.</td>
+        </tr>
+        <tr>
+            <td>
+                <a href="TechNote3.htm">Searching the Internal Tree</a></td>
+            <td>
+                Describes how CShItem searches the internal tree.</td>
+        </tr>
+        <tr>
+            <td>
+                <a href="TechNote4.htm">Comparing PIDLs and their Ancestory</a></td>
+            <td>
+                Discusses the methods used to compare PIDLs and to determine their 
+                location in the internal tree.</td>
+        </tr>
+    </table>
+<br />
+<h3><a id = "BkMrk_3">How Notification Works</a></h3>
+    <p>When the CShItem Class initializes itself in response to any request, it creates the one and only CShItem for the Desktop. 
+        The last part of that creation is to create the one and only instance of the 
+        <see cref = "T:ExpTreeLib.CShItemUpdater">CShItemUpdater</see> Class. The CShItemUpdater Class is a Component and Inherits from 
+        the Control Class. All that really means is that is can and does obtain a 
+        Handle. With that it and can and does Register to receive Notification Messages 
+        from Windows and can and does have its&#39; own WndProc Method to receive and 
+        process those Messages. That WndProc routine is what the Class is all about. 
+        Once CShItemUpdater is Registered to receive Notification Messages, its&#39; WndProc 
+        will be called by the Shell for every change made to the Shell Namespace. This 
+        includes, but is not limited to all changes made to the File System. Once 
+        Registered, the WndProc may be entered at any time with a Notification. Note 
+        that the parameters passed to WndProc include one or two PIDLs representing the 
+        ShellItems involved in the change.</p>
+    <p class="note">The actual params received by WndProc are identifying flags that are passed to SHChangeNotification_Lock which
+        returns the <i>real</i> message parameters. This is considered to be a more robust way of receiving this information. 
+        SHChangeNotification_UnLock is always called prior to exiting WndProc (if 
+        SHChangeNotification_Lock is called).</p>
+    <p>The Processing of each Message follows the following steps:</p>
+    <ol>
+        <li>If the Message is not a Notification Message or if the type of Notification is 
+            not of interest to CShItemUpdater, pass it on to the Base Control Class that 
+            CShItemUpdater Inherits from and Exit WndProc.</li>
+        <li>Determine the type of Notification - each type of message (CREATE, DELETE, etc.) 
+            requires a different interpretation of the other parameters passed into WndProc.</li>
+        <li>For the particular type determine if the appropriately affected CShItem exists 
+            in the internal tree (<see cref = "M:ExpTreeLib.CShItem.FindCShItem">CShItem.FindCShItem</see>). For example, if a ShellItem (like a 
+            File) has been created or deleted, the the appropriate CShItem to find in the 
+            tree is that Item&#39;s Parent Folder. If a ShellItem has been modified, than 
+            the appropriate Item to find is the Item itself.<br />
+            <b>If the appropriate CShItem cannot be found in the tree, then the notification 
+            is of no interest and is ignored</b>. The astute reader will now understand why 
+            the tree exists and why it is important that FindCShItem runs quickly. A hint - 
+            FindCShItem runs quickly <i>because</i> it doesn&#39;t have to search the universe 
+            of all known CShItems.</li>
+        <li>Once the appropriate CShItem <i>instance</i> has been found, then, depending on 
+            the change type, WndProc calls <i>instance</i>.AddItem (with a new CShItem to 
+            add), <i>instance</i>.RemoveItem, 
+            or <i>instance</i>.Update.<b> Each of these instance calls will raise one or more 
+            appropriate CShItemUpdate Events to notify the application (including <code>ExpTree</code>) 
+            of the change.</b></li>
+    </ol>
+<h3><a id = "BkMrk_4"><a id = "BkMrk_4"><i>instance</i>.Update</a></a></h3>
+    <p>CShItemUpdater calls <i>instance</i>.Update to handle changes that are more 
+        complicated than Adds and Deletes. For Updated, IconChange, and MediaChange 
+        types of changes, Update simply clears information from the affected CShItem and 
+        Raises the appropriate message to Notify the application that it needs to 
+        refresh its&#39; information about that CShItem. The refresh operation will 
+        reload the CShItem with the correct (and possibly different) information.</p>
+    <p>Rename type of changes require special handling since a Rename will affect the 
+        PIDL and Path of the affected item and, if that item is a folder, the PIDL and 
+        Path all of the decendant CShItems known to the tree. Rename is also raised for 
+        Move type changes which will typically result in one or more 
+        Adds and Removes. If the moved item is a Folder, then it and its&#39; decendants 
+        must be refreshed or recreated and relocated within the tree. Of course, if the 
+        Folder to which an item is moved does not exist in the tree, then no refresh and 
+        relocation is needed - the item has been moved to a tree branch that is of no 
+        interest.</p>
+    <p>UPDATEDIR is a very special case. The message indicates that <i>something</i> has 
+        changed in the Folder itself <i>or</i> in one or more of its&#39; decendants <i>or</i>
+        <i>both</i>. Again, if the Folder is not in the internal tree, then Update will 
+        not be called since the Folder is not an <i>item of interest</i>. However, in 
+        the case of large Copies, Moves, or Deletes, the Shell will raise an UPDATEDIR 
+        message for the Folder that is being monitored for changes - in this case the 
+        Desktop and the Desktop is an <i>item of interest</i> - it is the root of the 
+        tree. It is also true that, in some versions of Windows, a simple Save 
+        operation in certain applications will only raise an UPDATEDIR message. <i>instance</i>.Update must 
+        deal with both cases.</p>
+    <p><i>instance</i>.Update will, starting with the Folder provided by the Message, compare 
+        that Folder and its&#39; decendants in the internal tree with the current state of 
+        that Folder and its&#39; Files to see what, if anything, has changed. Each change 
+        will Raise the appropriate <see cref="E:ExpTreeLib.CShItem.CShItemUpdate">CShItemUpdate Event</see> to inform the application of the 
+        change. </p>
+</div>
+</body>
+</html>

@@ -1,0 +1,131 @@
+Sequence of adding Dir 18 to MoveTo. MoveTo not expanded or expandable - problem is it should be made expandable.
+	Other problem is why does UPDATEDIR processing in Update find NTUSER.DAT and ntuser.dat.LOG1 -AND- never find it outside of UPDATEDIR?
+Answer to question #2: The Folder "C:\Users\parsellj" is added to the tree as part of finding the DesktopDirectory which is 
+"C:\Users\parsellj\Desktop" (of course your username may be different). The two files NTUSER.DAT and ntuser.dat.Log1 are 
+stored in "C:\Users\parsellj". Because it is in the tree, that directory is examined for changes (which occur regularly with those 2 files) during UPDATEDIR processing. By the rules of that process, since "C:\Users\parsellj" is in the tree, then it will be examined.
+Note that the debug code in EventDump filter those files out during normal ItemChange processing, but there is no such filter in UPDATEDIR processing.
+Next question....why do the Files of "C:\Users\parsellj" exist in the tree?
+Answer: While setting up Desktop, we also get DesktopDirectory. That uses BrowseTo to find based on CSIDL_DesktopDirectory. In BrowseTo, once the immediate ancestor (Parent) is found, it calls GetItems on the Parent. This sets up the Files and Folders of the Parent. In this case, the Parent is "C:\Users\parsellj". The ntuser files are set up because they are files directly under "C:\Users\parsellj".
+The cure: Instead of GetItems, use GetDirectories and only if not found there, check GetFiles for the desired item. The change avoids the possiblity of Files in the internal tree that have not been asked for and avoids unnecessary searching during UPDATEDIR and FindCShItem.
+
+The last set of data given here is the results of the same ops on the same dirs after all fixes were applied. The observed time to display the results of both Copy and Delete was hardly noticible and was equivalent to the same changes showing up in a WinExplorer window that was also displayed.
+
+Expanding Computer 15.6001ms
+Enter WndProc -- Counter = 1 UPDATEITEM
+Leave WndProc -- Counter = 1
+Enter WndProc -- Counter = 2 UPDATEITEM
+Leave WndProc -- Counter = 2
+Enter WndProc -- Counter = 3 UPDATEITEM
+ -- Counter = 3 dwItem1:  (471728192) Not Found
+ -- Counter = 3 dwItem2: Is Empty
+Leave WndProc -- Counter = 3
+Enter WndProc -- Counter = 4 UPDATEITEM
+ -- Counter = 4 dwItem1:  (471728192) Not Found
+ -- Counter = 4 dwItem2: Is Empty
+Leave WndProc -- Counter = 4
+Expanding Local Disk (C:) 15.6ms
+Expanding Testing 0ms
+Expanding DMTest 0ms
+Enter WndProc -- Counter = 5 UPDATEITEM
+Leave WndProc -- Counter = 5
+Enter WndProc -- Counter = 6 UPDATEITEM
+Leave WndProc -- Counter = 6
+Enter WndProc -- Counter = 7 UPDATEITEM
+ -- Counter = 7 dwItem1:  (4653120) Not Found
+ -- Counter = 7 dwItem2: Is Empty
+Leave WndProc -- Counter = 7
+Enter WndProc -- Counter = 8 UPDATEITEM
+ -- Counter = 8 dwItem1:  (4653120) Not Found
+ -- Counter = 8 dwItem2: Is Empty
+Leave WndProc -- Counter = 8
+Enter WndProc -- Counter = 9 UPDATEDIR
+ -- Counter = 9 dwItem1:  (4653120)Desktop\
+ -- Counter = 9 dwItem2: Is Empty
+Enter frmThread DoItemUpdate -- MoveTo - Updated
+Enter ExpTree OnItemUpdate -- MoveTo - Updated
+Located Parent Node DMTest of Item C:\Testing\DMTest\MoveTo
+Enter frmThread DoItemUpdate -- NTUSER.DAT - Updated
+Enter ExpTree OnItemUpdate -- NTUSER.DAT - Updated
+Enter frmThread DoItemUpdate -- ntuser.dat.LOG1 - Updated
+Enter ExpTree OnItemUpdate -- ntuser.dat.LOG1 - Updated
+Leave WndProc -- Counter = 9
+Enter WndProc -- Counter = 10 UPDATEITEM
+Leave WndProc -- Counter = 10
+Enter WndProc -- Counter = 11 UPDATEITEM
+Leave WndProc -- Counter = 11
+Enter WndProc -- Counter = 12 UPDATEITEM
+ -- Counter = 12 dwItem1:  (4653120) Not Found
+ -- Counter = 12 dwItem2: Is Empty
+Leave WndProc -- Counter = 12
+
+
+Later, Deleted the Item that was added above (18), MoveTo was expanded for the Delete
+
+Enter WndProc -- Counter = 42 UPDATEDIR
+ -- Counter = 42 dwItem1:  (457506880)Desktop\
+ -- Counter = 42 dwItem2: Is Empty
+Enter frmThread DoItemUpdate -- MoveTo - Updated
+Enter ExpTree OnItemUpdate -- MoveTo - Updated
+Located Parent Node DMTest of Item C:\Testing\DMTest\MoveTo
+Removing C:\Testing\DMTest\MoveTo\18 From C:\Testing\DMTest\MoveTo
+Enter frmThread DoItemUpdate -- 18 - Deleted
+Enter ExpTree OnItemUpdate -- 18 - Deleted
+Located Parent Node MoveTo of Item C:\Testing\DMTest\MoveTo\18
+Enter frmThread DoItemUpdate -- NTUSER.DAT - Updated
+Enter ExpTree OnItemUpdate -- NTUSER.DAT - Updated
+Enter frmThread DoItemUpdate -- ntuser.dat.LOG1 - Updated
+Enter ExpTree OnItemUpdate -- ntuser.dat.LOG1 - Updated
+Leave WndProc -- Counter = 42
+Enter WndProc -- Counter = 43 UPDATEITEM
+ -- Counter = 43 dwItem1:  (457506880)Desktop\Computer\Local Disk (C:)\Testing\DMTest\MoveTo\
+ -- Counter = 43 parent1: Desktop\Computer\Local Disk (C:)\Testing\DMTest\
+ -- Counter = 43 dwItem2: Is Empty
+Enter frmThread DoItemUpdate -- MoveTo - Updated
+Enter ExpTree OnItemUpdate -- MoveTo - Updated
+Located Parent Node DMTest of Item C:\Testing\DMTest\MoveTo
+Leave WndProc -- Counter = 43
+The thread 0x1b6c has exited with code 0 (0x0).
+The thread 0x714 has exited with code 0 (0x0).
+The program '[6792] ExpTree_Demo.vshost.exe: Managed' has exited with code 0 (0x0).
+
+
+The following is the results of doing the same Async Copy as above (followed by an Async Delete of the directory) after the fixes had been applied to the code.
+Note that both Copy and Delete caused an UPDATEDIR but the Delete also raised an UPDATEITEM.
+Note also that the number of ntuser type messages has reduced to zero! 
+These messages resulted in the proper addition to the display of 17 to the dir MoveTo followed by the proper removal of that same Dir from the display (both treeview & ListView in both cases).
+
+Expanding Computer 0ms
+Expanding Local Disk (C:) 15.6ms
+Expanding Testing 15.6ms
+Expanding DMTest 15.6ms
+Enter WndProc -- Counter = 1 UPDATEDIR
+ -- Counter = 1 dwItem1:  (455409728)Desktop\
+ -- Counter = 1 dwItem2: Is Empty
+Enter frmThread DoItemUpdate -- MoveTo - Updated
+Enter ExpTree OnItemUpdate -- MoveTo - Updated
+Located Parent Node DMTest of Item C:\Testing\DMTest\MoveTo
+Enter frmThread DoItemUpdate -- 17 - Created
+Enter ExpTree OnItemUpdate -- 17 - Created
+Located Parent Node MoveTo of Item C:\Testing\DMTest\MoveTo\17
+Adding Node 17\
+Leave WndProc -- Counter = 1
+Enter WndProc -- Counter = 2 UPDATEDIR
+ -- Counter = 2 dwItem1:  (39387200)Desktop\
+ -- Counter = 2 dwItem2: Is Empty
+Enter frmThread DoItemUpdate -- MoveTo - Updated
+Enter ExpTree OnItemUpdate -- MoveTo - Updated
+Located Parent Node DMTest of Item C:\Testing\DMTest\MoveTo
+Removing C:\Testing\DMTest\MoveTo\17 From C:\Testing\DMTest\MoveTo
+Enter frmThread DoItemUpdate -- 17 - Deleted
+Enter ExpTree OnItemUpdate -- 17 - Deleted
+Located Parent Node MoveTo of Item C:\Testing\DMTest\MoveTo\17
+Removing Node Desktop\Computer\Local Disk (C:)\Testing\DMTest\MoveTo\17\
+Leave WndProc -- Counter = 2
+Enter WndProc -- Counter = 3 UPDATEITEM
+ -- Counter = 3 dwItem1:  (4456512)Desktop\Computer\Local Disk (C:)\Testing\DMTest\MoveTo\
+ -- Counter = 3 parent1: Desktop\Computer\Local Disk (C:)\Testing\DMTest\
+ -- Counter = 3 dwItem2: Is Empty
+Enter frmThread DoItemUpdate -- MoveTo - Updated
+Enter ExpTree OnItemUpdate -- MoveTo - Updated
+Located Parent Node DMTest of Item C:\Testing\DMTest\MoveTo
+Leave WndProc -- Counter = 3

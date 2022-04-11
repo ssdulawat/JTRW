@@ -1,0 +1,1657 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+<link href="../Styles/global.css" type="text/css" rel="stylesheet" />
+    <title>ChangeLog For Version 2.14 And Creation of Version 3.00</title>
+    <style type="text/css">
+        .style1
+        {
+            width: 9%;
+            height: 20px;
+        }
+        .style2
+        {
+            width: 90%;
+            height: 20px;
+        }
+    </style>
+ </head>
+<body>
+<!-- Insert NavBar -->
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ExpLib_Index.htm">ExpTreeLib Index</a>&lt;--
+	ChangeLog For Version 2.14 And Creation of Version 3.00
+	--&gt;<a href="../ExpDemo/ImprovingResponsiveness.htm">Improving Responsiveness</a>
+	</p>
+<!-- End Insert NavBar -->
+<h2><a id = "BkMrk_1">ChangeLog For Version 2.14</a></h2>
+    <div style="text-align: left">
+        <table style="width: 100%">
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/25/2007</td>
+                <td style="width: 90%">
+                    Create Solution by copying Version212</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/25/2007</td>
+                <td style="width: 90%">
+                    Note that LinkFile Class and CShItem.GetLinkTarget are new, undocumented 
+                    additions to V212 and are also in V214. Added html comments to 
+                    CShItem.GetLinkTarget.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/25/2007</td>
+                <td style="width: 90%">
+                    Added Invoke logic to handle CShItemUpdate events in frmDragDrop. This will be 
+                    required to process UpdateLoop detected changes since the update loop and 
+                    therefore all events raised in response to observed changes will be running on a 
+                    different Thread. Probably not needed in Exptree itself since normal Windows 
+                    Notify messages seem to be generated for all Folder related changes.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/26/2007</td>
+                <td style="width: 90%">
+                    Added some html comments to ExpTree</td>
+            </tr>
+            <tr>
+                <td style="width: 9%; height: 18px;" valign="top">
+                    02/26/2007</td>
+                <td style="width: 90%; height: 18px;">
+                    Added Public Property SelectedItem to frmDragDrop</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/26/2007</td>
+                <td style="width: 90%">
+                    Modified the update/refresh private method of CShItem used to handle UPDATEDIR 
+                    messages so that its new signature is: 
+                    <pre style="padding-top: 1pt; padding-bottom: 1pt">Public Function UpdateRefresh(Optional ByVal UpdateFiles As Boolean = True,
+                              Optional ByVal UpdateFolders As Boolean = True) As Boolean</pre>
+                    this now can be used for any situation where a need exists to refresh the 
+                    content of the internal CShItem tree, raising events for Add/Remove, etc actions 
+                    that need to be reflected in the GUI.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/26/2007</td>
+                <td style="width: 90%">
+                    Created the FileWatch class to periodically scan the Folder represented by the 
+                    SelectedItem of the owning form/control. Scan interval and &quot;owner&quot; are 
+                    parameters to the constructor. At each interval, the routine calls 
+                    item.UpdateRefresh(True,False) to detect and reflect changes to the 
+                    SelectedItem. This class runs the update loop on a separate thread.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/26/2007</td>
+                <td style="width: 90%">
+                    Modified frmDragDrop to instantiate a FileWatch class. This is done the first 
+                    time through AfterNodeSelect. A non-intuitive hack, but OK for testing.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/26/2007</td>
+                <td style="width: 90%">
+                    Tested with FileWatch activated. It works. It reliably displays all changes in 
+                    the filesystem. Unfortunately, the activities of this class use a noticible 
+                    amount of the CPU. Monitoring System32 burns off about 50% of the CPU on my, 
+                    non-trivial, machine. Setting the interval up to 3 seconds reduces the overall 
+                    load, but it is still far too much when large dirs are monitored.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/26/2007</td>
+                <td style="width: 90%">
+                    Modified CShItemCollection to use IsReallyEqual rather than IsEqual for certain 
+                    .Contains operations</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/26/2007</td>
+                <td style="width: 90%">
+                    Added &lt;Flags&gt; attribute to Notify related Enums in Enums.vb.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/27/2007</td>
+                <td style="width: 90%">
+                    Deactivated the instantiation of the FileWatch class and started a more 
+                    extensive investigation of the original problem (SaveAs and other application 
+                    changes to the file system not causing appropriate messages to be generated).</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                </td>
+                <td style="width: 90%">
+                    OBSERVATIONS:&nbsp;
+                    <ul>
+                        <li>SaveAs ops will, under some circumstances, generate an UPDATEDIR message which 
+                            will cause the GUI updates to occur. </li>
+                        <li>UPDATEDIR is the only message that such ops generate that actually refer to the 
+                            Folder in which the change was made. Many, many other messages are generated 
+                            refering to the History Folder. </li>
+                        <li>The sequence: in WinExp, double click on .txt file. in Notepad (or Word for .doc 
+                            files), SaveAs. Will almost always cause an UPDATEDIR to be generated and seen 
+                            by CShItemUpdater. </li>
+                        <li>In one observation, the above sequence did not generate an UPDATEDIR, and WinExp 
+                            ALSO did not properly reflect the change. </li>
+                        <li>In the above case, rightclick-&gt;Refresh in WinExp DID generate an UPDATEDIR and 
+                            both WinExp and ExpTree showed the newly created file. </li>
+                        <li>The sequence: in ExpTree, double click on .txt file. in Notepad, SaveAs. Will 
+                            sometimes cause an UPDATEDIR message and sometime not. </li>
+                        <li>For a particular debug session, including multiple separate runs of ExpTree, 
+                            once you get one UPDATEDIR for a SaveAs, you will continue to get them. </li>
+                        <li>Until you get the first UPDATEDIR, you will never get one over multiple runs in 
+                            multiple Folders. </li>
+                        <li>The Refresh in WinExp seemed to inspire correct behavior over multiple runs. </li>
+                        <li>In limited testing, so far, a Release version of ExpTree behaves just like the 
+                            Debug ver. Removal of some debugging code seems to have improved the likelyhood 
+                            of UPDATEDIR messages. </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/28/2007</td>
+                <td style="width: 90%">
+                    Inserted Calum's suggested fix to CShItem to ensure that BrowseTo and 
+                    FindCShItem will look for files in the Desktop.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/28/2007</td>
+                <td style="width: 90%">
+                    Evaluated Calum's suggestion re: Move Files in CShItem.Update. Decided that the 
+                    suggested change was not needed.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/01/2007</td>
+                <td style="width: 90%">
+                    Added Thumbnail related Enums to Enums.vb to match Calum's version.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/01/2007</td>
+                <td style="width: 90%">
+                    Fixed GUID declaration in ShellDll.vb to match Calum's version (which was 
+                    correct).</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/01/2007</td>
+                <td style="width: 90%">
+                    Made appropriate changes needed for proper reference to the new GUID name.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/01/2007</td>
+                <td style="width: 90%">
+                    Added declaration of IID_IExtractImage GUID to match Calum's version.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/01/2007</td>
+                <td style="width: 90%">
+                    Added gdi32 Dll Declarations to ShellDll to match Calum's.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/01/2007</td>
+                <td style="width: 90%">
+                    Added MakeDragListFromPtr region to ShellHelper.vb to match Calum's</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/01/2007</td>
+                <td style="width: 90%">
+                    Added RemoveHandler statements to ClvDropWrapper HandleDestroyed code as per 
+                    Calum.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/01/2007</td>
+                <td style="width: 90%">
+                    Deleted a number of commented out code lines, especially from ExpTree. Most of 
+                    these lines contained code pertaining to Refresh operations, no longer needed 
+                    because of WM_Notify related changes.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/01/2007</td>
+                <td style="width: 90%">
+                    Deleted dead Sub New routines from CShItem. Added more html comments.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/01/2007</td>
+                <td style="width: 90%">
+                    Modified ShellHelper.GetIDropTarget to not return targetptr, not needed or 
+                    required.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/01/2007</td>
+                <td style="width: 90%">
+                    Modified ShellHelper.CanDropClipboard to accomodate change.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                </td>
+                <td style="width: 90%">
+                    Some small number of changes that were not added to this list. Most time was 
+                    spent on documentation or unrelated efforts.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/15/2007</td>
+                <td style="width: 90%">
+                    Modified CShItemCollection to wrap a Syncronized ArrayList rather than a plain 
+                    ArrayList.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/15/2007</td>
+                <td style="width: 90%">
+                    Added SyncLock code to CShItemCollection.ToArray and .CopyTo. May not be needed, 
+                    but ...</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/15/2007</td>
+                <td style="width: 90%">
+                    Changed CShItem.Directories and CShItem.Files to return an Array of CShItems. 
+                    The CShItemCollection should never be exposed outside of ExpTreeLib.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/15/2007</td>
+                <td style="width: 90%">
+                    Added Friend Properties DirectoryList and FileList to CShItem. These do return 
+                    CShItemCollection as do prior versions of Directories and Files. Needed for 
+                    CShItemUpdater.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/15/2007</td>
+                <td style="width: 90%">
+                    Made CShItemCollection Friend vs Public.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/15/2007</td>
+                <td style="width: 90%">
+                    Made appropriate fixes to ExpTree and both Demo Forms to accomodate the new 
+                    return values.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/16/2007</td>
+                <td style="width: 90%">
+                    More xml comments.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/16/2007</td>
+                <td style="width: 90%">
+                    Reinstated RefreshTree (as Private vs previous Public) to make ShowHiddenFolders 
+                    change dynamically.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/18/2007</td>
+                <td style="width: 90%">
+                    Added class StringLogicalComparer (extracted/translated from CodeProject) which 
+                    sorts Strings containing numeric portions in natural numeric order. This means 
+                    that strings: &quot;a1&quot;, &quot;a101&quot;, &quot;a3&quot; will sort as: &quot;a1&quot;, &quot;a3&quot;, &quot;a101&quot;. This emulates 
+                    Windows Explorer ordering.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/18/2007</td>
+                <td style="width: 90%">
+                    Modified CShItem.CompareTo to use the new class.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/18/2007</td>
+                <td style="width: 90%">
+                    Found and fixed bug introduced by changing return of CShItem.Files to return an 
+                    Array.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/18/2007</td>
+                <td style="width: 90%">
+                    Found case where using IsReallyEqual in CShItemCollection.Contains is 
+                    inappropriate. Changed back to use IsEqual. Case was Rename a Selected Folder 
+                    then Delete a file from that Folder. IsReallyEqual would not find the file 
+                    during Delete processing so GUI was not notified. IsEqual would find file so 
+                    updating and GUI notification done correctly. Since original change was for Save 
+                    case, in which only ModifiedDate would change, IsEqual seems to be the lesser of 
+                    two evils. Typically, we do not receive a WM_Notify for the Save anyhow.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/18/2007</td>
+                <td style="width: 90%">
+                    Small amount of additional testing -- in some cases, we do get all needed 
+                    messages for a Save operation, and the net result is the correct one. I give up, 
+                    I have seen it work and not work with no identifiable cause for either.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/19/2007</td>
+                <td style="width: 90%">
+                    Removed the IsSharePoint property at Calum's request.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/19/2007</td>
+                <td style="width: 90%">
+                    Copied/Modified Calum's ExpList code for a ContextMenu in frmDragDrop.lv1 code 
+                    (displays a different ContextMenu when a non-Item area is clicked in the 
+                    ListView. Mostly works, but has some irregularities, even with ColumnSorting 
+                    removed.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/20/2007</td>
+                <td style="width: 90%">
+                    Removed the above mentioned portion of ContextMenu processing. If I need this 
+                    level of features, I'll just use Calum's ExpList.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    04/10/2007</td>
+                <td style="width: 90%">
+                    Incorporated Calum's changes to ExpTree (Before and After LabelEdit) and to 
+                    CShItemUpdater (WndProc)</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    04/10/2007</td>
+                <td style="width: 90%">
+                    Added the next two changes (*) from old V300 where they were initially 
+                    introduced &amp; tested.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    04/05/2007</td>
+                <td style="width: 90%">
+                    *Added GlobalLock and GlobalUnlock API definitions to ShellDll.vb. These are 
+                    required for GetCShItemsFromClipboard. These must be used when dealing with 
+                    STGMEDIUM.hGlobal when processing IDataObjects with CIDA data (or any other 
+                    HGLOBAL handles).</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    04/05/2007</td>
+                <td style="width: 90%">
+                    *Added GetCShItemsFromClipboard and ClipboardContainsCShItems to ShellHelper.vb. 
+                    I do not use them, but Calum does use GetCShItemsFromClipboard in standalone 
+                    ExpList Drop operations. Note that &quot;Clipboard&quot; is a bit of a misnomer since both 
+                    handle IDataObjects from any source, specifically from Drag/Drop ops.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/13/2008</td>
+                <td style="width: 90%">
+                    Found bug: Modified CShItem.BrowseTo, .FindCShItem, and .MakeFolderFromBytes to 
+                    ensure that DeskTopBase, and thus the entire internal tree has been initialized. 
+                    The docs say that the app must call GetDeskTop before doing anything, but this 
+                    is not enforceable. While testing a change from Calum, I referenced GetCShitem 
+                    without calling GetDeskTop and discovered the problem.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/13/2008</td>
+                <td style="width: 90%">
+                    Added Public Function IsVistaOrAbove to return True if system is &gt;= 
+                    OS.Version.Major 6</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/13/2008</td>
+                <td style="width: 90%">
+                    Added code to CShItem to keep and initialize private shared field VistaOrAbove 
+                    using the above function.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/13/2008</td>
+                <td style="width: 90%">
+                    Fixed CShItem.Dispose to reset m_Folder as per Calum's correction. Also fixed 
+                    CShItem.CompareTo to catch a possible error as per Calum.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/13/2008</td>
+                <td style="width: 90%">
+                    Added Public Shared ReadOnly Property IsVista as per Calum.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/13/2008</td>
+                <td style="width: 90%">
+                    Added code to ErrorHandling in GetContents to allow for a normal Sharepoint 
+                    return as per Calum.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/13/2008</td>
+                <td style="width: 90%">
+                    Minor mods to ShellDll to make it match Calum's version.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/13/2008</td>
+                <td style="width: 90%">
+                    In ShellHelper, replace extract CShItem from &quot;Clipboard&quot; routines with renamed 
+                    and highly similar &quot;DataObject&quot; routines from Calum's version. They were his to 
+                    begin with and are used in ExplorerControls, but not ExpTreeLib.These are 
+                    referred to above in the 04/05/2007 entry.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/13/2008</td>
+                <td style="width: 90%">
+                    Added Calum's mod to CtvDropWrapper which allow a treeview to be shown multiple 
+                    times in a modal dialog.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/13/2008</td>
+                <td style="width: 90%">
+                    Added Calum's mod to ExpTree which fixes a bug when the treeview is shown 
+                    multiple times in a modal dialog.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%; height: 18px" valign="top">
+                    2/15/2008</td>
+                <td style="width: 90%; height: 18px">
+                    Installed Vista on separate partition, installed VS2005 under Vista, checked 
+                    GetCShItem(ID) code that was Vista specific from Calum. Found that original was 
+                    the only one that works under Vista, just like all previous Windows versions. 
+                    Reverted back to the original and sent note to Calum to that effect.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/22/2008</td>
+                <td style="width: 90%">
+                    Replaced the original JDP.Library.ExpTreeLib (from V2.0) with this version. 
+                    V2.14 remains the developmental version of this library.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/23/2008</td>
+                <td style="width: 90%">
+                    Readded CShItem.GetDirectories and CShItem.GetFiles to ease the conversion of 
+                    applications that use JDP.Library.ExpTreeLib.<br />
+                    For the same reason, I have retained ExpTreeLib as the RootNameSpace of this 
+                    library, rather than using the more proper JDP.Library.ExpTreeLib.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/23/2008</td>
+                <td style="width: 90%">
+                    Discovered bug in CShItem at line 500 or so in SetUpAttributes. It was 
+                    mis-identifying a Zip file as a Folder when called from CShItem.AddItem. In the 
+                    normal case, this did not matter since such files were screened out in 
+                    IsFolderRel.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/25/2008</td>
+                <td style="width: 90%">
+                    Reworked the directory structure and both the AssemblyName and RootNamespace in 
+                    the JDP.Library.ExpTree version to properly reflect the way I want both the 
+                    NameSpace, the .dll, and the Directory structure to be. This is guaranteed to 
+                    break some existing code. It certainly broke the Demo, which I fixed. In 
+                    general, Imports ExpTreeLib and similar statements have to be changed to Imports 
+                    JDP.Library.ExpTreeLib with whatever else in the Imports remaining unchanged. In 
+                    some cases, where elements of the Library are fully specified in the code, the 
+                    typical fix is to remove the full specification since the Imports statement 
+                    should take care of it.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    9/20/2008</td>
+                <td style="width: 90%">
+                    Discovered an error in CShItem.Update. Fixed in V214 and fixed in 
+                    JDP.Library.ExpTreeLib by overwriting CShItem here with new version from V214 
+                    and changing the Imports of the new version of CShItem.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    11/30/08</td>
+                <td style="width: 90%">
+                    Found a problem with the 9/20/08 fix. Would not update DisplayName, etc on a 
+                    rename of a file which did not involve moving to a new directory.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    12/10/08</td>
+                <td style="width: 90%">
+                    Modified frmDragDrop to support right-click on area not occupied by a 
+                    ListViewItem. Changed lv1_MouseClick to lv1_MouseUp, added code to handle 
+                    right-click in unoccupied area, uncommented/modified GetFolderMenu, modified 
+                    WndProc to handle &quot;New&quot; menu item processing. This last one took me a long time 
+                    to figure out that it had to be modified, and was the only real reason to do 
+                    this work anyhow (adding &quot;New&quot; capability).</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    12/12/08</td>
+                <td style="width: 90%">
+                    Modified lv1_MouseUp to pass array of all selected items to ContextMenu -- 
+                    allows bulk ops rather than just ops on 1 CShItem. Added SortLVItems and 
+                    IsWithin routines for (respectively) Adding &quot;Refresh&quot; to GetFolderMenu, etc and 
+                    a proper handling of the right-button down, move mouse out of ListView, release 
+                    button - which causes MouseUp when mouse moves back into ListView. Added calls 
+                    to these routines in the proper places.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    12/15/08</td>
+                <td style="width: 90%">
+                    Finally got the solution to the MouseUp firing at MouseEnter under a variety of 
+                    inappropriate circumstances. Calum had fixed it, perhaps by accident. At least I 
+                    thought he was doing MouseDown for other reasons - but that was the cure. See 
+                    remarks in frmDragDrop at top of ContextMenu Region for details.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    12/16/08</td>
+                <td style="width: 90%">
+                    Moved library to Win2K system and found two problems in going downlevel. OS's 
+                    prior to XP do not support XLarge Icons and, despite documentation, System32.dll 
+                    Version 5.x does not export SHGetRealIDL by name. Fixed SystemImageListManager 
+                    to bypass initialization of m_xlImageList unless XP or above, and included check 
+                    in GetIconIndex to bypass getting XLarge Icon when adding an Icon to the 
+                    ImageLists when m_xlImageList had not been initialized. Also modified 
+                    declaration in ShellDll.vb of SHGetRealIDL to alias it to #98, the proper 
+                    ordinal.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    1/2/09</td>
+                <td style="width: 90%">
+                    I had a need to Select Folders on my Creative Zen. The .Net FolderBrowserDialog 
+                    will not allow that. I then added Calum's BrowseForFolder component to the 
+                    library (after some conversion). Part of doing that involved also adding his 
+                    ControlStrings.resx. I did not add the German version of that .resx. It too 
+                    would not allow Selecting a non-FileSystem Folder, but I fixed the code so that 
+                    now it does. Problem -- the BrowseForFolder Component will not display in the 
+                    IDE???. It works fine at run-time -- it just won't display the actual component 
+                    in the IDE (reporting two errors). This is probably because the IDE displays the 
+                    Component without fully executing some of the code in the normal order (actually 
+                    it is Serializing/DeSerializing when it get the error).&nbsp; However, it does work 
+                    at run-time, so I left in in the Library. PS - BrowseForFolder will not display 
+                    its designer interface in Calum's project either.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    1/2/09</td>
+                <td style="width: 90%">
+                    Just to round the FolderBrowser question out, I developed a Form which does the 
+                    trick. The code of the Form is primarily copied from Calum's component. The Form 
+                    also works, and will display in the IDE. However, since it is a Form rather than 
+                    a Component, it is not possible to modify its unique properties in the IDE. So 
+                    -- A Component which displays properties in the IDE for modification, but won't 
+                    display the Designer View in the IDE, and a Form which will display in the IDE, 
+                    but does not allow for editing (via the Properties Editor) of its Properties.&nbsp; 
+                    Hmmm --- both are available in the Library. Both provide the same functionality 
+                    and appearance. I added calls to both to frmDragDrop under the Debug menu.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    1/17/09</td>
+                <td style="width: 90%">
+                    Added frmBasicTemplate to ExpTree_Demo. This provides a fully working Form which 
+                    may be useful in other projects which require a Form with an ExpTree and a 
+                    ListView, with room to add additional elements for other apps. This Form finally 
+                    gets the Icon Loading right -- no Threading but a mechanism for showing the 
+                    first 20 elements with Icons while the other Icons are loaded. Various 
+                    experiments showed that any other approach took longer -- in some cases orders 
+                    of magnitude longer.<br />
+                    Included in this Form is a new ListViewItemSorter compatible class. The new 
+                    class is much more compact, faster, and more intuitive to use. The class could 
+                    (should be?) extracted from here and added to JDPLibrary since it is a major 
+                    advancement in its own right.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    1/27/09</td>
+                <td style="width: 90%">
+                    Replaced frmBasicTemplate with frmTemplate, an improved version. The column 
+                    sorter class referenced above was completely replaced with LVColSorter which is 
+                    a part of JDPLibrary. LVColSorter has some of the best parts of the class 
+                    referenced above, but is a based on a different approach which simplifies use 
+                    and improves efficiency.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    06/25/09</td>
+                <td style="width: 90%">
+                    Was notified by Joan Charmant that ASUS Eee Storage created a &quot;Folder&quot; that 
+                    caused an InvalidCastException in CShItem. Joan was using the published version 
+                    and provided a workaround which I investigated and found to be good. Posted in 
+                    Forum.<br />
+                    Testing with this version against ASUS Eee Storage showed that InvalidCast 
+                    occurred here as well (no surprise). Fixed this version's code in CShItem to 
+                    handle this case. Since I downloaded and installed the ASUS code, all of my 
+                    projects which use this library immediately broke. Had to add this fix to 
+                    JDP.Library.ExpTreeLib in order to get them to work again.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    06/26/09</td>
+                <td style="width: 90%">
+                    In testing the InvalidCast fix, I discovered that ExpTree would throw a 
+                    NullReferenceException when browsing thru certain Control Panel nodes. This is 
+                    not related to the InvalidCast problem. Changed CShItem Directories and Files 
+                    properties to return an empty array rather than Nothing for Browsed, non-Folder 
+                    Items. These certainly occur in certain Control Panel items and it is better (it 
+                    works) to return an empty array rather than Nothing.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    12/11/09</td>
+                <td style="width: 90%">
+                    Changed GetContentRel and the Property HasSubFolders to fix problems with 
+                    compressed (zip, etc) files occurring in Vista and Windows7. Corresponding 
+                    changes have been made to V211Plus and Version214</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    12/12/09</td>
+                <td style="width: 90%">
+                    Fixed CShItem.GetFolder to no longer return a null Folder when BindToObject 
+                    returns a positive, but non-zero (S_OK) HR. Certain Network related shortcuts 
+                    (at least in XP) return a valid Folder with HR = 1. Also reverted HasSubFolders 
+                    to the original, saving some processing time at the cost of allowing nodes 
+                    containing no dirs but zip files to be Expandable in tv1.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    04/08/2010</td>
+                <td style="width: 90%">
+                    Minor revision to ASUS fix as suggested by Calum.
+                    </td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    09/21/2010</td>
+                <td style="width: 90%">
+                    Found a Console.Out.WriteLine statement in CSHItemUpdater. This causes stray &amp; 
+                    undesired output in any app that uses ExpTreeLib. Replaced it with a 
+                    Debug.WriteLine.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    11/28/2010</td>
+                <td style="width: 90%">
+                    Fixed <code>GetCShItem(ByVal ID As CSIDL)</code> to properly handle requests for 
+                    My Documents on Vista, Win7. Semi-related fix to ExpTree.vb 
+                    <code>tv1_BeforeLabelEdit</code> which is where problem manifested - because of 
+                    inefficient coding.<br />Fix has been sent to mailing list.<br />
+                    Rebuilt project as VS2008 in VS2008 dir rather than VS2005.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    12/15/2010</td>
+                <td style="width: 90%">
+                    Fixed frmDragDrop.GetFolderMenu to work correctly with Vista/Win7. See
+                    <a href="../NotesAndData/ForumQuestion.htm">here</a> and <a href="../NotesAndData/AnswerToNewForumQuestion.htm">
+                    here</a> 
+                    for detail. Also change in same routine to avoid memory leak.<br />
+                    Fix was sent to mailing list on 12/26/2010.</td>
+            </tr>
+        </table>
+<h2><a id = "BkMrk_2">Changes to Create Version 3.00</a></h2>
+        <table style="width: 100%">
+            <tr>
+                <td style="width: 9%" valign="top">
+                    04/02/2011</td>
+                <td style="width: 90%">
+                    Added ControlDropWrapper to ExpTreeLib to serve as a wrapper for controls other 
+                    than ListView and TreeView. Added frmDragToControl to develop and test 
+                    ControlDropWrapper.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    10/11/2011</td>
+                <td style="width: 90%">
+                    Spent a week or so looking at improving the responsiveness of the various Demo 
+                    Forms when asked to display very large and/or Remote Folders. Most of that work 
+                    is documented starting <a href="../ExpDemo/ImprovingResponsiveness.htm">
+                    here</a>. However, certain elements of the results of that work dictated changes 
+                    to the CShItem Class. Changes are:
+                    <ul>
+                        <li><b>This is a Breaking Change</b> - Discovered that the CShItem <code>Attributes</code> 
+                            Property is not defined as it should be. Specifically, it contains the SFGAO 
+                            definition of Attributes, <b>Not</b> the FileAttributes that any rational user 
+                            would expect. I modified that by making CShItem.Attributes a Fill on Demand 
+                            property like all the other Properties whose Value is obtained from a 
+                            FileInfo/DirectoryInfo - all at once upon request for any of them. The new 
+                            definition of CShItem <code>Attributes</code> is now the expected 
+                            FileAttributes. This eliminates the need to use the <code>GetAttr</code> 
+                            Function which costs additional, unnecessary time.</li>
+                        <li>Added the RO Property <code>SFGAO_Attributes</code> which exposes the same thing 
+                            as the old definition of CShItem Attributes.</li>
+                        <li>Added the RW Property <code>Tag</code> to CShItem. It is defined to be any 
+                            Object.</li>
+                        <li>Added the Class <code>ShellDll.ShellAPI.W32Find_Data</code> and several 
+                            additional API declarations to define and support FindFirstFile/FindNextFile. 
+                            This is a more efficient way to obtain File Length and Date information, if and 
+                            only if all information is gathered in one pass over FFF/FNF. See frmThread for 
+                            how to use.</li>
+                        <li>Reworked the CShItem <code>GetItems</code> method such that when called when 
+                            m_Files and/or m_Directories have not been initialized only one pass over 
+                            GetContents is required. A typical call might occur after a Node has been 
+                            selected in the TreeView and both m_Files and m_Directories must be filled. 
+                            Small improvement in time to accomplish the request. See frmThread for usage.</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    10/22/2011</td>
+                <td style="width: 90%">
+                    Modified CShItem.to not throw an exception when BindToFolder returns an error on 
+                    certain Virtual Folders (Win7 and maybe Vista). It now leaves m_Folder as 
+                    Nothing. This change is finished by modification to CShItem.GetContents to 
+                    return an empty (.Count=0) CShItemCollection when m_Folder is Nothing. Folders 
+                    that have this problem include the &quot;History&quot; Folder and certain others like it. 
+                    This actually takes the ASUS fix to a greater level of reliability. </td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    10/22/2011</td>
+                <td style="width: 90%">
+                    Started the creation of new Version 3.00 by creating the appropriate Folders in 
+                    ExpTreeTest, copying ExpTreeTest\Version214 to the new Folder, removing all SHFB 
+                    related Files/Folders from V3.00, Deleting all excluded files from V3.00, and 
+                    deleting frmExplorerLike and frmDragDrop from V3.00. </td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    10/22/2011</td>
+                <td style="width: 90%">
+                    Started major review of XML comments in conjunction with a new SHFB project to 
+                    properly document the Library into a .chm Help file. Of necessity this also 
+                    includes a certain amount of code review. Becoming more interested in writing a 
+                    new CodeProject submission based on V3.00.<br />
+                    Fully removed all vestiges of the FileWatch Class.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    10/29/2011</td>
+                <td style="width: 90%">
+                    This is <b>not a Breaking Change</b>. IconIndexs obtained the way the previous 
+                    docs said will still return the proper IconIndex. IconIndexs obtained the way a 
+                    rational person would get them will also now work correctly.<br />
+                    Rationalized IconIndex management by adding two new Friend Properties to 
+                    CShItem; <code>IconIndexNormalOrig</code> and <code>IconIndexOpenOrig</code> to 
+                    hold the original IconIndexs as obtained from ShGetFileInfo. These are <b>not</b> 
+                    the ones used to display Icons on the TreeView or ListViews and for other 
+                    display purposes. For those purposes, I have redefined <code>IconIndexNormal</code> 
+                    and <code>IconIndexOpen</code> - which now have the IconIndexs that <b>are</b> 
+                    used for those purposes. This also involved a change in SystemImageListManager 
+                    so that it now looks for ShGetFileInfo obtained IconIndexs in the new &quot;Orig&quot; 
+                    Properties.<br />
+                    While doing this, I noticed that the old mechanism for keeping a standard 
+                    &quot;Folder Open&quot; IconIndex could not work since it had lost some of the setting 
+                    code and wasn't being hit anyhow, so removed all vestiges of that code.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    11/03/2011</td>
+                <td style="width: 90%">
+                    Finished up a review of XML comments and code. Added missing&nbsp; comments, fixed 
+                    comments that did not match the current state of the code, removed dead code, 
+                    etc. During this same period, created extensive HTML documentation for 
+                    ExpTree_Demo Forms. Reworked certain areas of frmThread to centralize the 
+                    creation and updating of ListViewItems. This was primarily to ease the 
+                    modification of the ListView displayed items to suit a using application. This 
+                    cost some complexity in the other code, but is now much easier to modify. 
+                    Finally got the IconIndex setting right in all cases.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/02/2012</td>
+                <td style="width: 90%">
+                    Over the past week or so, looked again at optimization. This time the focus was 
+                    on remote Folders which contain multiple sub-Folders. For my testing purposes, I 
+                    used a Folder with 2000 empty Folders on WHS1. The issue was brought to my 
+                    attention via the CodeProject Forum. In both cases, the original questions were 
+                    relative to V2.11, but caused me to look at how V2.14/V3.00 handled the same 
+                    situation.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/03/2012</td>
+                <td style="width: 90%">
+                    Fixed bug in ExpTree.ShowHidden Property which caused Exception on Startup when 
+                    set to False</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/04/2012</td>
+                <td style="width: 90%">
+                    Modified ExpTree to call the dll method SetWindowTheme for the TreeView. This 
+                    will give the TreeView the appearance of the Windows Explorer TreeView on the 
+                    system that ExpTree is running on - looks like Vista/Win7 when running on those 
+                    OSes.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/05/2012</td>
+                <td style="width: 90%">
+                    Found that setting ShowHidden to False in the IDE would cause an exception on 
+                    startup. Fixed that.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/08/2012</td>
+                <td style="width: 90%">
+                    Finished Remote Folder access Optimization. Made CShItem.HasSubFolders Property 
+                    a Fill on Demand Property. It can take excessive time on Vista/Win7 and should 
+                    not be queried for unless asked for.<br />
+                    Changed ExpTree.MakeNode to not use HasSubFolders to determine if a dummy node 
+                    should be inserted to allow Expansion. Original code used both HasSubFolders and 
+                    item.Directories.Length to make this determination. See
+                    <a href = "../ExpDemo/OptimizingFolderReference.htm">here</a> for discussion of 
+                    this optimization.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    02/12/2012</td>
+                <td style="width: 90%">
+                    Fixed bug in dynamic update code in frmThread - introduced when updating code 
+                    for using RefreshLvi instead of MakeLVI on Update change to file. Also ensured 
+                    that CShItem.Tag was cleared after RefreshLvi was done with it (only clears if 
+                    Tag is W32Find_Data). Avoids stale data on update change to an Item.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/15/2012</td>
+                <td style="width: 90%">
+                    Modified LVColSorter to ensure that the Sort Glyph was cleared when assigning a 
+                    new LVColSorter to a ListView.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/15/2012</td>
+                <td style="width: 90%">
+                    Modified CShItem.FillDemandInfo to use a W32_FindData if it is available in the 
+                    .Tag. This simplifies frmThread.RefreshLvi and is a bit cleaner. It also Clears 
+                    the .Tag once it is done with it, so RefreshLvi doesn't have to. New method is 
+                    to use BackgroundWorker to obtain W32_FindData and store it in the associated 
+                    CShItem.Tag (just as always) then when getting Length, Dates, Attributes from 
+                    CShItem, it will use and clear the W32_FindData as its info source rather than 
+                    File/DirectoryInfos. This substantially simplified the code in the C# version of 
+                    frmThread and also removed late binding from RefreshLvi in the VB version.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/15/2012</td>
+                <td style="width: 90%">
+                    Fixed a problem that occurred in frmThread when the SafeFindHandle could not be 
+                    obtained (Handle.IsInvalid). This happens in certain Windows dirs (eg Recent) 
+                    for reasons I have not even tried to determine. Note that in all observed cases, 
+                    File/DirectoryInfo actually still work. Undoubtedly this is why the actual .Net 
+                    Classes do not use FFF/FNF after XP.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/16/2012</td>
+                <td style="width: 90%">
+                    Finished with the C# version of frmThread in its own Solution. Works the same as 
+                    the VB version in all tests on Win7 64 bit. Untested elsewhere, but should be 
+                    fine. Learned a few more reasons why I prefer VB.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    03/17/2012</td>
+                <td style="width: 90%">
+                    Reworked LVColSorter to remove the assumption that the caller actually followed 
+                    the rules (also because it is possible to call it while the BackgroundWorker is 
+                    still populating the ListView. Also it was a bad idea to base the &quot;sortability&quot; 
+                    of a column on the contents of the first column on the first call. The resultant 
+                    sort will run slower than the original, but will deal properly with the edge 
+                    cases. Note that the original would always work correctly with the Demo Forms 
+                    because of the nature of the data.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    04/14/2012</td>
+                <td style="width: 90%">
+                    Revisited the HasSubFolders question using V2.12 (on VM) as codebase. Made the 
+                    following changes:<br />
+                    <ul>
+                        <li>Added Shared Private vars to CShItem for SystemName and DriveDict (a dict of 
+                            DriveInfos indexed by Drive root (eg &quot;C:\&quot;)</li>
+                        <li>Added the Public ReadOnly Boolean Property IsRemote. IsRemote is False if the 
+                            Item is Local, True if it is Remote.</li>
+                        <li>Modified CShItem.SetupAttributes to Fill DriveDict as Disks (m_Disk=true) as 
+                            CShItems created for them. This is to keep the DriveType around. Mapped Drives 
+                            have DriveType of &quot;Network Drive&quot; and thus designate Remote Items. Also modified 
+                            CShItem.SetupAttributes to set the IsRemote Property. An item is Remote if it is 
+                            Mapped or if it has a UNC that does not contain the SystemName.</li>
+                        <li>Modified CShItem.HasSubFolders to alway return True for Remote items. This 
+                            restores XP behavior to this attribute and can be a very substantial time 
+                            savings for Remote Folders since Vista/Win7 will do a costly check on Remote 
+                            Folders to determine the accurate setting of this attribute.</li>
+                        <li>Reworked ExpTree.MakeNode to properly use HasSubFolders. This almost amounted to 
+                            a reversion to the original code, but I now only validate Local Hidden Folders 
+                            for possibly having Hidden sub-Folders that are not correctly reported by 
+                            HasSubFolders (probably only occurs on XP systems).</li>
+                    </ul>
+                    <p>
+                        Once all this was tested, I updated all 2.12 copies (VS2008, VS2005, on V1 and 
+                        VM) to include the new code. I also moved the code to V1's copy of Version 3.00. 
+                        I also sent the revised version of 2.12 to Mario, whose innocent question 
+                        inspired this new investigation. A remaining question is why does Expanding the 
+                        test WHS1 Folder on any 2.12 run in about 0.5 seconds while the same thing on 
+                        V1's Version 3.00 take about 1 second.
+                    </p>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    04/16/2012</td>
+                <td style="width: 90%">
+                                        Noted that, as a result of the 4/14 changes, it was taking an excessive amount 
+                                        of time to Expand the Computer node of the TreeView. Tracked that down to the 
+                                        use of DriveInfo to obtain the &quot;NetWork Drive&quot; status of Mapped Drives. Reworked 
+                                        CShItem to obtain that information in a different way. DriveDict now has a 
+                                        Boolean Value - True if Remote, False otherwise. The test in SetUpAttributes was 
+                                        modified to use the revised DriveDict to set IsRemote. Delay in expansion was 
+                                        eliminated. The code for setting DriveDict could be simplified if I could be 
+                                        assured that ShGetFileInfo returned a CultureInvariant string for TypeName. All 
+                                        work was done on V1 in Version 3.00. This change also made to Version 2.12 on 
+                                        V1.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    04/24/2012</td>
+                <td style="width: 90%">
+                    Reworked use of CShItem.Tag in the optimization process to use CShItem.W32Data, 
+                    a new Property. Retained .Tag for app use, but for all optimization use, use 
+                    W32Data. Fixed in frmThread and in the C# version as well as the corresponding 
+                    changes in CShItem.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    05/09/2012</td>
+                <td style="width: 90%">
+                    Removed all use of TreeViewNodeSorter from ExpTree. Not needed and adds 
+                    potentially huge delay when adding a node with large number of sub-nodes to the 
+                    TreeView.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    05/15/2012</td>
+                <td style="width: 90%">
+                    Reworked the IsRemote setup in SetUpAttributes when testing showed that contrary 
+                    to the Docs, IO.Path.GetPathRoot(m_Path) will throw an exception when presented 
+                    with a long path that GetDisplayNameOf made legal by using 8.3 names for some of 
+                    the directories! IO.Path.GetPathRoot is not supposed to do anything to reference 
+                    the actual components of the Path. It should be strictly String manipulation!
+                    See <a href="../NotesAndData/LongPathNames.txt">here</a> for explanation.<br />
+                    Error on Path = 
+                    C:/Testing/XXXXXA~1/YYYYYY~1/ABCDEF~1/ZZZZZZ~1/abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890123456789012345678901234.txt 
+                    which is only 138 chars long.<br />
+                    Same problem arises with File.Exists - no error thrown to CShItem, but caused 
+                    multiple Exceptions within the .Net Class. Limited damage by change to 
+                    FillDemandInfo.</td>
+            </tr>
+            <tr>
+                <td valign="top" class="style1">
+                    05/18/2012</td>
+                <td class="style2">
+                    Some regression testing showed that copying a larger (13MB) directory to a dir 
+                    that was currently expanded/selected in TreeView and ListView was not generating 
+                    a correct UPDATEDIR message. Actually, CShItemUpdater received only an UPDATEDIR 
+                    message, but it was lacking a valid PIDL to indicate which Folder to Update!. 
+                    Copying smaller Folders generates a number of messages, all of which are 
+                    correct! Much investigation, no answer. Build the ChangeNotifyWatcher Win7 SDK 
+                    sample and put it to watching the same target Folder at the same time as 
+                    frmThread was also running with the target Node Selected. Sample gets a correct 
+                    UPDATEDIR, CShItemUpdater does not! Modified CShItemUpdater to use 
+                    SHChangeNotification_Lock (and UnLock) API, which is now recommended. Same 
+                    result - invalid UPDATEDIR and everything else works as it should! As part of 
+                    this, added the needed API declarations to ShellDll.vb.<br />
+                    During the above, noted that the Refresh menu command of the ListViews in 
+                    frmThread and frmTemplate did nothing useful. Fixed that by calling 
+                    LastSelectedCSI.UpdateRefresh in the GetFolderMenu routine in both Forms, which, 
+                    naturally enables both ExpTree and the ListView to pick up the info lost because 
+                    of the invalid UPDATEDIR. Also got rid of HoverSelect=True in frmThread's 
+                    ListView. Don't know how that got there but it was annoying.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    05/20/2012</td>
+                <td style="width: 90%">
+                    Figured out the problem with my observations of UPDATEDIR. For Async operations, 
+                    the reported DIR is the one being watched, not the one that needed the 
+                    UPDATEDIR!<br />
+                    Since I watch the Desktop, UPDATEDIR gave me the Desktop PIDL, which is 
+                    indistinguishable from a zero memory block and will always reported as an Empty 
+                    PIDL by IsPidlEmpty! This is the full explanation for the observed problem (not 
+                    processing UPDATEDIR notifications). This may be a change in behavior between XP 
+                    and Win7. I know that I seriously tested big Copies on XP and the code worked! 
+                    Now to fix this thing ...</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    05/21/2012</td>
+                <td style="width: 90%">
+                    A quick fix to CShItemUpdater let the UPDATEDIR be processed. However, the 
+                    original code in CShItem.UpdateRefresh that should handle it was working with 
+                    the assumption that only the reported Folder needed to be updated. Since the 
+                    reported Folder is the Desktop and the Notification did not actually report the 
+                    changed Folder, I had to change the code in UpdateRefresh to recursively walk 
+                    down the internal Tree to look for ALL changes to ALL KNOWN Folders and Files in 
+                    the Tree. Thank God I don&#39;t have to look at Folders that are not KNOWN to the 
+                    Tree.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    05/22/2012</td>
+                <td style="width: 90%">
+                    An artifact of the original EventDump routine which I was using to debug this 
+                    thing ensured that a couple of files frequently updated by Windows would 
+                    actually show up in the internal Tree (along with their Containing Folders). 
+                    This allowed me to detect that there was a problem in testing PIDLs for 
+                    equality. Investigation followed. </td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    05/23/2012</td>
+                <td style="width: 90%">
+                    Got the PIDL equality somewhat clear. Fixed up UpdateRefresh to do the right 
+                    thing - raise UpdateItem for items that match ILIsEqual but not AllBytesEqual. 
+                    This condition means that one of the embedded attributes has changed - typically 
+                    ModDate or Size.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    05/24/2012</td>
+                <td style="width: 90%">
+                    With a bit of tweaking to CShItem.Update,DoUpdateDir, and UpdateRefresh ensured 
+                    that CShItemUpdateType.Updated is raised for all Folders that are modified, 
+                    typically as a result of adding or deleting an Item contained in it. This will 
+                    (on Win7 NTFS at least) generate a UPDATEITEM message. This is guaranteed in the 
+                    UPDATEDIR case (on Win7 NTFS at least, though not on XP NTFS) as processed by CShItemUpdater. With 
+                    those tweaks working, I was also able to add Sorting of Items as displayed in 
+                    the ListView of frmThread and frmTemplate and in ExpTree. What this means is 
+                    that if an Item is created in a Folder that is displayed/expanded the new Item 
+                    will be properly positioned in the display.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    06/01/2012</td>
+                <td style="width: 90%">
+                    Revisited AreBytesEqual since it now is used in more cases. Found an error. 
+                    Fixed it. As a result of the 5/24/2012 changes, IsReallyEqual is no longer 
+                    called. Commented it out.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    06/03/2012</td>
+                <td style="width: 90%">
+                    Noted that with Win7 and Office 2007 (at least) a Save of a changed document 
+                    will only post an UPDATEITEM message for the containing Folder. This is similar 
+                    to behavior of older OSes and Office which might only post an UPDATEDIR. Made 
+                    change to CShItem.Update to deal with this. This is a better general solution to 
+                    handling UPDATEITEM messages as well.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    06/05/2012</td>
+                <td style="width: 90%">
+                    Found case where Expandability of TreeNode in an unexpanded node was not being 
+                    properly updated when Folder was Added or Deleted to/from the underlying Folder. 
+                    Whether or not a Dummy Node should exist on that Node needed to be retested on 
+                    an ItemUpdate of that Node. Fixed the omission.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    06/06/2012</td>
+                <td style="width: 90%">
+                    During the course of recent work I noticed that the files NTUSER.DAT and 
+                    ntuser.dat.Log1 were frequently updated causing an UPDATEITEM message. I 
+                    installed a filter in the Debug code to surpress further processing of those 
+                    updates. However, when UPDATEDIR messages were processed, the fact that the 
+                    files had changed was picked up and processed all the way thru raising Events to 
+                    the app. The question now was &quot;why are the files in &quot;C:\Users\username&quot; in the 
+                    tree at all? If they were not in the tree, then the UPDATEDIR processing would 
+                    not bother to look for changes to them <i>and</i> there was no reason for those 
+                    files to be in the tree. My concern was that Files were being placed in the tree 
+                    without any application reference to them! I tracked this down to the BrowseTo 
+                    method which was using GetItems to populate the tree as it was called by 
+                    GetCShItem to obtain the DesktopDirectory Folder (aka PERSONAL) which is done 
+                    as part of initializing CShItem while building the Desktop Folder. Fixed this by 
+                    having BrowseTo <i>only</i> look at (and populate the tree with) Files as a last ditch 
+                    effort. This will only be needed when GetCShItem is actually asked for a File. 
+                    Normal usage of GetCShItem is to get the CShItem of a Folder. By eliminating 
+                    this unnecessary populating of Files, UPDATEDIR will not search unnecessary 
+                    Files for updates. This also eliminated the need for the Debug filter - if the 
+                    changed item is not in the tree, then FindCShItem will not find it and no Event 
+                    notification will be Raised.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    06/08/2012</td>
+                <td style="width: 90%">
+                    Reviewed use of IntPtr.ToInt32. Changed to .ToInt64 where appropriate - in those 
+                    cases, will work just fine on 32-bit systems. Its&#39; use with SHGetFileInfo return 
+                    value is actually correct since the return value of that API call (as used here) 
+                    is going to be zero (for error) or non-zero for OK.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    06/11/2012</td>
+                <td style="width: 90%">
+                    Found bug in CShItemUpdater - Rename Folder had an inverted If 
+                    statement in WndProc. Fixed it.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    06/11/2012</td>
+                <td style="width: 90%">
+                    When testing/examining for the CShItemUpdater bug I noticed that Right-Click New 
+                    was no longer was no longer leaving the new Item in an Edit status - to allow a 
+                    Rename operation on the newly created item. Investigation showed that this was a 
+                    problem introduced with the change to allow new items to be placed in sort order 
+                    (rather than simply being added to the end of the ListView). Problem was that by 
+                    a calling SortLV on the following UpdateItem (for the LastSelectedCSI), the 
+                    item.BeginEdit state was being lost. (SortLV would clear and repopulate the 
+                    ListViewItems, thus clearing the Edit status). Fix is to restore the original 
+                    code which would discard the UpdateItem change notice. This leaves the newly 
+                    added items at the bottom of the list. Fixed that by Inserting the new Item in 
+                    its&#39; proper location at CREATE time. RENAME also required a similar change. 
+                    There is still a noticible flicker which is a very ugly repaint for large 
+                    Folders. To be investigated since an Insert should not require a full repaint of 
+                    the control, especially not one that takes that long. Diagnosis was complicated 
+                    by the fact that Edit status is also lost when the ListView loses Visiblility 
+                    (as when a Breakpoint is hit in Visual Studio, covering the ListView with VS&#39;s 
+                    window).</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    06/12/2012</td>
+                <td style="width: 90%">
+                    Fixed the bad flicker by changing instance.Update&#39;s handling of UPDATEITEM 
+                    message. Folders now gets no special handling - specificly, no call to either 
+                    UpdateRefresh or ResetChildren. This was a (largely unnecessary) attempt to 
+                    catch minor changes to some child&#39;s attributes. Anything major will be reported 
+                    with other messages and many UPDATEITEM messages for a Folder are paired with an 
+                    UPDATEDIR. Win7 raises UPDATEDIR in many more cases than XP.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    06/12/2012</td>
+                <td style="width: 90%">
+                    Revised ShowCounts in frmThread and frmThreadCS (frmTemplate doesn&#39;t need it) so 
+                    that it could usefully be called from the Dynamic Update code - and also added a 
+                    call to 
+                    it to that code.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    06/18/2012</td>
+                <td style="width: 90%">
+                    Testing on XP illustrated, once again, that there was a flaw in UpdateRefresh - 
+                    specifically that CShItemUpdate messages were not always posted in a useful 
+                    order - an Update of a Folder would occur before the Adds, Deletes, etc were 
+                    posted. The observed problem was that newly added Folders would not be shown in 
+                    correct sort order - sorting is only done on a CShItemUpdateType.Updated event. 
+                    Fixed that at end of UpdateRefresh by Raising another Update event for a Folder 
+                    if UpdateRefresh had posted changes. An error in that fix brought out that 
+                    certain Adds, Deletes, etc to the Desktop Folder would cause a (caught) 
+                    exception in ExpTree.GetTreeNode. Fixed those problems. Also made a few minor 
+                    fixes (deleting unnecessary Invalidates) to ExpTree update processing.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    06/21/2012</td>
+                <td style="width: 90%">
+                    Further testing. A problem showed up with the Recycle Bin. Selecting it would 
+                    cause a number of UPDATEDIR messages, each one of which would cause DoUpdateDir 
+                    to find an &quot;update&quot; in each entry in the Recycle Bin, each one of which caused a 
+                    ItemUpdate message to be generated and, possibly, to inspire more UPDATEDIR 
+                    messages. Fixed by skipping any UpdateRefresh for the Recycle Bin. Strangely 
+                    enough, at least on Win7, this effect was limited to the actual Recycle Bin, NOT 
+                    the individual &quot;RECYCLE.BIN&quot; on each Volume - all of which performed as expected 
+                    with no special handling.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    06/25/2012</td>
+                <td style="width: 90%">
+                    More testing. Noted that in some cases, ExpTree nodes were not being added in 
+                    the proper location (by sort order) during change notification. Exact 
+                    circumstance was, when a node had been expanded but susequently collapsed and a 
+                    new item was added (by creation or rename), then the new item would be placed at 
+                    the end of the node list. There was also an annoying repaint of the TreeView 
+                    which might take the currently selected node out of the viewport. This repaint 
+                    occurred when a newly added node was correctly placed (when the parent node was 
+                    expanded at the time of the add). Fixed the first problem by inserting the new 
+                    node at the correct location at add time (Add or Rename). This fixed the latter 
+                    problem as well since it was no longer necessary to call SortNodes at UpdateItem 
+                    time. This also removed an unhealthy dependence on actually receiving a 
+                    UpdateItem message - though recalc of &quot;expandable&quot; is still necessary at 
+                    UpdateItem time. More info: the recalc is required since a add or delete or 
+                    rename might have affected the need for a dummy node.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    06/27/2012</td>
+                <td style="width: 90%">
+                    Tested the 6/25 change on Vista and XP since there is a dependency on getting an 
+                    UpdateItem msg following a MKDIR or REMDIR. OK on Vista/Win7. Not OK on XP since 
+                    there is no UPDATEITEM msg posted by XP in MKDIR/REMDIR cases. Fixed in 
+                    CShItemUpdater.vb such that, in OS&lt;Vista case only, call Parent.Update if 
+                    Parent&#39;s Folders not initialized. This gives the desired results in all cases 
+                    (Node is or is not Expandable). Note: also tested vs a Remote Folder on WHS1. 
+                    Worked as expected. On Remote Folders, Folder is flagged as expandable when 
+                    first displayed (by design). Once that was correctly set by trying to expand a 
+                    Folder with no sub-Folders, all worked just as with Local Folder. Also tested 
+                    RecycleBin on XP. It is a little funny, but that is the nature of the beast 
+                    (click on a Folder in RecycleBin launches WinExp since such a Folder is not 
+                    really a Folder).</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    06/30/2012</td>
+                <td style="width: 90%">
+                    Some rather extreme usage in a beta test showed that under certain circumstance 
+                    no MKDIR msg was received when a number of Dirs were created in short order 
+                    within a single app method. In other tests, at most one MKDIR msg was received. 
+                    This manifested itself in a GetCShItem call following the creation of one of the 
+                    just created sub-Folders. This would only be a problem if and only if the parent 
+                    of a created Dir had already had its&#39; m_Directories initialized. By extension, 
+                    this means that there are probably cases when CREATE messages would also not be 
+                    received. Guarded against this problem in CShItem.Directories, CShItem.Files and 
+                    in CShItem.BrowseTo (which was where original problem showed up). These changes 
+                    all involved calling UpdateRefresh at the appropriate time to ensure that up to 
+                    date info was being used. This is similar to the code in Version 2.xx 
+                    where it was shown to not have an impact on performance although it causes more 
+                    UpdateRefresh calls than I am happy with.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    07/01/2012</td>
+                <td style="width: 90%">
+                    Discovered that in the case of secondary forms with an ExpTree being Closed that 
+                    the Form&#39;s Notification Event Handler was not being Removed when the Form was 
+                    Closed. This is also true in the case of a Main Form with an ExpTree, but it is 
+                    harmless in that case. Fault lay in the fact that the Event declared in CShItem 
+                    is a Shared Event. Handler removal in this case just does not happen without an 
+                    explicit RemoveHandler. Fixed by removing the Handles clause from the Handler 
+                    declaration, adding AddHandler and RemoveHandler statements at appropriate spots 
+                    in ExpTree, frmThread, frmTemplate, frmDragToControl and frmThreadCS.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    07/02/2012</td>
+                <td style="width: 90%">
+                    The 6/30 changes resulted in UpdateRefresh being called way too often. Not only 
+                    did this waste time, but it also caused some serious logic anomolies - some of 
+                    which could cause an exception (REMDIR would finally get a chance to Remove the 
+                    Item only after the Item had been removed by an UpdateRefresh). Most problems 
+                    originated with using the Directories Property (which as of 6/30 will do an 
+                    UpdateRefresh) instead of DirectoryList. Biggest culprit was FindCShItem - which 
+                    should never make a change, directly or indirectly. Tracked down all instances 
+                    in ExpTreeLib and either changed to DirectoryList or verified that Directories 
+                    was the appropriate one to use (mostly limited to BrowseTo). Testing in AX and 
+                    in the normal V300 tests it worked and had a rational number of UpdateRefresh 
+                    instances. </td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    07/05/2012</td>
+                <td style="width: 90%">
+                    While testing the recent changes, I noted a design problem of long standing. 
+                    Specifically, when a valid Drag DataObject was dragged to a ListView in one of 
+                    the Demo Forms AND the Folder that the ListView was showing had no content (and 
+                    therefore the ListView had no content), then the Drag would be refused 
+                    (pwdeffect = None). This was caused by the fact that ClvDropWrapper was 
+                    attempting to determine the Folder being shown in the ListView by examining the 
+                    contents of the ListView. No Content -&gt; unable to determine the default Folder 
+                    -&gt; no Drag accepted. Fix is to require the Form that contains the ListView keep 
+                    the ListView&#39;s .Tag set up with the CShItem representing the Folder being shown 
+                    (LastSelectedLvi). A corresponding change is made to CDropWrapper to use the 
+                    .Tag to determine the current default Folder. This will require mods to the 
+                    documentation!! All affected Demo Forms (frmThread, frmThreadCS, and 
+                    frmTemplate) were changed to implement this fix and were tested.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    07/08/2012</td>
+                <td style="width: 90%">
+                    While testing with the AX application, noticed a Deadlock occurring in frmThread 
+                    (actually a modified version which greatly increased chances of this happening). 
+                    Tracked down to an omission in BGW2_DoWork. A normal (not cancelled) exit from 
+                    this routine would not Set Event2 - instead it counted on RunWorkerCompleted to 
+                    Set Event2. This left a short window of time in which Event2.WaitOne in 
+                    AfterNodeSelect could be hit with Event2 in a Reset state. Once that happened, a 
+                    deadlock would occur since RunWorkerCompleted runs on the same GUI Thread. I fixed this and also added another test for 
+                    worker.CancellationPending to BGW2_DoWork. The change to frmThread that caused 
+                    this was a ExpTree1.SetRoot in the Load Handler which pretty much guaranteed 
+                    that AfterNodeSelect would be entered about the time that BGW2_DoWork was 
+                    completing the processing of the initial select of the Desktop.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    07/11/2012</td>
+                <td style="width: 90%">
+                    Review of Docs &amp; Code. Various updates to the Docs, primarily having to do with 
+                    recent CDropWrapper related changes.<br />
+                    During review, noticed that I had not migrated the fix to make AllowDrop on 
+                    ExpTree a working Property - Added to V2.12, but not in 3.00. Relearned again 
+                    why this is more difficult than it appears (VS does not change anything when you 
+                    set the Propery to False - and, in the case of a UserControl that means that it 
+                    will leave a setting of True in the Designer code even after setting it to False 
+                    in the IDE Property window). Trick is to delete that line in the Designer code 
+                    and set the UserControl Property to False, always. The added Property gets its&#39; 
+                    setting from the Form Designer code. In addition, you have to set, according to 
+                    that Property in both the Property Setter and in the HandleCreated Handler and 
+                    test for Handle creation in the Property Setter - the Form Property Setter is 
+                    executed BEFORE the TreeView Handle is created. All is explainable, but is very 
+                    convoluted.<br />
+                    While testing, noted that the IDropTargetHelper was reporting the wrong Target! 
+                    Drop and node colorization worked as intended but the Name of the Target was off 
+                    by one node in the Drag image display! Made change in CtvDropWrapper to fix 
+                    this.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    07/12/2012</td>
+                <td style="width: 90%">
+                    Finally addressed long standing aggro about how ExpTree handled Node expansion and 
+                    DragOvers at the top/bottom edges of the TreeView. Moved the top/bottom check 
+                    into the existant Timer.Tick code that was handling Node expansion. Adjusted 
+                    Timer.Interval to give more reasonable results. Not perfect, but better. WinExp 
+                    gets a little jumpy here as well. Real solution would probably involve separate 
+                    Timers, but this is good enough.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    07/13/2012</td>
+                <td style="width: 90%">
+                    Modified ExpTree.ExpandANode (both Overloads) to take an additional Optional 
+                    Parameter - SelectExpandedNode - which defaults to True. If False, the Selection 
+                    of the Expanded Node is suppressed. This is useful when all that is desired is 
+                    to Expand a Node in the TreeView (for example starting up with Computer (AKA My 
+                    Computer) expanded without causing a ExpTreeNodeSelected Event for the 
+                    expansion.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    07/14/2012</td>
+                <td style="width: 90%">
+                    Although the 6/21 change fixed the worst ReCycleBin problem, there was still the 
+                    problem of a user selecting it and thus causing Files and Directories Properties 
+                    to be called on it. This caused a direct call to UpdateRefresh(as of the 6/30 
+                    change). There are two problems here. 1) Folders in RecycleBin are not flagged 
+                    as Folders. 2)UpdateRefresh will be called twice (Once for Folders and Once for 
+                    Files) on the second pass, the AreBytesEqual test would flag many (all?) items 
+                    as changed. Delay followed!. Fixed #2 by bypassing the AreBytesEqual test for 
+                    the RecycleBin. Do not know how to fix #1 and don&#39;t care enough to find out.<br />
+                    Additionally, I decided that there was no reason for GetItems to use the 
+                    Directories and Files Properties when there were two good instance lists 
+                    (m_Files,m_Directories) to use. This speeded up populating the ListView when 
+                    RecycleBin was Selected (and potentially in many other cases).</td>
+            </tr>
+        </table>
+        <h2><a id = "BkMrk_3">Changes to Create Version 3.01</a></h2>
+        <table style="width: 100%">
+            <tr>
+                <td style="width: 9%" valign="top">
+                    08/22/2012
+                </td>
+                <td style="width: 90%">
+                    Added CShItem.GetFiles(Filter as String) This
+                    was in response to a question from a user who had used a similar routine in Version 2.11.
+                    Tested and it worked as expected. This is a much improved version relative to the 2.11 version of this code. 
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    08/26/2012</td>
+                <td style="width: 90%">
+                    User found bug in ExpTree. Adding a Folder to a never expanded Node would result in
+                    <b>only</b> that Folder showing up in the Tree. Refactored the code to populate 
+                    a TreeNode containing only a Dummy entry into the new sub PopulateNode. Called from 
+                    BeforeExpand and from InsertNode. InsertNode is called by Dynamic Update when a 
+                    new Folder is Created or a Folder is Renamed. The revised InsertNode fixed the 
+                    problem.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    11/03/2012</td>
+                <td style="width: 90%">
+                    Another user reported an ArgumentException when showing multiple Forms, each 
+                    using an ExpTree Control, from the same application. Following the users problem 
+                    statement, I was unable to reproduce the ArgumentException. However, in 
+                    precisely the same area of code that should have produced the ArgumentException, 
+                    I was able to set up conditions that would lead to a NullReferenceException. The 
+                    problem was related to the 07/02/2012 fix in that calling CShItem.Directories 
+                    would force an UpdateRefresh which may (in the test case, would always) would 
+                    Raise an Updated change notification. The handling of this depends on there 
+                    being a &quot;Dummy&quot; node in cases where the node is Expandable but UnExpanded. The 
+                    fix for this was to relocate one line of code in the new (as of 08/26/2012) 
+                    PopulateNode routine. The same relocation, in BeforeExpand, would be necessary 
+                    in V3.00, but that code was refactored for 3.01.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    11/04/2012</td>
+                <td style="width: 90%">
+                    Removed the &quot;DefaultValue&quot; attribute from the declaration for 
+                    ExpTree.StartupDirectory Property. This removes a long standing problem which 
+                    caused some real aggravation while getting an ExpTree control to show correctly 
+                    in the IDE and sometimes required the setting again of the Property at 
+                    Initialization. This has to do with how the IDE handles code generation for the 
+                    Designer. A user problem report caused me to look at this code which has been 
+                    unchanged since Version 1.0.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    11/05/2012</td>
+                <td style="width: 90%">
+                    User referenced in the 11/03/2012 fix reported that his problem occurred in 
+                    GetTreeNode and provided a fix. I added that fix.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    11/07/2012</td>
+                <td style="width: 90%">
+                    ExpTreeTest\Version301 Only!!! In order to regularize/correct my multi-version 
+                    mess, I built this version with V301 plus an extra project which contains the 
+                    instrumented version of frmThread plus all the various test methods and extra 
+                    test forms. Note that frmThread itself is the non-instrumented version 
+                    with all Debug statements (except for errors) removed or commented out. The Form 
+                    frmThread_TestVersion.vb is the same but with extra tests and instrumentations.</td>
+            </tr>
+        </table>
+<h2>Changes beyond Version 3.01</h2>
+        <table style="width: 100%">
+            <tr>
+                <td style="width: 9%" valign="top">
+                    &nbsp;
+   &nbsp; 05/11/2013</td>
+                <td style="width: 90%">
+                    A user/developer(Jens Madsen) reported that he had modified SystemImageListManager to 
+                    obtain, store, and provide Jumbo (256x256) Icons, but that he was having trouble 
+                    getting it to work for Overlay Icons. Specifically, when he tried to add such 
+                    Icon images to the Jumbo ImageList using ImageList_ReplaceIcon(...,-1,...) it 
+                    would always return -1 indicating an error. I had him send me his modified 
+                    version so I could look into the problem. He did so. His changes had also 
+                    improved the original routine such that it would handle XLIcons (48x48) better 
+                    than the original code, actually dealing with Overlays which the original would 
+                    not do. His code for XLIcons worked correctly and is the only reason for adding 
+                    this change to ExpTreeLib. His code for Jumbo Icons was identical (except for 
+                    the ImageList Handle for Jumbo rather than XL) to his code for XLIcons and 
+                    should work exactly the same, but did not. I experimented with this problem, 
+                    instrumenting the code and developing a modified frmTemplate to display Icons 
+                    from Large, XL, and Jumbo lists. I also searched the Internet for similar code 
+                    or reports of similar problems. The Internet search turned up almost nothing - 
+                    except for a statement that some files did not provide Jumbo Icons. I also found 
+                    that several people seem to have encountered this problem and asked for help 
+                    resolving the issue, but there were no answers to those requests.<br />
+                    <br />
+                    I discovered that I could create a local Jumbo Imagelist (256x256) and could 
+                    fill that list, using the same code as Jens' from SystemImageListManager. I mean 
+                    the exact same code (which required making a number of Private/Friend 
+                    Methods/Properties into Public so they could be accessed by the modified 
+                    frmTemplate). I did not use the standard .Net ImageList methods, I used the more 
+                    primative methods as did Jens' code. The local ImageList would accept and return 
+                    proper overlaid Icons. Of course some files did not provide Jumbo Icons, but the 
+                    underlying mechanisms would provide the appropriate XLIcon for the Jumbo, 
+                    stuffing the XLIcon into the upper left corner of a 256x256 Image.<br />
+                    It appears that thru accident or design, the System Jumbo Image List <b>simply 
+                    will not accept</b> the ImageList_ReplaceIcon request!!! This is true in Win7 
+                    and Win8 and is true even when &quot;Run As Administrator&quot;. It is as though that part 
+                    of the ImageList Interface is not implemented for the Jumbo list. It, of course, 
+                    is for the Small, Large, and ExtraLarge lists.<br />
+                    The Form for experimenting with Local ImageList is found at 
+                    ExpTree_Test.frmTemplate_TestJumbo.vb.<br />
+                    <br />
+                    As mentioned above, the only reason for including Jens' modifications to 
+                    SystemImageListManager is that he has made the non-trivial changes that allow 
+                    for SystemImageListManager to properly handle ExtraLarge Icons with overlays. 
+                    This is a nice piece of work.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    &nbsp;
+                    11/05/2013</td>
+                <td style="width: 90%">
+                    A user (Alan Johnson III) reported two errors discovered after converting an app 
+                    running on XP (32-bit), VS2008 to run on Win7 (64-bit) VS2012 Express. The 
+                    errors were:
+                    <ul>
+                        <li>Null exception involving RootItem in ExpTree, which normally showed up in the 
+                            IDE.</li>
+                        <li>A System.AccessViolationException in CShItem which really materialized once the RootItem 
+                            problem was fixed.</li>
+                    </ul>
+                    Fixed the RootItem problem. Changes to the Getter of RootItem in ExpTree.vb. For some 
+                    reason, VS was ignoring the &lt;Browsable(False)&gt; declaration and attempting to Get
+                    the Value of this Property long before it had a chance to be Set.
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    &nbsp;
+                    11/09/2013</td>
+                <td style="width: 90%">
+                    Still working on the System.AccessViolationException. It occurs in CShItem.SetPath as the 
+                    internal Tree is being filled in during the initial GetDesktop call. 
+                    Specifically, it occurs as the Sub New() is attempting to&nbsp; 
+                    GetCShItem(CSIDL.DESKTOPDIRECTORY). GetCShItem will cause the internal Tree to 
+                    be expanded down to the DesktopDirectory (C:\Users\username\Desktop). My thought 
+                    is that there is another flavor of a Shell Extension Folder like the ASUS 
+                    problem somewhere under C:\ or C:\Users\username. Not reproducible on any of my 
+                    PCs. The real question is how to deal with this in a clean fashion.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    &nbsp; 11/09/2013</td>
+                <td style="width: 90%">
+                    While looking at CShItem.GetContents in pursuit of this problem, I noticed that 
+                    there was a double call to GetContentPtrs. One was left over from timing tests 
+                    and was now redundant. Commented out the excess call which actually would cause 
+                    a memory leak along with doing the normal work twice.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    11/13 - 11/14/13</td>
+                <td style="width: 90%">
+                    The problem was caused by a Shell Extension for AutoDesk 360 and occurred in 
+                    CShItem.SetPath. The error was that folder.GetDisplayNameOf (... would cause an 
+                    error because the .dll needed would not initialize properly. I don&#39;t know 
+                    how/why it wouldn&#39;t, but it would cause an error. The SetPath code did not check 
+                    the return value of HR for this statement and the following statement would then 
+                    attempt to access Address 0 in unmanaged memory. That memory error will not be 
+                    caught in the API, but will instead cut back the Stack and just terminate the 
+                    program. In some ways this is similar to the ASUS problem, but is more severe. 
+                    The fix involved checking HR and expanding the Catch block in SetPath and also 
+                    fixing GetContents to Catch any error, not just InvalidCastExceptions. Similar 
+                    changes to UpdateRefresh and to GetFolder.<br />
+                    The underlying rational in all cases is to detect errors from CShItem creation, 
+                    such as the one in SetPath, and NOT add problem Items to the internal tree. If 
+                    not in the tree, then any Change Notifications, etc will not be attempted, since 
+                    Items not in the tree are never processed.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    12/18/13</td>
+                <td style="width: 90%">
+                    A user&#39;s application called ExpandaNode multiple times within a code block. This 
+                    sometimes resulted in the Expanded node not being visible in the TreeeView. 
+                    Added an .EnsureVisible to ExpandaNode which fixed the problem.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    12/31/2013</td>
+                <td style="width: 90%">
+                    A user pointed out that SystemImageListManager.SetTreeViewImageList declared HR as an integer and that caused a 
+                    problem. Investigation showed that the API SendMessage returns an LRESULT rather 
+                    than an HRESULT and that LRESULT is 64 bits on a 64 bit machine. Further 
+                    investigation showed that the return from SendMessage was not checked anyhow. 
+                    The fix was to remove the declaration of HR and, of course, its&#39; use.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    01/01/2014</td>
+                <td style="width: 90%">
+                    A user pointed out that several warnings were issued in VS2012. All were 
+                    objecting to DirectCasting a known Date type to Date. DirectCast of an item to 
+                    the same Type is now Obsolete. Investigation showed that it was not only 
+                    Obsolete, but unnecessary. I don&#39;t know why I was direct casting to begin with 
+                    (though the actual cases were casting a DateTime to Date, but that is actually 
+                    unneeded). Fixed all occurances and also in frmThreadCS which, being C#, did not 
+                    give a warning (yet).</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    01/09/2014</td>
+                <td style="width: 90%">
+                    Cleaned up a few unimportant warnings in Demo_CS and also updated the 
+                    Assembly.vb for each separate project.</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    &nbsp;</td>
+                <td style="width: 90%">
+                    &nbsp;</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    &nbsp;</td>
+                <td style="width: 90%">
+                    &nbsp;</td>
+            </tr>
+            <tr>
+                <td style="width: 9%" valign="top">
+                    &nbsp;</td>
+                <td style="width: 90%">
+                    &nbsp;</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

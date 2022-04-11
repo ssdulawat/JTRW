@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Responsiveness Analysis</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+    <style type="text/css">
+
+td
+	{border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-top:1px;
+	        padding-right:1px;
+	        padding-left:1px;
+	        color:black;
+	        font-size:11.0pt;
+	        font-weight:400;
+	        font-style:normal;
+	        text-decoration:none;
+	        font-family:Calibri, sans-serif;
+	        text-align:general;
+	        vertical-align:bottom;
+	        white-space:nowrap;
+	}
+        .style1
+        {
+            height: 15.0pt;
+            width: 83pt;
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: general;
+            vertical-align: bottom;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style2
+        {
+            width: 48pt;
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: center;
+            vertical-align: top;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style3
+        {
+            height: 15.0pt;
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: general;
+            vertical-align: bottom;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style4
+        {
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 700;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: center;
+            vertical-align: top;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+        .style5
+        {
+            color: black;
+            font-size: 11.0pt;
+            font-weight: 400;
+            font-style: normal;
+            text-decoration: none;
+            font-family: Calibri, sans-serif;
+            text-align: general;
+            vertical-align: bottom;
+            white-space: nowrap;
+            border-style: none;
+            border-color: inherit;
+            border-width: medium;
+            padding-left: 1px;
+            padding-right: 1px;
+            padding-top: 1px;
+        }
+    </style>
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib Demo</span><br />
+<span class="topicTitle">Responsiveness Analysis</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ImprovingResponsiveness.htm">Improving Responsiveness</a>&lt;--
+	Responsiveness Analysis
+	--&gt;<a href="Analysis1.htm">Analysis - Components of Delay</a>
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">Investigation</a></h3>
+        <p>For this investigation, I created a Folder with 3,000 empty files on each of 4 
+        systems. The files were created with a mixture of &quot;file types&quot; as indicated by 
+        the extension portion of each file&#39;s Name (e.g. - &quot;.txt&quot;, &quot;.exe&quot;, etc.). The mix 
+        of these file types was roughly similar to the numbers files of each type as 
+        found in a very large, deep Folder that I use daily for many purposes.</p>
+    <p>The systems involved were:</p>
+    <ul>
+        <li>Win7 Desktop - 8GB system always used as the Client system, running each test. 
+            It is the &quot;Local&quot; machine.</li>
+        <li>Vista Laptop - 4GB 2 year old fully capable Dell Laptop.</li>
+        <li>XP Desktop - 2GB 4 year old Gateway desktop. </li>
+        <li>WHS - a NAS box running Windows Home Server (Server 2003). Processor is an Intel 
+            Atom.</li>
+    </ul>
+    <p>
+        There is a substantial difference in the &quot;power&quot; between the test systems and 
+        also a substantial difference in the OSes. I did not expect to be able to 
+        distinguish the contribution of &quot;power&quot; and OS to any observed differences, but, 
+        testing did indicate that the OS was the more dominant contributor to any 
+        difference in performance.</p>
+<h3><a id = "BkMrk_2">Baseline Performance</a></h3>
+    <p>The ListView in all tests displays:</p>
+    <ol>
+        <li>The File&#39;s Icon</li>
+        <li>The Name of the File*</li>
+        <li>The Length of the File**</li>
+        <li>The CreationDate of the File**</li>
+        <li>The textual Type of the File (eg &quot;Text File&quot;)*</li>
+        <li>The Attributes of the File (eg System, Hidden, Archive, Read Only) as reported 
+            by the GetAttr function</li>
+        <li>The LastModifiedDate of the File**</li>
+        <li>The LastAccessedDate of the File**</li>
+    </ol>
+    <p>
+        *Items marked with * are obtained by the CShItem Class from a single 
+        <code>SHGetFileInfo</code> API call as requested. Once set, no additional call is needed in 
+        the normal case.</p>
+    <p>
+        **Items marked with ** are obtained by the CShItem Class from a FileInfo or 
+        DirectoryInfo, as appropriate for that item. A request to CShItem for any of 
+        these will result in the retrieval of all values. Once set, no additional call is needed in 
+        the normal case.</p>
+    <p>
+        The observed time to display the Contents of the test Folders, using the 
+        unmodified, original method of creating and displaying the ListViewItems was:</p>
+        
+        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse:
+ collapse;width:179pt;margin-left:6em;" width="239">
+            <colgroup>
+                <col style="width:83pt" 
+                    width="111" />
+                <col span="2" style="width:48pt" width="64" />
+            </colgroup>
+            <tr  style="height:15.0pt">
+                <td class="style1" height="20" width="111">
+                </td>
+                <td class="style2" width="64">
+                    Avg ms</td>
+                <td class="style2" width="64">
+                    Avg ms</td>
+            </tr>
+            <tr  style="height:15.0pt">
+                <td class="style3" height="20">
+                    Folder Location</td>
+                <td class="style4">
+                    per Item</td>
+                <td class="style4">
+                    Total</td>
+            </tr>
+            <tr  style="height:15.0pt">
+                <td height="20" style="height:15.0pt">
+                    Win7 Desktop</td>
+                <td align="right" class="style5">
+                    0.28</td>
+                <td align="right" class="style5">
+                    826.8</td>
+            </tr>
+            <tr  style="height:15.0pt">
+                <td height="20" style="height:15.0pt">
+                    Vista Laptop</td>
+                <td align="right" class="style5">
+                    3.48</td>
+                <td align="right" class="style5">
+                    10,431.2</td>
+            </tr>
+            <tr  style="height:15.0pt">
+                <td height="20" style="height:15.0pt">
+                    XP Desktop</td>
+                <td align="right" class="style5">
+                    11.26</td>
+                <td align="right" class="style5">
+                    33,779.3</td>
+            </tr>
+            <tr  style="height:15.0pt">
+                <td height="20" style="height:15.0pt">
+                    WHS</td>
+                <td align="right" class="style5">
+                    22.64</td>
+                <td align="right" class="style5">
+                    67,906.9</td>
+            </tr>
+        </table>
+    <p>In most studies of GUI responsiveness issues, a time less than 500 ms is considered OK. In this base case, the time observed for
+       the Local Folder is not too bad at 827 ms. All other times are clearly excessive. Times from over 10 seconds to over a minute will
+       cause the user to worry that the program has failed in some way.</p>
+    <p>&nbsp;</p>
+    <p><b>See Also:</b></p>
+    <p style="margin-left:2em"><a href="Analysis1.htm">Analysis</a></p>
+</div>
+</body>
+</html>

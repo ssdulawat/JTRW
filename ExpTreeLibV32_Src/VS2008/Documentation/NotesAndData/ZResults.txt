@@ -1,0 +1,125 @@
+The thread 0x1834 has exited with code 0 (0x0).
+'ExpTree_Demo.vshost.exe' (Managed): Loaded 'C:\Windows\assembly\GAC_MSIL\System.Configuration\2.0.0.0__b03f5f7f11d50a3a\System.Configuration.dll'
+Visible Desktop 202.8004ms
+Total  187.2003ms
+Expanding Network 343.2006ms
+Enter WndProc -- Counter = 1 CREATE
+ -- Counter = 1 dwItem1:  (472383552) Not Found
+ -- Counter = 1 dwItem2: Is Empty
+Leave WndProc -- Counter = 1
+Enter WndProc -- Counter = 2 CREATE
+ -- Counter = 2 dwItem1:  (472383552) Not Found
+ -- Counter = 2 dwItem2: Is Empty
+Leave WndProc -- Counter = 2
+Enter WndProc -- Counter = 3 CREATE
+ -- Counter = 3 dwItem1:  (472383552) Not Found
+ -- Counter = 3 dwItem2: Is Empty
+Leave WndProc -- Counter = 3
+Enter WndProc -- Counter = 4 MKDIR
+ -- Counter = 4 dwItem1:  (472383552)Desktop\Network\VELOCITY1\
+ -- Counter = 4 parent1: Desktop\Network\
+ -- Counter = 4 dwItem2: Is Empty
+Leave WndProc -- Counter = 4
+Enter WndProc -- Counter = 5 MKDIR
+ -- Counter = 5 dwItem1:  (472383552)Desktop\Network\WHS1\
+ -- Counter = 5 parent1: Desktop\Network\
+ -- Counter = 5 dwItem2: Is Empty
+Leave WndProc -- Counter = 5
+Enter WndProc -- Counter = 6 UPDATEITEM
+ -- Counter = 6 dwItem1:  (472383552)Desktop\Network\VELOCITY1\
+ -- Counter = 6 parent1: Desktop\Network\
+ -- Counter = 6 dwItem2: Is Empty
+Enter frmThread DoItemUpdate -- VELOCITY1 - Updated
+Enter ExpTree OnItemUpdate -- VELOCITY1 - Updated
+Located Parent Node Network of Item \\VELOCITY1
+Leave WndProc -- Counter = 6
+Expanding WHS1 31.2001ms
+Expanding Users (\\WHS1) 15.6ms
+Expanding parsellj 31.2ms
+Visible TestTimer 1045.2018ms
+Total  5366.4094ms
+Enter WndProc -- Counter = 7 CREATE
+ -- Counter = 7 dwItem1:  (463011904) Not Found
+ -- Counter = 7 dwItem2: Is Empty
+Enter frmThread DoItemUpdate -- New Text Document.txt - Created
+Enter ExpTree OnItemUpdate -- New Text Document.txt - Created
+Leave WndProc -- Counter = 7
+Enter WndProc -- Counter = 8 RENAMEITEM
+ -- Counter = 8 dwItem1:  (462618688)Desktop\Network\WHS1\Users (\\WHS1)\parsellj\TestTimer\New Text Document.txt\
+ -- Counter = 8 parent1: Desktop\Network\WHS1\Users (\\WHS1)\parsellj\TestTimer\
+ -- Counter = 8 dwItem2:  (462619584) Not Found
+Enter frmThread DoItemUpdate -- ZZZZZZZZZZZZZ.txt - Renamed
+Enter ExpTree OnItemUpdate -- ZZZZZZZZZZZZZ.txt - Renamed
+Leave WndProc -- Counter = 8
+'ExpTree_Demo.vshost.exe' (Managed): Loaded 'C:\Program Files (x86)\PC Magazine Utilities\Shred\shellmenu.exe'
+Enter WndProc -- Counter = 9 RENAMEITEM
+ -- Counter = 9 dwItem1:  (492896320)Desktop\Network\WHS1\Users (\\WHS1)\parsellj\TestTimer\ZZZZZZZZZZZZZ.txt\
+ -- Counter = 9 parent1: Desktop\Network\WHS1\Users (\\WHS1)\parsellj\TestTimer\
+ -- Counter = 9 dwItem2:  (492897208) Not Found
+Enter frmThread DoItemUpdate -- AAAAAAAAAAAA.txt - Renamed
+Enter ExpTree OnItemUpdate -- AAAAAAAAAAAA.txt - Renamed
+Leave WndProc -- Counter = 9
+Enter WndProc -- Counter = 10 DELETE
+ -- Counter = 10 dwItem1:  (479330368)Desktop\Network\WHS1\Users (\\WHS1)\parsellj\TestTimer\AAAAAAAAAAAA.txt\
+ -- Counter = 10 parent1: Desktop\Network\WHS1\Users (\\WHS1)\parsellj\TestTimer\
+ -- Counter = 10 dwItem2: Is Empty
+Enter frmThread DoItemUpdate -- AAAAAAAAAAAA.txt - Deleted
+Enter ExpTree OnItemUpdate -- AAAAAAAAAAAA.txt - Deleted
+Leave WndProc -- Counter = 10
+
+
+Enter WndProc -- Counter = 22 UPDATEITEM
+ -- Counter = 22 dwItem1:  (7798848) Not Found
+ -- Counter = 22 dwItem2: Is Empty
+Leave WndProc -- Counter = 22
+Enter WndProc -- Counter = 23 UPDATEDIR
+ -- Counter = 23 dwItem1:  (7798848)Desktop\
+ -- Counter = 23 dwItem2: Is Empty
+Enter frmThread DoItemUpdate -- Testing - Updated
+Enter ExpTree OnItemUpdate -- Testing - Updated
+Located Parent Node Local Disk (C:) of Item C:\Testing
+Enter frmThread DoItemUpdate -- 17 - Created
+Enter ExpTree OnItemUpdate -- 17 - Created
+Located Parent Node Testing of Item C:\Testing\17
+Adding Node 17\
+Leave WndProc -- Counter = 23
+Enter WndProc -- Counter = 24 UPDATEITEM
+ -- Counter = 24 dwItem1:  (7798848) Not Found
+ -- Counter = 24 dwItem2: Is Empty
+Leave WndProc -- Counter = 24
+Enter WndProc -- Counter = 25 UPDATEITEM
+ -- Counter = 25 dwItem1:  (7798848) Not Found
+ -- Counter = 25 dwItem2: Is Empty
+Leave WndProc -- Counter = 25
+Enter WndProc -- Counter = 26 UPDATEITEM
+ -- Counter = 26 dwItem1:  (7798848) Not Found
+ -- Counter = 26 dwItem2: Is Empty
+Leave WndProc -- Counter = 26
+Enter WndProc -- Counter = 27 UPDATEITEM
+ -- Counter = 27 dwItem1:  (7798848) Not Found
+ -- Counter = 27 dwItem2: Is Empty
+Leave WndProc -- Counter = 27
+'ExpTree_Demo.vshost.exe' (Managed): Loaded 'C:\Program Files (x86)\PC Magazine Utilities\Shred\shellmenu.exe'
+Enter WndProc -- Counter = 28 UPDATEDIR
+ -- Counter = 28 dwItem1:  (456917056)Desktop\
+ -- Counter = 28 dwItem2: Is Empty
+Enter frmThread DoItemUpdate -- Testing - Updated
+Enter ExpTree OnItemUpdate -- Testing - Updated
+Located Parent Node Local Disk (C:) of Item C:\Testing
+Removing C:\Testing\17 From C:\Testing
+Enter frmThread DoItemUpdate -- 17 - Deleted
+Enter ExpTree OnItemUpdate -- 17 - Deleted
+Located Parent Node Testing of Item C:\Testing\17
+Removing Node Desktop\Computer\Local Disk (C:)\Testing\17\
+Leave WndProc -- Counter = 28
+Enter WndProc -- Counter = 29 UPDATEITEM
+ -- Counter = 29 dwItem1:  (456917056)Desktop\Computer\Local Disk (C:)\Testing\
+ -- Counter = 29 parent1: Desktop\Computer\Local Disk (C:)\
+ -- Counter = 29 dwItem2: Is Empty
+Enter frmThread DoItemUpdate -- Testing - Updated
+Enter ExpTree OnItemUpdate -- Testing - Updated
+Located Parent Node Local Disk (C:) of Item C:\Testing
+Leave WndProc -- Counter = 29
+The thread 0x1bdc has exited with code 0 (0x0).
+The thread 0x195c has exited with code 0 (0x0).
+The program '[6512] ExpTree_Demo.vshost.exe: Managed' has exited with code 0 (0x0).

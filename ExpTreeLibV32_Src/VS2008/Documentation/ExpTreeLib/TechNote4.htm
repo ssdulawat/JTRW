@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Comparing PIDLs</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+    <style type="text/css">
+p.note
+{
+     background-color:#E0EBEB
+}
+span.note
+{
+    background-color:#E0EBEB
+}
+</style>
+</head>
+<body>
+<div id="control">
+    <span class="productTitle">ExpTreeLib</span><br />
+    <span class="topicTitle">Comparing PIDLs</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ExpLib_Index.htm">ExpTreeLib Index</a>&lt;--
+	Comparing PIDLs
+	--&gt;<a href="TechNote5.htm">Notification System</a>
+	--&gt;<a href="../ExpDemo/ImprovingResponsiveness.htm">Improving Responsiveness</a>
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">Background</a></h3>
+    <p>Early versions of <code>ExpTreeLib</code> were developed on Windows 2000 using Visual Studio 2002, Framework 1.0.
+       I made an effort to create the initial versions without using Windows APIs that were not available on Windows 95. During the development of
+       later versions, I took advantage of later (post Win95) APIs and also of Framework 2.0. Some amount of code from the early versions still exists
+       in the current versions. One noticible place that code remains is in the two routines discussed below. In those routines, there are explicit
+       tests: 
+    </p>
+<pre>
+        If Win2KOrAbove Then
+            use an API method
+        Else
+            do the (mostly) equivalent
+            with Byte() manipulation
+        End If
+</pre>
+    <p>The Byte() code is never executed on modern systems, but may be of interest to those wishing to see 
+        some of what the APIs have to do. See below for an elaboration of&nbsp; &quot;some of&quot;.</p>
+<h3><a id = "BkMrk_2">IsEqual</a></h3>
+    <p>For my purposes, two PIDLs are Equal if and only if they refer to the same Item 
+        in the Shell Namespace. In OSes since Windows 2000, this is not the same as 
+        being byte for byte identical. Since the actual content of an ItemID is not 
+        documented, one must use the Windows API to determine if PIDLs are Equal. 
+        CShItem.IsEqual is a thin wrapper for the API method ILIsEqual. IsEqual compares two 
+        Absolute PIDLs for Equality, returning TRUE if they refer to the same Item in 
+        the Shell Namespace.</p>
+    <p>The slightly worrysome issue here is that the API routine&#39;s MSDN documentation 
+        states:</p>
+    <blockquote>
+        <p>
+            <strong>&quot;ILIsEqual</strong> performs a binary comparison of the item data. It is 
+            possible for two <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/bb773321(v=vs.85).aspx"
+                target=""><strong>ITEMIDLIST</strong></a> structures to differ at the binary 
+            level while referring to the same item. <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/bb775062(v=vs.85).aspx"
+                target=""><strong>IShellFolder::CompareIDs</strong></a> should be used to 
+            perform a non-binary comparison.&quot;</p>
+    </blockquote>
+<p><b>I have tested ILIsEqual on multiple Windows systems and have never found a 
+    case where that statement is True</b>. I have specifically tested two PIDLs 
+    that, in fact, differed in a few bytes but referred to the same Item in the 
+    Shell Namespace. ILIsEqual returns TRUE while a binary comparison returns FALSE. 
+    The processing of UPDATEDIR notification messages depends on ILIsEqual and 
+    AreBytesEqual, a binary comparison, returning different results when certain 
+    attributes of the Item have changed.</p>
+    <p><a href="../NotesAndData/IsEqualTimes.txt">Timing tests</a> show that, given 
+        equivalent PIDLs, IsEqual and CompareIDs will take approximately the same time, 
+        making me believe that IsEqual calls CompareIDs or has equivalent code.</p>
+    <p class="note">Do not confuse CShItem.IsEqual with the <i>instance</i> method Equals (<i>instance</i>.Equals(other 
+        as CShItem)). The <i>instance</i> method uses a String comparison of the Paths 
+        of two CShItems. Since only one CShItem may exist for a given ShellItem, a much 
+        better way of performing this test is CShItem1 Is otherCShItem.</p>
+<h3><a id = "BkMrk_3">IsAncestorOf</a></h3>
+    <p>IsAncestorOf is a thin wrapper for the API method ILIsParent. ILIsParent knows 
+        how to compare PIDLs, only considering those portions of the PIDL that are 
+        actually meaningful when comparing for equality. I suspect that ILIsParent uses 
+        the IShellFolder::CompareIDs Method for this purpose. It obviously uses either 
+        that Method or the equivalent.</p>
+    <p>The Declaration of IsAncestorOf is:</p>
+<pre>
+    Public Shared Function IsAncestorOf(ByVal AncestorPidl As IntPtr, _
+                                        ByVal ChildPidl As IntPtr, _
+                                        Optional ByVal fParent As Boolean = False) _
+                                        As Boolean
+</pre>
+    <p>Given 4 paths -</p>
+    <ul>
+        <li>Path for PIDL_A = C:\Testing\TestData\</li>
+        <li>Path for PIDL_B = C:\Testing\TestData\DataSetB.dat</li>
+        <li>Path for PIDL_C = C:\Testing\OldData\</li>
+        <li>Path for PIDL_T = C:\Testing\</li>
+    </ul>
+    
+    <p>
+        Then:</p>
+    <ul>
+        <li>IsAncestorOf(PIDL_A, PIDL_B) will return TRUE <b>since all the IDs in the IDList of 
+            PIDL_A are Equal to the corresponding IDs in PIDL_B</b>.</li>
+        <li>IsAncestorOf(PIDL_C, PIDL_B) will return FALSE since all the IDs in the IDList 
+            of PIDL_C are not Equal to the corresponding IDs for PIDL_B.</li>
+        <li>IsAncestorOf(PIDL_T, PIDL_B) will return TRUE since all the IDs in the IDList of
+            PIDL_T are Equal to the corresponding IDs in PIDL_B.</li>
+        <li>IsAncestorOf(PIDL_T,PIDL_B,True) will return FALSE since <b>PIDL_T is Not the 
+            immediate Parent</b> of PIDL_B.</li>
+        <li>IsAncestorOf(PIDL_B,PIDL_B, False) will return TRUE since all the IDs in the IDList
+            of PIDL_B are Equal to the corresponding IDs in PIDL_B.</li>
+        <li>IsAncestorOf(PIDL_B,PIDL_B, True) will return FALSE since <b>PIDL_B is Not the 
+            immediate Parent</b> of PIDL_B.</li>
+    </ul>
+    <p>
+        &nbsp;</p>
+    <p>
+        <b>See Next:</b></p>
+    <p style="margin-left: 2em">
+        <a href="TechNote5.htm">The Notification System</a></p>
+</div>
+</body>
+</html>

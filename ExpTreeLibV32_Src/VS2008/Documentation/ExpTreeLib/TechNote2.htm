@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Internal Tree</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+    <style type="text/css">
+p.note
+{
+     background-color:#E0EBEB
+}
+span.note
+{
+    background-color:#E0EBEB
+}
+</style>
+</head>
+<body>
+<div id="control">
+    <span class="productTitle">ExpTreeLib</span><br />
+    <span class="topicTitle">The Internal Tree</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ExpLib_Index.htm">ExpTreeLib Index</a>&lt;--
+	Internal Tree
+	--&gt;<a href="TechNote3.htm">Tree Search</a>
+	--&gt;<a href="../ExpDemo/ImprovingResponsiveness.htm">Improving Responsiveness</a>
+	</p>
+</div>
+<div id="main">
+    <p>
+        In the discussion below, text blocks marked like <span class="note">this text</span>
+        is additional information that is related to the main text, but may be skipped to
+        follow the main line of the discussion. Text in <b>bold</b> contains the main 
+        points of the discussion.</p>
+    <h3><a id = "BkMrk_1">The CShItem Class</a></h3>
+    <p>The CShItem Class contains both <i>Instance</i> Properties and Methods and <i>Shared</i> (Static in C#) elements. 
+        Each <i>instance</i> of CShItem is similar to the .Net FileSystemInfo Class 
+        (both Directories and Folders). It wraps an <i>instance</i> of an
+        <a href="TechNote1.htm#PIDLBkMk">Absolute PIDL</a> which represents a single 
+        File or Folder(real or Virtual) in the Shell&#39;s Namespace - known here as a 
+        ShellItem. Each CShItem has Properties derived using that PIDL. These Properties 
+        include all the normal Properties that may be obtained from a FileInfo or 
+        DirectoryInfo plus a number of other useful Properties such as .CanCopy, 
+        .CanRename, .IsFolder, IconIndex, etc. Unlike FileSystemInfo instances, a 
+        CShItem may represent a ShellItem that is <b>not</b> part of the File System. In 
+        fact, one of the Properties of CShItem is the Property .IsFileSystem. See the 
+        <see cref="T:ExpTreeLib.CShItem">CShItem entry</see> in this
+        Help File for a list of all CShItem Methods, Properties, and Events.</p>
+    <p>In addition to the Properties that are Properties of the ShellItem that it 
+        represents, a CShItem instance has Properties that are a bit like a TreeView&#39;s 
+        TreeNode. CShItems that represent Folders have .Files and .Directories 
+        Properties which return the CShItem&#39;s representing Files and Folders contained 
+        within that Folder. Every CShItem has a .Parent property which points to the 
+        Folder CShItem that contains it in its&#39; Files or Directories Properties. All 
+        CShItems have a .Parent except for the CShItem representing the Desktop.</p>
+<h3><a id = "BkMrk_2">The Internal Tree</a></h3>
+    <p>The Windows Shell maintains and displays its&#39; content using the familiar Windows 
+        Explorer TreeView. ExpTreeLib&#39;s ExpTree Control displays the same information in 
+        the same fashion. <b>Internally, the CShItem Class maintains the same information 
+        in a tree-like Shared (Static in C#) structure of CShItems</b>. The internal tree of 
+        CShItems is Rooted in the CShItem representing the Desktop, just as the Windows 
+        Shell maintains its&#39; Tree. Each Folder, including the Desktop, contains 
+        Collections of those 
+        Folders and Files that are directly under that Folder in the Shell Namespace. 
+        <b>CShItem&#39;s internal tree contains only those Folders and Files that the 
+        application has asked for</b> via the .Directories or .Files Property getter.</p>
+        <p class="note">There are other CShItem Methods that are similar to the .Files and .Directories Properties that also
+        can cause CShItems to be created and stored in the internal tree. 
+            The <i>instance</i> Methods .GetDirectories, .GetFiles, and .GetItems for example may all cause CShItems to 
+        be created and stored in the internal tree. See the Help File for details.</p>
+    <p>There may be thousands of Folders and Files under a Folder in the Shell 
+        Namespace, but if the application has not explicitly requested that information, 
+        those CShitem instances are not created or stored in the internal tree. 
+        For example, using the Demo Forms: ExpTree may display the TreeNode representing 
+        &quot;C:\&quot;, but if that TreeNode has never been expanded, then the Folder 
+        CShItems under that 
+        node will not have been created or stored in the internal tree. Those CShItems 
+        representing Files directly under &quot;C:\&quot; will not be created and stored in the 
+        internal tree until the user Selects the &quot;C:\&quot; TreeNode, causing the Demo Form&#39;s 
+        Event Handler to call .GetItems on the Selected Node&#39;s CShItem. </p>
+    <p>There are three basic operations that CShItem will do to the internal tree:</p>
+    <ul>
+        <li>Add a CShItem to the internal tree. Note that there is no publicly accessable New
+            routine. Addition of CShItems to the tree is primarily done
+            in direct response to <i>instance</i>.Directories or <i>instance</i>.GetFiles
+            calls as well a several similar methods. In those cases, the direct Parent is the
+            <i>instance</i> and already known to the tree, so there is no need to search the
+            internal tree. The CShItems are created and directly added to the <i>instance</i> Folder.<br />
+            CShItems are also added by a 
+            <see cref= "M:ExpTreeLib.CShItem.GetCShItem">CShItem.GetCShItem</see> call.  
+            In order to properly place a CShItem in the tree, the tree must be searched for that CShItem&#39;s direct 
+            Parent. Note that in ExpTree, the tree is initially built as a result of calling 
+            GetCShItem specifying CSIDL_Desktop as the Folder to be returned.<br />
+            CShItems are also added if the Notification system receives a CREATE or 
+            MKDIR, notification indicating that a Shell Item has been added to a Folder already 
+            known to the internal tree. UPDATEDIR messages may also result in the addition 
+            of CShItems to the tree.</li>
+        <li>Remove a CShItem from the internal tree. This is done in response to a 
+            DELETE or RMDIR message from the Notification system. In this case, the tree 
+            must be searched to determine if the CShItem exists in the internal tree. If 
+            there is no such CShItem, then DELETE type messages are ignored. Note that 
+            UPDATEDIR messages may also result in the removal of CShItems from the tree.<br />
+            The application may (<b>should</b>) remove Items from the tree if those Items 
+            are of no further interest to the application. The Demo Forms remove File Items 
+            from the tree when those Files are no longer displayed in the ListView. This is 
+            done by an <i>instance</i>.ClearItems(True) call where <i>instance</i> is the CShItem of 
+            the Folder containing the Files. Note that this simply removes the FileItems 
+            from the tree. It has no effect on the Files themselves and therefore does not 
+            Raise any events. This removal from the tree improves the overall efficiency of 
+            the CShItem Class.</li>
+        <li>Locate a CShItem in the internal tree. Searching the tree is an integral part of 
+            Adding and Removing CShItems from the internal tree. It is also a vital part of 
+            handling messages from the Notification system. <a href="TechNote3.htm#TreeSearch_BkMk">See here for a description</a>.</li>
+    </ul>
+    <p>
+        &nbsp;</p>
+    <p>
+        <b>See Next:</b></p>
+    <p style="margin-left: 2em">
+        <a href="TechNote3.htm">Searching the Internal Tree</a></p>
+</div>
+</body>
+</html>

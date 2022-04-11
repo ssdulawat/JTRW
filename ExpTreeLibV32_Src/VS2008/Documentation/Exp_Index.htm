@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>ExpLib and Demo Package</title>
+    <link rel="stylesheet" type="text/css" href="styles/modified_presentation.css" />
+
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTree Lib and Demo</span><br />
+<span class="topicTitle">Summary</span><br />
+	<p>
+	ExpLib and Demo Package
+	--&gt;<a href="ExpTreeLib/FAQ.htm">Frequently Asked Questions</a>
+	</p>
+</div>
+<div id="main">
+<h2><a id = "BkMrk_1">Summary</a></h2>
+    <p><code>ExpTreeLib</code> is a Class Library which provides much of the functionality of Windows 
+        Explorer. The Library&#39;s central Class is the <code>CShItem</code> Class which is an 
+        API based superset of the .Net FileSystemInfo Class.
+        It also contains a User Control, <code>ExpTree</code>, which is a Explorer-like TreeView of 
+        the Folders of the Windows Shell. <code>ExpTree</code> supports System Context Menus, Drag from, and Drop 
+        on, and normal Shell-like navigation.  The Library provides <b>Dynamic</b> notification of all changes to the contents of the Shell 
+        Namespace (the FileSystem plus), Classes to support Drag &amp; Drop to/from various 
+        Controls, and several utility functions that are useful in their own right. 
+        Included in the download package are Demo or example Forms that illustrate the 
+        use of the Library to build a full Windows Explorer-like application. The Demo Forms may be easily&nbsp; 
+        modified and/or extracted from to meet the needs of your application. Also 
+        included is a Demo Form that uses the Library without an ExpTree or ListView to 
+        work with files displayed in a DataGridView.</p>
+<h2><a id = "BkMrk_2">Documentation Summary</a></h2>
+    <p>This documentation is in 4 major sections:</p>
+    <ul>
+        <li>A FAQ - Answers to questions that may arise and are not conveniently covered in 
+            the other documentation.</li>
+        <li>The Demo Forms and how to use them in an application or as a source of working 
+            code.</li>
+        <li>Release Notes relative to previously published versions of the Library. Explains 
+            basic concepts that are vital to understanding how to use the Library for all 
+            but the simplest fashion.</li>
+        <li>Details of recent work to improve GUI responsiveness when running on 
+            Vista/Windows7 and accessing Remote Folders.</li>
+    </ul>
+<h2><a id = "BkMrk_3">Contents</a></h2><br />
+<!-- Insert Toc -->
+    <ul>
+        <li><a href = "ExpTreeLib/ExpLib_Index.htm">ExpTreeLib Index</a>
+          <ul style="margin-top:0;margin-bottom:0;list-style-type:none;margin-left:1em;padding-left:0;">
+            <li><a href = "ExpTreeLib/ExpLib_Index.htm#BkMrk_1">The Library</a></li>
+            <li><a href = "ExpTreeLib/ExpLib_Index.htm#BkMrk_2">Table of Contents</a>
+            </li>
+          </ul>
+        <ul style="margin-top:0;margin-bottom:0;list-style-type:disc;margin-left:1em;padding-left:0;">
+          <li><a href = "ExpTreeLib/V214 Release Notes.htm">Release Notes - Version 2.14</a>
+            <ul style="margin-top:0;margin-bottom:0;list-style-type:none;margin-left:1em;padding-left:0;">
+              <li><a href = "ExpTreeLib/V214 Release Notes.htm#BkMrk_1">Release Notes - Version Overview</a></li>
+              <li><a href = "ExpTreeLib/V214 Release Notes.htm#BkMrk_2">Version 2.14 Release Notes</a>
+                <ul style="margin-top:0;margin-bottom:0;list-style-type:none;margin-left:1em;padding-left:0;">
+                  <li><a href = "ExpTreeLib/V214 Release Notes.htm#BkMrk_3">Dynamic Monitoring of FileSystem Changes</a></li>
+                  <li><a href = "ExpTreeLib/V214 Release Notes.htm#BkMrk_6">Other Change to CShItem</a></li>
+                  <li><a href = "ExpTreeLib/V214 Release Notes.htm#BkMrk_10">Drag/Drop Related Changes to ExpTreeLib</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+        </li>
+          <li><a href = "ExpTreeLib/V300 Release Notes.htm">Release Notes - Version 3.00</a>
+            <ul style="margin-top:0;margin-bottom:0;list-style-type:none;margin-left:1em;padding-left:0;">
+              <li><a href = "ExpTreeLib/V300 Release Notes.htm#BkMrk_1">Version 3.00 Release Notes</a>
+                <ul style="margin-top:0;margin-bottom:0;list-style-type:none;margin-left:1em;padding-left:0;">
+                  <li><a href = "ExpTreeLib/V300 Release Notes.htm#BkMrk_2">Changes to CShItem to improve Responsiveness</a></li>
+                  <li><a href = "ExpTreeLib/V300 Release Notes.htm#BkMrk_8">Improvements to Notification</a></li>
+                  <li><a href = "ExpTreeLib/V300 Release Notes.htm#BkMrk_9">Other Changes to CShItem</a></li>
+                  <li><a href = "ExpTreeLib/V300 Release Notes.htm#BkMrk_10">Changes to Demo Forms</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+        </li>
+          <li><a href = "ExpTreeLib/V301 Release Notes.htm">Release Notes - Version 3.01</a>
+            <ul style="margin-top:0;margin-bottom:0;list-style-type:none;margin-left:1em;padding-left:0;">
+              <li><a href = "ExpTreeLib/V301 Release Notes.htm#BkMrk_1">Version 3.01 Release Notes</a>
+                <ul style="margin-top:0;margin-bottom:0;list-style-type:none;margin-left:1em;padding-left:0;">
+                  <li><a href = "ExpTreeLib/V301 Release Notes.htm#BkMrk_2">Bug Fixes</a></li>
+                  <li><a href = "ExpTreeLib/V301 Release Notes.htm#BkMrk_3">Variant of CShItem.GetFiles</a></li>
+                  <li><a href = "ExpTreeLib/V301 Release Notes.htm#BkMrk_4">Added Project</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+        </li>
+          <li><a href = "ExpTreeLib/TechNote1.htm">Basic Concepts</a>
+            <ul style="margin-top:0;margin-bottom:0;list-style-type:none;margin-left:1em;padding-left:0;">
+              <li><a href = "ExpTreeLib/TechNote1.htm#BkMrk_1">Basic Concepts</a>
+                <ul style="margin-top:0;margin-bottom:0;list-style-type:none;margin-left:1em;padding-left:0;">
+                  <li><a href = "ExpTreeLib/TechNote1.htm#PIDLBkMk">PIDL</a></li>
+                  <li><a href = "ExpTreeLib/TechNote1.htm#BkMrk_2">Folder</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+        </li>
+          <li><a href = "ExpTreeLib/TechNote2.htm">Internal Tree</a>
+            <ul style="margin-top:0;margin-bottom:0;list-style-type:none;margin-left:1em;padding-left:0;">
+              <li><a href = "ExpTreeLib/TechNote2.htm#BkMrk_1">The CShItem Class</a></li>
+              <li><a href = "ExpTreeLib/TechNote2.htm#BkMrk_2">The Internal Tree</a>
+              </li>
+            </ul>
+        </li>
+          <li><a href = "ExpTreeLib/TechNote3.htm">Tree Search</a>
+            <ul style="margin-top:0;margin-bottom:0;list-style-type:none;margin-left:1em;padding-left:0;">
+              <li><a href = "ExpTreeLib/TechNote3.htm#TreeSearch_BkMk">Searching the Internal Tree</a>
+              </li>
+            </ul>
+        </li>
+          <li><a href = "ExpTreeLib/TechNote4.htm">Comparing PIDLs</a>
+            <ul style="margin-top:0;margin-bottom:0;list-style-type:none;margin-left:1em;padding-left:0;">
+              <li><a href = "ExpTreeLib/TechNote4.htm#BkMrk_1">Background</a></li>
+              <li><a href = "ExpTreeLib/TechNote4.htm#BkMrk_2">IsEqual</a></li>
+              <li><a href = "ExpTreeLib/TechNote4.htm#BkMrk_3">IsAncestorOf</a>
+              </li>
+            </ul>
+        </li>
+          <li><a href = "ExpTreeLib/TechNote5.htm">Notification System</a>
+            <ul style="margin-top:0;margin-bottom:0;list-style-type:none;margin-left:1em;padding-left:0;">
+              <li><a href = "ExpTreeLib/TechNote5.htm#BkMrk_1">Purpose</a></li>
+              <li><a href = "ExpTreeLib/TechNote5.htm#BkMrk_2">What you already know</a></li>
+              <li><a href = "ExpTreeLib/TechNote5.htm#BkMrk_3">How Notification Works</a>
+              </li>
+            </ul>
+        </li>
+          <li><a href = "ExpTreeLib/ChangeLog.htm">ChangeLog For Version 2.14 And Creation of Version 3.00</a>
+            <ul style="margin-top:0;margin-bottom:0;list-style-type:none;margin-left:1em;padding-left:0;">
+              <li><a href = "ExpTreeLib/ChangeLog.htm#BkMrk_1">ChangeLog For Version 2.14</a></li>
+              <li><a href = "ExpTreeLib/ChangeLog.htm#BkMrk_2">Changes to Create Version 3.00</a></li>
+              <li><a href = "ExpTreeLib/ChangeLog.htm#BkMrk_3">Changes to Create Version 3.01</a>
+              </li>
+            </ul>
+        </li>
+        </ul>
+      </li>
+    </ul>
+<!-- End Insert Toc -->
+
+</div>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Frequently Asked Questions</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+    <link href="..\Styles\outline.css" rel="stylesheet" type="text/css" />
+    
+    <script type="text/jscript" src="..\Scripts\outline.js">
+    </script>
+
+</head>
+<body onload="outlineInit()">
+<div id="control">
+<span class="productTitle">ExpTreeLib</span><br />
+<span class="topicTitle">Frequently Asked Questions</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	Frequently Asked Questions
+	--&gt;<a href="../ExpDemo/ExpDemo_Index.htm">Exp Demo Index</a>
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">ExpTreeLib Frequently Asked Questions</a></h3>
+    <p>Click <img src="../Images/oopen.png" alt="Open" /> or <img src="../Images/oclose.png" alt="Close" /> to Expand or Collapse a topic.</p>
+    <ul class="outline">
+        <li>Should I use Version 3.00 or Version 2.12?
+            <ul>
+                <li>Version 2.12 provides a mostly <b>static</b> view of the file system. It is useful in cases where
+                    the application is viewing the contents of small/medium sized Local Folders that will normally not be modified external to
+                    the application and does not require the enhanced capabilities of Version 3.00. Since it has less
+                    functionality, it is simpler to use and modify.<br />
+                    
+                    Version 3.00 provides mechanisms for file/Folder manipulation and provides a <b>dynamic</b> view of Folders
+                    and their content. It is most useful if you are displaying the contents of a Folder which may be changed,
+                    either by your application or by some other application, or by Windows Explorer. Use 3.00 if your application
+                    is to allow Windows Context Menus or other 3.00 features. Especially use Version 
+                    3.00 if you application will be displaying the contents of Remote Folders - for 
+                    example a Document Management system whose Folders/Files reside on a Server.</li>
+            </ul>
+        </li>
+        <li>Does the Library work on 64-bit systems?
+            <ul>
+                <li>Yes. The Library is compiled with the &quot;Any CPU&quot; target. It was 
+                    originally developed and had years of use and modification on 32-bit systems. I 
+                    have also used it (for at least 2 years) and heavily modified it on a 64-bit 
+                    system with 8GB of memory. I have never had a problem with it. Many others have 
+                    used the Library in their applications. I do not know how many of those (if any) 
+                    are using it on 64-bit systems. I make extensive use of IntPtrs. In those few 
+                    cases where the actual value of an IntPtr is required the code is such that it 
+                    will work equally well with 32 and 64 bit IntPtrs. </li>
+            </ul>
+        </li>
+        <li>How do I show the Tree as Rooted in a specific Folder (ie - C:\MyAppsData)?
+            <ul>
+                <li>In the IDE, set the StartUpDirectory to the Desktop.</li>
+                <li>In the Form's Load Event (or wherever is appropriate for your app):</li>
+                <li>Set the ExpTree UserControl's Property RootItem to the CShItem of the desired Folder:<br />
+                    In Version 3.00 - 
+                     <pre>ExpTree1.RootItem = GetCShItem("C:\MyAppsData")</pre><br />
+                    In Version 2.12 -
+                     <pre>ExpTree1.RootItem = New CShItem("C:\MyAppsData")</pre><br />
+                     In Version 2.12, you may use either approach, however, GetCShItem may take much longer to display using
+                     GetCShItem rather than New CShItem.<br />
+                                         Version 3.00 does not allow the New CShItem method. Version 3.00 has optimization to minimize the
+                     delay when using the GetCShItem method.
+                </li>
+            </ul>
+        </li>
+        <li>I want to show Thumbnails in the ListView.
+            <ul>
+                <li>ExpTreeLib does not support Thumbnail View. (Note to self -- IThumbnailCache Interface and/or see 
+                    D:\parsellj\ExpTree\Experiments\ThumbNails).</li> 
+            </ul>
+        </li>
+        <li>If FindFirstFile/FindNextFile is so great, why not use it all the time in <code>CShItem</code>?
+            <ul>
+                <li>FFF/FNF improves responsiveness only when it can iterate over the entire 
+                    contents of a Folder. If called separately for each File/Folder in a directory 
+                    it is unlikely to offer any significant improvement and may actually perform 
+                    worse than FileInfo/DirectoryInfo. In those cases where the FFF/FNF improvement 
+                    is significant, it is likely that its&#39; improved time will still be long enough 
+                    to warrant running on a separate thread. In the general case, CShItem does not 
+                    have enough information to determine if the information gathered by FFF/FNF is 
+                    even going to be used by the application, and, starting a separate thread would 
+                    add substantial complexity to CShItem. Additionally, there are a few Folders 
+                    where FFF/FNF does not work but FileInfo/DirectoryInfo will. As currently 
+                    implemented in frmThread, these cases are seamlessly dealt with by the code. 
+                    Yes, it could be made to happen, but, building and especially testing the code 
+                    to do this is far more work than I wish to give it.</li>
+            </ul>
+        </li> 
+    </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>frmThread</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib Demo</span><br />
+<span class="topicTitle">frmThread</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ExpDemo_Index.htm">Exp Demo Index</a>&lt;--
+	<a href="DemoForms.htm">Demo Forms</a>&lt;--
+	frmThread
+	--&gt;<a href="frmDragToControl.htm">frmDragToControl</a>
+	--&gt;<a href="BuildingApp.htm">Building an App</a>
+	--&gt;<a href="../ExpTreeLib/ExpLib_Index.htm">ExpTreeLib Index</a>
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">Summary</a></h3>
+    <p><code>frmThread</code> is an optimized version of frmTemplate. It includes a fully implemented use of 
+       multi-threading to improve the responsiveness of the GUI when displaying remote and/or very 
+       large Folders in the ListView. This approach makes <code>frmThread</code>'s code more complex, but has a
+       substantial benefit in usability. See <a href ="Responsiveness.htm">here</a> for a discussion of responsiveness issues addressed
+       and <a href="frmThread1.htm">here</a> for how <code>frmThread</code> implements a Background Worker.</p>
+    <p><code>frmThread</code>, like <code>frmTemplate</code>, has an <code>ExpTree</code> Control in its' Left Panel and a ListView in its' Right Panel. The <code>ExpTree</code>
+       shows a heirarchical view of Folders present on the host system. The root of the ExpTree display may be set to one of 
+       a number of Special Folders. The most commonly used of these are the Desktop or Computer (My Computer on some systems). Selecting
+       a Node of this tree will cause the ListView to display the Content of the Selected Folder.</p>
+<h3><a id = "BkMrk_2">Capabilities</a></h3>
+    <p>Simply displaying the structure and Content of Folders is not enough for a useful application. The real question is what the
+       application can do with the displayed items. <code>frmThread</code> (as well as <code>frmTemplate</code>) supports the following
+       capabilities:</p>
+    <ul>
+        <li>Displaying the Folder content in most standard Views - Details, Large Icons, Tile, List, and Small Icons.</li>
+        <li>Dropping a File/Folder onto ExpTree and/or the ListView. This feature support the normal Windows Control-Key modifiers
+            and Right Button Drag menu to instruct the receiving Control to Copy or Move the File(s)/Folders(s) to the Target
+            Folder. The Drop Source may be itself or any window (including Windows Explorer) 
+            that provides at least FileDrop (CF_HDROP) DataFormatted information.</li>
+        <li>Dragging File(s)/Folder(s) from the ExpTree or the ListView. Normal Windows 
+            Control-Key and Right Button Drag operations are supported. The Drop Target may 
+            be itself or any window (including Windows Explorer) that accepts at least 
+            FileDrop (CF_HDROP) DataFormatted information.</li>
+        <li>Right-Click on a File/Folder to display the same ContextMenu that Windows 
+            Explorer would display to perform the same operations. File/Folder Rename 
+            support included.</li>
+        <li>Edit of the First Column of the ListView -- if and only if the first Column is 
+            the File/Folder name.</li>
+        <li>Automatic Update of the ListView when any changes are made by any process to the 
+            displayed Folder or its&#39; Content.</li>
+        <li>Column-Click Sorting (with Sort Glyph) of the ListView Columns when displayed in 
+            Details View.</li>
+        <li>Selected Item(s) Delete in response to the Delete Key.</li>
+        <li>Double-Click on a File to &quot;Open&quot; it.</li>
+    </ul>
+<h3><a id = "BkMrk_3">Modifying the ListView for an Application</a></h3>
+    <p><code>frmThread</code> is a <i>base</i>, worked example of how to implement these 
+        capabilites in a ListView. An application will probably have diferent or 
+        additional requirements. The <b>Cardinal Rule</b> when modifying the <code>ListView</code> is that each
+       <code>ListViewItem</code> <b>must</b> have the appropriate <code>CShItem</code> instance in its' <code>.Tag</code> Property.
+       The underlying implication is that each <code>ListViewItem</code> represents a <i>single, unique File or Folder</i>, all within
+       one single Folder (e.g. the Desktop or Computer or C:\Users\username\Documents\Fax).
+       Additionally, the <code>ListView</code> itself must have its&#39; .Tag Property
+       set to the CShItem representing the <i>single</i> Folder that contains all <code>ListViewItems</code>
+       and their associated CShItems.</p>
+    <p>A <b>second rule</b> is that the File/Directory Name should be in the first 
+        (column 0) column. This is not quite as inflexible, but Rename and, probably, 
+        some other functions depend on it. Do not violate the rule without very serious 
+        understanding of how the ListView is used by the Form.</p>
+    <p>See <code>frmThread.MakeLVItem</code> and <code>frmThread.RefreshLvi</code> for how to populate the ListView.
+       Understand the role of each of those two routines!</p>
+</div>
+</body>
+</html>

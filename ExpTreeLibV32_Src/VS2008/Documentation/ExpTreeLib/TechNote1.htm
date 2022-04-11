@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Basic Concepts</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+    <style type="text/css">
+p.note
+{
+ background-color:#E0EBEB
+}
+span.note
+{
+	background-color:#E0EBEB
+}
+</style>
+</head>
+<body>
+<div id="control">
+    <span class="productTitle">ExpTreeLib</span><br />
+    <span class="topicTitle">Basic Concepts - Folders and PIDLs</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ExpLib_Index.htm">ExpTreeLib Index</a>&lt;--
+	Basic Concepts
+	--&gt;<a href="TechNote2.htm">Internal Tree</a>
+	--&gt;<a href="../ExpDemo/ImprovingResponsiveness.htm">Improving Responsiveness</a>
+	</p>
+</div>
+<div id="main">
+    <p>
+        In the discussion below, text blocks marked like <span class="note">this text</span>
+        is additional information that is related to the main text, but may be skipped to
+        follow the main line of the discussion. Text in <b>bold</b> contains the main points
+        of the discussion.</p>
+    <h2><a id = "BkMrk_1">Basic Concepts</a></h2>
+    <p>
+        The central Class of <code>ExpTreeLib</code> is the CShItem Class. Each CShItem instance wraps a PIDL and information that may be 
+        obtained using that PIDL. In ExpTreeLib, each CShItem instance represents a File 
+        or a Folder (real or virtual) known to the Windows Shell (Shell), which uses 
+        PIDLs to represent the same Files and Folders for its&#39; own use. </p>
+    <p class="note">
+        Windows uses PIDLs to represent a variety of objects. <code>ExpTreeLib</code> concerns itself
+        with only one kind of IDList, that used to represent Shell Items that correspond
+        to Files, File System Folders, and Virtual Folders (like My Documents or Network).
+    </p>
+    <h3><a id = "PIDLBkMk">PIDL</a></h3>
+    <p>
+        PIDL is an abbreviation for <b>P</b>ointerto<b>IDL</b>ist. In .Net, a PIDL is always an IntPtr containing the address of an IDList
+        structure stored in unmanaged memory. In this and other documentation, PIDL is used to refer to either the IntPtr or the IDList
+        structure, with the actual meaning determined by the context of the reference. PIDLs are obtained from the Windows Shell via various
+        API calls. The Shell allocates the memory to contain the structure, fills that memory with the structure, and returns the address of
+        that memory as an IntPtr. Any PIDL obtained from the Shell must be explictly released when the caller is done with it. 
+    </p>
+    <p class="note">
+        PIDLs are released by calling Marshal.FreeCoTaskMem(ptr) where ptr is the IntPtr 
+        that points to the IDList structure.</p>
+    <p>
+        The IDList pointed to by a PIDL is a Structure whose contents are defined by 
+        the Folder which contains the item represented by the structure.
+        An IDList contains one or more Shell Item IDs.&nbsp;An IDList is similar
+        in purpose and use to a Path indicating a File or Folder. A Item whose Path
+        is &quot;C:\Test\MyFile.txt&quot; will
+        be represented by an IDList with 4 ItemIds; one for each of &quot;Computer&quot;,
+        &quot;C:&quot;, &quot;Test&quot;, and one for &quot;MyFile.txt&quot;. This IDList
+        also implies a 5th, starting element of &quot;Desktop&quot;. The content
+        of a ItemID is not documented and, in fact, may vary between Operating
+        System versions and between Folders in the same OS. </p>
+    <p>
+        The format of the IDList structure is known and is constant among all OSes and 
+        Folders. That format is: two bytes (a USHORT) containing the count of bytes in 
+        the ItemID followed by the actual bytes. An IDList may contain 1 or more ItemIDs 
+        followed by two bytes (a USHORT) containing zero. With that information, it is 
+        possible to decompose an IDList into its&#39; constituent ItemIDs or to obtain the 
+        last ItemID. This ability is critical to the workings of the most important 
+        methods of the CShItem Class.</p>
+    <p>
+        There are two types of PIDLs, <b>Absolute</b> and <b>Relative</b>. A <b>Relative 
+        PIDL</b> points to an ItemIDList that describes an Item Relative to some Folder. 
+        Typically this ItemIDList contains 1 ItemID representing a File or Folder 
+        contained by, and therefore relative to, a Folder.  An <b>Absolute PIDL</b> will point 
+        to an ItemIDList fully describing the location of an Item relative to the 
+        Desktop. Queries to a IShellFolder Interface will contain or return Relative 
+        PIDLs, other Shell APIs will return Absolute PIDLs. The <b>CShItem.PIDL Property is 
+        an Absolute PIDL.</b></p>
+    <p class="note">
+        It is legal for a Relative PIDL to point to an IDList with more than 1 item and, under
+        some circumstances <code>ExpTreeLib</code> will build and use such PIDLs.</p>
+    <p>
+        Since the IDList portion of a PIDL is stored in unmanaged memory, CShItem 
+        ensures that the memory is explicitly released when no longer needed. 
+        Temporarily acquired PIDLs are released when no longer needed by CShItem. The 
+        PIDL kept by CShItem is released when the CShItem <i>instance</i> is Disposed.</p>
+    <h3><a id = "BkMrk_2">Folder</a></h3>
+    <p>
+        An important element in this discussion is the <b>IShellFolder Interface</b>. In
+        this discussion, any reference to a Folder is actually referring to an IShellFolder
+        Interface. This Interface defines a number of methods that may be used to query
+        or manipulate a Shell Folder. A common type of Shell Folder is a File System Directory.
+        Other Folders exist, for example, the Network and Recycle Bin Folders. These, and
+        many others, are known as Virtual Folders. <code>ExpTreeLib</code> treats all Folders
+        (real or Virtual) the same way. For those Shell Items that are Folders, CShItem
+        obtains (using its' PIDL) the IShellFolder Interface. The most important use CShItem
+        makes of the Folder is to enumerate its&#39; content and to create CShItem instances
+        for each item (File or Folder) in the content of the Folder.</p>
+    <p>
+        The Desktop CShItem is a special case of Folder. It is created automatically by
+        CShItem. That creation is the Initialization of the CShItem Class and sets a number
+        of Shared (Static in C#) Fields and Properties of the Class. The IDList of the Desktop
+        is of zero length.
+    </p>
+    <p>
+        &nbsp;</p>
+    <p>
+        <b>See Next:</b></p>
+    <p style="margin-left: 2em">
+        <a href="TechNote2.htm">Internal Tree</a></p>
+</div>
+</body>
+</html>

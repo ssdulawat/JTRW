@@ -1,0 +1,400 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="PCTrackerModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AppSetting">
+          <Key>
+            <PropertyRef Name="AppID" />
+          </Key>
+          <Property Name="AppID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CompareDate" Type="datetime" />
+          <Property Name="CompareSchedule" Type="char" MaxLength="1" />
+          <Property Name="CompareActiveTimer" Type="bit" />
+          <Property Name="ActiveWebUpload" Type="bit" />
+          <Property Name="NewVersion" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Version" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Attendance">
+          <Key>
+            <PropertyRef Name="AttendanceId" />
+          </Key>
+          <Property Name="AttendanceId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmployeeDetailsId" Type="bigint" Nullable="false" />
+          <Property Name="SingIn" Type="time" Precision="7" />
+          <Property Name="SingOut" Type="time" Precision="7" />
+          <Property Name="Date" Type="date" />
+          <Property Name="HoursWorked" Type="float" />
+          <Property Name="Comment" Type="nvarchar(max)" />
+          <Property Name="LogOutComment" Type="nvarchar(max)" />
+          <Property Name="PCName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Version" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="CheckVersion">
+          <Key>
+            <PropertyRef Name="CheckVersionId" />
+          </Key>
+          <Property Name="CheckVersionId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PCName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Version" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="EmployeeDetails">
+          <Key>
+            <PropertyRef Name="EmployeeDetailsId" />
+          </Key>
+          <Property Name="EmployeeDetailsId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="varchar(max)" />
+          <Property Name="Address" Type="nvarchar(max)" />
+          <Property Name="Mobile" Type="varchar" MaxLength="50" />
+          <Property Name="Designation" Type="varchar" MaxLength="50" />
+          <Property Name="UserName" Type="varchar(max)" />
+          <Property Name="Password" Type="varchar(max)" />
+          <Property Name="EmailAddress" Type="nvarchar" MaxLength="50" />
+          <Property Name="UserType" Type="varchar" MaxLength="50" />
+          <Property Name="BillableRate" Type="nvarchar" MaxLength="50" />
+          <Property Name="ActiveUser" Type="bit" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="InOut">
+          <Key>
+            <PropertyRef Name="InOutID" />
+          </Key>
+          <Property Name="InOutID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmployeeDetailID" Type="bigint" />
+          <Property Name="UserIn" Type="time" Precision="7" />
+          <Property Name="UserOut" Type="time" Precision="7" />
+          <Property Name="Date" Type="datetime" />
+          <Property Name="PunchedHrs" Type="float" />
+        </EntityType>
+        <EntityType Name="OffLineActivity">
+          <Key>
+            <PropertyRef Name="OffLineActivityId" />
+          </Key>
+          <Property Name="OffLineActivityId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EmployeeDetailsId" Type="bigint" Nullable="false" />
+          <Property Name="Date" Type="date" />
+          <Property Name="OffLineTime" Type="time" Precision="7" />
+          <Property Name="OnLineTime" Type="time" Precision="7" />
+          <Property Name="ResumeTime" Type="time" Precision="7" />
+        </EntityType>
+        <Association Name="FK_EmployeeDetails_EmployeeDetails">
+          <End Role="EmployeeDetails" Type="Self.EmployeeDetails" Multiplicity="1" />
+          <End Role="EmployeeDetails1" Type="Self.EmployeeDetails" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="EmployeeDetails">
+              <PropertyRef Name="EmployeeDetailsId" />
+            </Principal>
+            <Dependent Role="EmployeeDetails1">
+              <PropertyRef Name="EmployeeDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="EmployeeDetail_Insert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Name" Type="varchar(max)" Mode="In" />
+          <Parameter Name="Address" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Mobile" Type="varchar" Mode="In" />
+          <Parameter Name="Designation" Type="varchar" Mode="In" />
+          <Parameter Name="UserName" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Password" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="EmailAddress" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="UserType" Type="varchar" Mode="In" />
+          <Parameter Name="BillableRate" Type="nvarchar" Mode="In" />
+          <Parameter Name="ActiveUser" Type="bit" Mode="In" />
+          <Parameter Name="FirstName" Type="nvarchar" Mode="In" />
+          <Parameter Name="LastName" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="EmployeeDetail_Update" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="EmployeeDetailsId" Type="bigint" Mode="In" />
+          <Parameter Name="Name" Type="varchar(max)" Mode="In" />
+          <Parameter Name="Address" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Mobile" Type="varchar" Mode="In" />
+          <Parameter Name="Designation" Type="varchar" Mode="In" />
+          <Parameter Name="UserName" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Password" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="EmailAddress" Type="nvarchar" Mode="In" />
+          <Parameter Name="BillableRate" Type="nvarchar" Mode="In" />
+          <Parameter Name="ActiveUser" Type="bit" Mode="In" />
+          <Parameter Name="FirstName" Type="nvarchar" Mode="In" />
+          <Parameter Name="LastName" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="User_Update" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="SingIn" Type="time" Mode="In" />
+          <Parameter Name="SingOut" Type="time" Mode="In" />
+          <Parameter Name="HoursWorked" Type="float" Mode="In" />
+          <Parameter Name="Date" Type="datetime" Mode="In" />
+          <Parameter Name="Comment" Type="varchar(max)" Mode="In" />
+          <Parameter Name="LogOutComment" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="AttendanceId" Type="bigint" Mode="In" />
+        </Function>
+        <EntityContainer Name="PCTrackerModelStoreContainer">
+          <EntitySet Name="AppSetting" EntityType="Self.AppSetting" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Attendance" EntityType="Self.Attendance" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CheckVersion" EntityType="Self.CheckVersion" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="EmployeeDetails" EntityType="Self.EmployeeDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InOut" EntityType="Self.InOut" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OffLineActivity" EntityType="Self.OffLineActivity" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_EmployeeDetails_EmployeeDetails" Association="Self.FK_EmployeeDetails_EmployeeDetails">
+            <End Role="EmployeeDetails" EntitySet="EmployeeDetails" />
+            <End Role="EmployeeDetails1" EntitySet="EmployeeDetails" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PCTrackerModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AppSetting">
+          <Key>
+            <PropertyRef Name="AppID" />
+          </Key>
+          <Property Name="AppID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CompareDate" Type="DateTime" Precision="3" />
+          <Property Name="CompareSchedule" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="CompareActiveTimer" Type="Boolean" />
+          <Property Name="ActiveWebUpload" Type="Boolean" />
+          <Property Name="NewVersion" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Version" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Attendance">
+          <Key>
+            <PropertyRef Name="AttendanceId" />
+          </Key>
+          <Property Name="AttendanceId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployeeDetailsId" Type="Int64" Nullable="false" />
+          <Property Name="SingIn" Type="Time" Precision="7" />
+          <Property Name="SingOut" Type="Time" Precision="7" />
+          <Property Name="Date" Type="DateTime" Precision="0" />
+          <Property Name="HoursWorked" Type="Double" />
+          <Property Name="Comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="LogOutComment" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PCName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Version" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CheckVersion">
+          <Key>
+            <PropertyRef Name="CheckVersionId" />
+          </Key>
+          <Property Name="CheckVersionId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PCName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Version" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="EmployeeDetail">
+          <Key>
+            <PropertyRef Name="EmployeeDetailsId" />
+          </Key>
+          <Property Name="EmployeeDetailsId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Mobile" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Designation" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UserName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="EmailAddress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UserType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="BillableRate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ActiveUser" Type="Boolean" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="EmployeeDetails1" Relationship="Self.FK_EmployeeDetails_EmployeeDetails" FromRole="EmployeeDetails" ToRole="EmployeeDetails1" />
+          <NavigationProperty Name="EmployeeDetail1" Relationship="Self.FK_EmployeeDetails_EmployeeDetails" FromRole="EmployeeDetails1" ToRole="EmployeeDetails" />
+        </EntityType>
+        <EntityType Name="InOut">
+          <Key>
+            <PropertyRef Name="InOutID" />
+          </Key>
+          <Property Name="InOutID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployeeDetailID" Type="Int64" />
+          <Property Name="UserIn" Type="Time" Precision="7" />
+          <Property Name="UserOut" Type="Time" Precision="7" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
+          <Property Name="PunchedHrs" Type="Double" />
+        </EntityType>
+        <EntityType Name="OffLineActivity">
+          <Key>
+            <PropertyRef Name="OffLineActivityId" />
+          </Key>
+          <Property Name="OffLineActivityId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EmployeeDetailsId" Type="Int64" Nullable="false" />
+          <Property Name="Date" Type="DateTime" Precision="0" />
+          <Property Name="OffLineTime" Type="Time" Precision="7" />
+          <Property Name="OnLineTime" Type="Time" Precision="7" />
+          <Property Name="ResumeTime" Type="Time" Precision="7" />
+        </EntityType>
+        <Association Name="FK_EmployeeDetails_EmployeeDetails">
+          <End Role="EmployeeDetails" Type="Self.EmployeeDetail" Multiplicity="1" />
+          <End Role="EmployeeDetails1" Type="Self.EmployeeDetail" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="EmployeeDetails">
+              <PropertyRef Name="EmployeeDetailsId" />
+            </Principal>
+            <Dependent Role="EmployeeDetails1">
+              <PropertyRef Name="EmployeeDetailsId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PCTrackerEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AppSettings" EntityType="Self.AppSetting" />
+          <EntitySet Name="Attendances" EntityType="Self.Attendance" />
+          <EntitySet Name="CheckVersions" EntityType="Self.CheckVersion" />
+          <EntitySet Name="EmployeeDetails" EntityType="Self.EmployeeDetail" />
+          <EntitySet Name="InOuts" EntityType="Self.InOut" />
+          <EntitySet Name="OffLineActivities" EntityType="Self.OffLineActivity" />
+          <AssociationSet Name="FK_EmployeeDetails_EmployeeDetails" Association="Self.FK_EmployeeDetails_EmployeeDetails">
+            <End Role="EmployeeDetails" EntitySet="EmployeeDetails" />
+            <End Role="EmployeeDetails1" EntitySet="EmployeeDetails" />
+          </AssociationSet>
+          <FunctionImport Name="EmployeeDetail_Insert">
+            <Parameter Name="Name" Mode="In" Type="String" />
+            <Parameter Name="Address" Mode="In" Type="String" />
+            <Parameter Name="Mobile" Mode="In" Type="String" />
+            <Parameter Name="Designation" Mode="In" Type="String" />
+            <Parameter Name="UserName" Mode="In" Type="String" />
+            <Parameter Name="Password" Mode="In" Type="String" />
+            <Parameter Name="EmailAddress" Mode="In" Type="String" />
+            <Parameter Name="UserType" Mode="In" Type="String" />
+            <Parameter Name="BillableRate" Mode="In" Type="String" />
+            <Parameter Name="ActiveUser" Mode="In" Type="Boolean" />
+            <Parameter Name="FirstName" Mode="In" Type="String" />
+            <Parameter Name="LastName" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="EmployeeDetail_Update">
+            <Parameter Name="EmployeeDetailsId" Mode="In" Type="Int64" />
+            <Parameter Name="Name" Mode="In" Type="String" />
+            <Parameter Name="Address" Mode="In" Type="String" />
+            <Parameter Name="Mobile" Mode="In" Type="String" />
+            <Parameter Name="Designation" Mode="In" Type="String" />
+            <Parameter Name="UserName" Mode="In" Type="String" />
+            <Parameter Name="Password" Mode="In" Type="String" />
+            <Parameter Name="EmailAddress" Mode="In" Type="String" />
+            <Parameter Name="BillableRate" Mode="In" Type="String" />
+            <Parameter Name="ActiveUser" Mode="In" Type="Boolean" />
+            <Parameter Name="FirstName" Mode="In" Type="String" />
+            <Parameter Name="LastName" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="User_Update">
+            <Parameter Name="SingIn" Mode="In" Type="Time" />
+            <Parameter Name="SingOut" Mode="In" Type="Time" />
+            <Parameter Name="HoursWorked" Mode="In" Type="Double" />
+            <Parameter Name="Date" Mode="In" Type="DateTime" />
+            <Parameter Name="Comment" Mode="In" Type="String" />
+            <Parameter Name="LogOutComment" Mode="In" Type="String" />
+            <Parameter Name="AttendanceId" Mode="In" Type="Int64" />
+          </FunctionImport>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="PCTrackerModelStoreContainer" CdmEntityContainer="PCTrackerEntities">
+          <EntitySetMapping Name="AppSettings">
+            <EntityTypeMapping TypeName="PCTrackerModel.AppSetting">
+              <MappingFragment StoreEntitySet="AppSetting">
+                <ScalarProperty Name="AppID" ColumnName="AppID" />
+                <ScalarProperty Name="CompareDate" ColumnName="CompareDate" />
+                <ScalarProperty Name="CompareSchedule" ColumnName="CompareSchedule" />
+                <ScalarProperty Name="CompareActiveTimer" ColumnName="CompareActiveTimer" />
+                <ScalarProperty Name="ActiveWebUpload" ColumnName="ActiveWebUpload" />
+                <ScalarProperty Name="NewVersion" ColumnName="NewVersion" />
+                <ScalarProperty Name="Version" ColumnName="Version" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Attendances">
+            <EntityTypeMapping TypeName="PCTrackerModel.Attendance">
+              <MappingFragment StoreEntitySet="Attendance">
+                <ScalarProperty Name="AttendanceId" ColumnName="AttendanceId" />
+                <ScalarProperty Name="EmployeeDetailsId" ColumnName="EmployeeDetailsId" />
+                <ScalarProperty Name="SingIn" ColumnName="SingIn" />
+                <ScalarProperty Name="SingOut" ColumnName="SingOut" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="HoursWorked" ColumnName="HoursWorked" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="LogOutComment" ColumnName="LogOutComment" />
+                <ScalarProperty Name="PCName" ColumnName="PCName" />
+                <ScalarProperty Name="Version" ColumnName="Version" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CheckVersions">
+            <EntityTypeMapping TypeName="PCTrackerModel.CheckVersion">
+              <MappingFragment StoreEntitySet="CheckVersion">
+                <ScalarProperty Name="CheckVersionId" ColumnName="CheckVersionId" />
+                <ScalarProperty Name="PCName" ColumnName="PCName" />
+                <ScalarProperty Name="Version" ColumnName="Version" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmployeeDetails">
+            <EntityTypeMapping TypeName="PCTrackerModel.EmployeeDetail">
+              <MappingFragment StoreEntitySet="EmployeeDetails">
+                <ScalarProperty Name="EmployeeDetailsId" ColumnName="EmployeeDetailsId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Mobile" ColumnName="Mobile" />
+                <ScalarProperty Name="Designation" ColumnName="Designation" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="EmailAddress" ColumnName="EmailAddress" />
+                <ScalarProperty Name="UserType" ColumnName="UserType" />
+                <ScalarProperty Name="BillableRate" ColumnName="BillableRate" />
+                <ScalarProperty Name="ActiveUser" ColumnName="ActiveUser" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InOuts">
+            <EntityTypeMapping TypeName="PCTrackerModel.InOut">
+              <MappingFragment StoreEntitySet="InOut">
+                <ScalarProperty Name="InOutID" ColumnName="InOutID" />
+                <ScalarProperty Name="EmployeeDetailID" ColumnName="EmployeeDetailID" />
+                <ScalarProperty Name="UserIn" ColumnName="UserIn" />
+                <ScalarProperty Name="UserOut" ColumnName="UserOut" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="PunchedHrs" ColumnName="PunchedHrs" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OffLineActivities">
+            <EntityTypeMapping TypeName="PCTrackerModel.OffLineActivity">
+              <MappingFragment StoreEntitySet="OffLineActivity">
+                <ScalarProperty Name="OffLineActivityId" ColumnName="OffLineActivityId" />
+                <ScalarProperty Name="EmployeeDetailsId" ColumnName="EmployeeDetailsId" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="OffLineTime" ColumnName="OffLineTime" />
+                <ScalarProperty Name="OnLineTime" ColumnName="OnLineTime" />
+                <ScalarProperty Name="ResumeTime" ColumnName="ResumeTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="EmployeeDetail_Insert" FunctionName="PCTrackerModel.Store.EmployeeDetail_Insert" />
+          <FunctionImportMapping FunctionImportName="EmployeeDetail_Update" FunctionName="PCTrackerModel.Store.EmployeeDetail_Update" />
+          <FunctionImportMapping FunctionImportName="User_Update" FunctionName="PCTrackerModel.Store.User_Update" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

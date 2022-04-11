@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>More Optimizations</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib Demo</span><br />
+<span class="topicTitle">More Optimizations</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ImprovingResponsiveness.htm">Improving Responsiveness</a>&lt;--
+	<a href="Responsiveness.htm">Responsiveness Analysis</a>&lt;--
+	More Optimizations
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">Other Optimizations Investigated</a></h3>
+    <p>Once the optimizations discussed <a href="OptimizationResults.htm">elsewhere</a> were finished, I looked at two other areas. These required more elaborate changes
+       to CShItem and produced mixed results. </p>
+<h4><a id = "BkMrk_2">Using GetItems</a></h4>
+    <p>There has been a CShItem.GetItems method since before version 2.14. It was never used in the Demo Forms. One reason for not 
+       using it was that it simply did what the Demo Forms did anyhow - Get the Directories then get the Files and put the results
+       together in an ArrayList which was then Sorted by CShItem. The obvious problem was that this technique requires two complete
+       enumerations of the Folder Content. The way CShItem.GetContentPtrs, the heart of the CShItem Class, works, only two passes
+       would get the required results. This was not a limitation of GetContentPtrs, but rather in the available calls to it.</p>
+    <p>A modified version of CShItem.GetItems could get all of the Folder Contents in one enumeration. I made and retain this modification. 
+        The modification is rather complex since it has to ensure that the CShItem 
+        internal cache of Files and Directories is not overwritten, but is, in fact 
+        loaded if needed. </p>
+    <p>To get any benefit from this change, I modified <code>frmThread</code> to use GetItems rather than the existing code. 
+        I did <b>not</b> modify <code>frmTemplate</code> or the other Demo Forms. 
+        The old code looked something like this simplified version:</p>
+<code><pre>
+         Dim dirList As New ArrayList()
+        Dim fileList As New ArrayList()
+        dirList.AddRange(CSI.Directories)
+        fileList.AddRange(CSI.Files)
+        dirList.Sort()
+        fileList.Sort()
+        Dim combList As New ArrayList(TotalItems)
+        combList.AddRange(dirList)
+        combList.AddRange(fileList)
+</pre></code>
+    <p>The new code, which almost accomplishes the same thing is:</p>
+<code><pre>
+        Dim combList As ArrayList = CSI.GetItems
+</pre></code>
+    <p>The &quot;almost&quot; is that the Demo Forms display the number of Files and Directories which in the original was obtained from the .Count
+       Properties of dirList and fileList. In the new version, I added a little routine to count and display these numbers.</p>
+    <p>The net result of this change is an improvement that does not exceed 2/10<sup>ths</sup> of a 
+        Second, and is only that much better in the slowest case. In many cases, the 
+        improvement is much less. The effort of making the change was not worth the 
+        reward. The enumeration of Content runs very fast. That enumeration also 
+        includes the creation of the desired set of (minimally populated) CShItems. Almost the entire time spent 
+        building combList is expended in the Sort - specifically in obtaining the 
+        DisplayName of the CShItem, which is required (and done as part of) for the 
+        Sort. The actual sorting also takes effectively no time.</p>
+<h4><a name = "Getting_the_IconIndex_">Getting the IconIndex</a></h4>
+    <p>I tried a more fruitful, in some ways, optimization of the getting the IconIndexNormal Property. That Property is the base value which
+       SystemImageListManager uses to find the actual index into the SystemImageList. Given IconIndexNormal, SystemImageListManager is very efficient 
+       in providing the index of the Icon that is actually displayed by ListViews and TreeViews. However, to get the IconIndexNormal for
+       an item can be fairly expensive.</p>
+    <p>I changed IconIndexNormal to remember the IconIndex for each File Extension (.txt, .jpg, etc) from the first of each Extension found.
+       This worked well, saving about 2/3<sup>rds</sup> of the time to fetch the many icons for my test files. In the most extreme case, this reduced the
+       total time to populate the ListView from my test Folder on WHS1 from 6+ Seconds to 2+ Seconds.</p>
+    <p>So, the operation was a success, but the patient died! The 
+        Icons for Image files, and executable files, may be different and unique 
+        for each file with the same extension. Showing the same Icon for such files is 
+        not acceptable. Note however that the unmodified approach also does this for 
+        some image file types, but in a different and more predictable fashion. (.ico files 
+        show the Icon as the Icon, .bmp and .png do not, but do show the traditional 
+        Icon rather than some arbitrary Icon gotten from the first file of that type.) 
+        Link files are also problematic, but that is dealt with in the modification.</p>
+    <p>Given the result, I reverted the change back to the original IconIndexNormal. I 
+        retain the &quot;optimized&quot; version in the code, but commented out.</p>
+<h4><a id = "BkMrk_3">A different Flavor of Background processing</a></h4>
+    <p>One attempt at background processing followed the same lines as the one I finally 
+        chose, but with a difference. Instead of creating all the ListViewItems in the 
+        foreground and then adding the costly fields in the background, I created the 
+        InitialLoadLimit number of ListViewItems initially and used the BackgroundWorker 
+        to build and add the rest. This actually works, but, each time another batch of 
+        ListViewItems was added, the contents of the ListView flickered - badly. Other 
+        variations of this scheme might have been tried (adding all remaining items at 
+        once, for example). However, I went directly to the final version in which I 
+        create all ListViewItems and populate the ListView with them. Only the first 
+        InitialLoadLimit of those items is has the expensive information filled in. The 
+        balance of the ListViewItems are completely filled by via BackgroundWorker, 
+        allowing for the fact that the non-GUI thread cannot directly modify those 
+        Items.</p>
+</div>
+</body>
+</html>

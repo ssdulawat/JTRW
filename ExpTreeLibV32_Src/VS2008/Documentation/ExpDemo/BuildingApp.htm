@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Building an App</title>
+    <link rel="stylesheet" type="text/css" href="../styles/modified_presentation.css" />
+</head>
+<body>
+<div id="control">
+<span class="productTitle">ExpTreeLib Demo</span><br />
+<span class="topicTitle">Building an Application with a Demo Form</span><br />
+	<p>
+	<a href="../Exp_Index.htm">ExpLib and Demo Package</a>&lt;--
+	<a href="ExpDemo_Index.htm">Exp Demo Index</a>&lt;--
+	Building an App
+	--&gt;<a href="UsingDemoAsBase.htm">Deriving from a Demo Form</a>
+	--&gt;<a href="LVColSorter.htm">LVColSorter</a>
+	--&gt;<a href="../ExpTreeLib/ExpLib_Index.htm">ExpTreeLib Index</a>
+	</p>
+</div>
+<div id="main">
+<h3><a id = "BkMrk_1">Using a Demo Form in an Application</a></h3>
+    <p>As provided, <code>frmTemplate</code> and <code>frmThread</code> provide most of the functionality of 
+        Windows Explorer. To use one of these Forms as a base for an application that 
+        does something more, more Controls and more code must be added to the Form. 
+        Alternatively, a developer might construct a Form that includes the ExpTree and 
+        ListView of one of these Forms. The new Form would be formatted and with 
+        additional Controls and code to accomplish the goals of the new application.</p>
+    <p>As provided, <code>frmTemplate</code> and <code>frmThread</code> reserve space on the Form for the 
+        developer to add application specific Controls. If the space is adequate and 
+        properly located for the application&#39;s needs, then all is simple. The rules of 
+        use are basically to not change the existing code in the Demo Form (exception 
+        noted below) except to add code to handle the added Controls. Be aware of what 
+        the built-in functionality of the Demo Form is! Certain bits of functionality 
+        may interact in surprising ways with the application. Areas to watch out for 
+        are:</p>
+    <ul>
+        <li>A right click on a Folder in ExpTree1 or an item in Lv1 will pop up the same 
+            ContextMenu as a right click on that item in Windows Explorer. This menu will 
+            allow just about any operation possible on a Folder or a File. Deletion or 
+            Rename are possible here.</li>
+        <li>A double click on a File will open the File in the appropriate application. 
+            Changes are possible within most apps.</li>
+        <li>Column 0 of the ListViewItems displayed in Lv1 is Editable. In the Demo Forms, 
+            this is the FileName. Editing the FileName will Rename the file.</li>
+        <li>The Dynamic Update code <b>assumes</b> that Column 0 of the ListViewItems is, in 
+            fact, the FileName!</li>
+    </ul>
+<h4><a id = "BkMrk_2">Changing What is Displayed in the ListView of frmTemplate</a></h4>
+    <p>Almost any application will require that the ListView display different things in the ListView! If using 
+       <code>frmTemplate</code> or using it as a base, this will require changes to <code>MakeLVItem</code>. That Function takes a
+       CShItem as its' parameter and returns a ListViewItem. The SubItems of the 
+        ListViewItem may be filled with whatever is appropriate for the application. There are three rules for this routine.</p>
+       <ol>
+            <li>The returned ListViewItem <b>must</b> have the input CShItem in its' .Tag Property. This rule is absolute. Failure to
+                follow this will result in total malfunction of much of the rest of the code.</li>
+            <li>The ListViewItem's .Text Property <em>must</em> be set to CShItem.DisplayName. </li>
+            <li>If one wishes to use <code>LVColSorter</code> to provide a Column-Click Sort capability (recommended) then each SubItem
+                which displays a non-String value (ie Date, etc) or a String that is not sortable should have the underlying data
+                item stored in that SubItem's .Tag Property. This rule may be freely violated if not using <code>LVColSorter</code> or 
+                if you do not care about an accurate Sort.</li>
+       </ol>
+<h4><a id = "BkMrk_3">Changing What is Displayed in the ListView of frmThread</a></h4>
+    <p>If using <code>frmThread</code> or using it as a base, the application should modify the 
+        routine <code>RefreshLvi</code>. <code>RefreshLvi</code> is called from several places in frmThread with 
+        different parameters. It is called in situations where CShItem.Tag contains 
+        Nothing and situations where it contains a W32Find_Data. <code>RefreshLvi</code> is where the 
+        ListViewItem contents should be modified to suit the application&#39;s needs. The 
+        rules for modifying <code>RefreshLvi</code> are the same as listed above. The situations 
+        where <code>RefreshLvi</code> is called are:</p>
+    <ol>
+        <li>During initial processing in AfterNodeSelect to fill in the initially visible 
+            ListViewItems. In this case, the .Tag of the CShItem in the ListViewItem&#39;s .Tag will be 
+            Nothing and the Optional Parameter DeferSet will be False. The ListViewItem will 
+            be fully set up using only information from CShItem.</li>
+        <li>During initial processing in AfterNodeSelect for those ListViewItems that will 
+            not be initially visible. In this case, the .Tag of the CShItem in the ListViewItem&#39;s .Tag 
+            will be Nothing and the Optional Parameter DeferSet will be True. The 
+            ListViewItem will be only partially set up. No reference will be made to the 
+            time consuming Properties of the CShItem. </li>
+        <li>Upon return from Background processing. In this case, the .Tag of the CShItem in the 
+            ListViewItem&#39;s .Tag will contain either a W32Find_Data or Nothing and the 
+            Optional Parameter DeferSet will be False. The ListViewItem will 
+            be fully set up using the W32Find_Data, if present, or the time consuming Properties of the CShItem.</li>
+        <li>During Dynamic Updating in response to certain changes in the currently 
+            displayed Folder. In these cases, the .Tag of the CShItem in the ListViewItem&#39;s .Tag will be 
+            Nothing and the Optional Parameter DeferSet will be False. The ListViewItem will 
+            be fully set up using only information from CShItem.</li>
+    </ol>
+    <p><b>See Also</b>:</p>
+    <p style="margin-left:2em"><a href="UsingDemoAsBase.htm">Using a Demo Form as a Base</a>.</p>
+</div>
+</body>
+</html>

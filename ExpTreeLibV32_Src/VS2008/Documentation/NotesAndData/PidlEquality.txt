@@ -1,0 +1,130 @@
+Enter WndProc -- Counter = 1 UPDATEITEM
+Leave WndProc -- Counter = 1
+Enter WndProc -- Counter = 2 UPDATEITEM
+Leave WndProc -- Counter = 2
+Enter WndProc -- Counter = 3 UPDATEITEM
+ -- Counter = 3 dwItem1:  (461897792) Not Found
+ -- Counter = 3 dwItem2: Is Empty
+Leave WndProc -- Counter = 3
+Enter WndProc -- Counter = 4 UPDATEITEM
+ -- Counter = 4 dwItem1:  (461897792) Not Found
+ -- Counter = 4 dwItem2: Is Empty
+Leave WndProc -- Counter = 4
+Expanding Computer 0ms
+Expanding Local Disk (C:) 15.6ms
+Expanding Testing 0ms
+Expanding DMTest 0ms
+Enter WndProc -- Counter = 5 UPDATEITEM
+Leave WndProc -- Counter = 5
+Enter WndProc -- Counter = 6 UPDATEITEM
+Leave WndProc -- Counter = 6
+Enter WndProc -- Counter = 7 UPDATEITEM
+ -- Counter = 7 dwItem1:  (461766720) Not Found
+ -- Counter = 7 dwItem2: Is Empty
+Leave WndProc -- Counter = 7
+Enter WndProc -- Counter = 8 UPDATEITEM
+ -- Counter = 8 dwItem1:  (461766720) Not Found
+ -- Counter = 8 dwItem2: Is Empty
+Leave WndProc -- Counter = 8
+Enter WndProc -- Counter = 9 UPDATEITEM
+Leave WndProc -- Counter = 9
+Enter WndProc -- Counter = 10 UPDATEITEM
+Leave WndProc -- Counter = 10
+Enter WndProc -- Counter = 11 UPDATEITEM
+ -- Counter = 11 dwItem1:  (5832768) Not Found
+ -- Counter = 11 dwItem2: Is Empty
+Leave WndProc -- Counter = 11
+Enter WndProc -- Counter = 12 UPDATEITEM
+ -- Counter = 12 dwItem1:  (5832768) Not Found
+ -- Counter = 12 dwItem2: Is Empty
+Leave WndProc -- Counter = 12
+Enter WndProc -- Counter = 13 UPDATEITEM
+Leave WndProc -- Counter = 13
+Enter WndProc -- Counter = 14 UPDATEITEM
+Leave WndProc -- Counter = 14
+Enter WndProc -- Counter = 15 UPDATEITEM
+ -- Counter = 15 dwItem1:  (5832768) Not Found
+ -- Counter = 15 dwItem2: Is Empty
+Leave WndProc -- Counter = 15
+Enter WndProc -- Counter = 16 UPDATEITEM
+ -- Counter = 16 dwItem1:  (5832768) Not Found
+ -- Counter = 16 dwItem2: Is Empty
+Leave WndProc -- Counter = 16
+The thread 0x1bc0 has exited with code 0 (0x0).
+Enter WndProc -- Counter = 17 UPDATEDIR
+ -- Counter = 17 dwItem1: Is Empty
+ -- Counter = 17 dwItem2: Is Empty
+Enter ExpTree OnItemUpdate -- 17 - Created
+Located Parent Node DMTest of Item C:\Testing\DMTest\17
+Adding Node 17\
+IsReallyEqual found exception
+PIDL 467958231 contains 92 bytes
+ItemID #1 Length = 92
+0000). 5C 00 32 00 00 00 90 00 B7 40 D8 21 26 20 4E 54           \.2.....·@Ø!& NT
+0010). 55 53 45 52 2E 44 41 54 00 00 42 00 08 00 04 00           USER.DAT..B.....
+0020). EF BE 8E 3C 80 1C B6 40 01 7C 2A 00 00 00 B8 56           ï¾Ž<€.¶@.|*...¸V
+0030). 03 00 00 00 02 00 00 00 00 00 00 00 00 00 00 00           ................
+0040). 00 00 00 00 4E 00 54 00 55 00 53 00 45 00 52 00           ....N.T.U.S.E.R.
+0050). 2E 00 44 00 41 00 54 00 00 00 1A 00                       ..D.A.T.....
+PIDL 499922304 contains 92 bytes
+ItemID #1 Length = 92
+0000). 5C 00 32 00 00 00 90 00 B7 40 05 22 26 20 4E 54           \.2.....·@."& NT
+0010). 55 53 45 52 2E 44 41 54 00 00 42 00 08 00 04 00           USER.DAT..B.....
+0020). EF BE 8E 3C 80 1C B6 40 01 7C 2A 00 00 00 B8 56           ï¾Ž<€.¶@.|*...¸V
+0030). 03 00 00 00 02 00 00 00 00 00 00 00 00 00 00 00           ................
+0040). 00 00 00 00 4E 00 54 00 55 00 53 00 45 00 52 00           ....N.T.U.S.E.R.
+0050). 2E 00 44 00 41 00 54 00 00 00 1A 00                       ..D.A.T.....
+The thread 0xf38 has exited with code 0 (0x0).
+IsReallyEqual found exception
+PIDL 467599271 contains 104 bytes
+ItemID #1 Length = 104
+0000). 68 00 32 00 00 00 04 00 B7 40 D8 21 26 00 4E 54           h.2.....·@Ø!&.NT
+0010). 55 53 45 52 7E 31 2E 4C 4F 47 00 00 4C 00 08 00           USER~1.LOG..L...
+0020). 04 00 EF BE 8E 3C 81 1C 8E 3C 81 1C 2A 00 00 00           ..ï¾Ž<..Ž<..*...
+0030). B4 5D 03 00 00 00 02 00 00 00 00 00 00 00 00 00           ´]..............
+0040). 00 00 00 00 00 00 6E 00 74 00 75 00 73 00 65 00           ......n.t.u.s.e.
+0050). 72 00 2E 00 64 00 61 00 74 00 2E 00 4C 00 4F 00           r...d.a.t...L.O.
+0060). 47 00 31 00 00 00 1C 00                                   G.1.....
+PIDL 466179792 contains 104 bytes
+ItemID #1 Length = 104
+0000). 68 00 32 00 00 00 04 00 B7 40 05 22 26 00 4E 54           h.2.....·@."&.NT
+0010). 55 53 45 52 7E 31 2E 4C 4F 47 00 00 4C 00 08 00           USER~1.LOG..L...
+0020). 04 00 EF BE 8E 3C 81 1C 8E 3C 81 1C 2A 00 00 00           ..ï¾Ž<..Ž<..*...
+0030). B4 5D 03 00 00 00 02 00 00 00 00 00 00 00 00 00           ´]..............
+0040). 00 00 00 00 00 00 6E 00 74 00 75 00 73 00 65 00           ......n.t.u.s.e.
+0050). 72 00 2E 00 64 00 61 00 74 00 2E 00 4C 00 4F 00           r...d.a.t...L.O.
+0060). 47 00 31 00 00 00 1C 00                                   G.1.....
+Enter ExpTree OnItemUpdate -- NTUSER.DAT - Deleted
+Enter ExpTree OnItemUpdate -- ntuser.dat.LOG1 - Deleted
+Enter ExpTree OnItemUpdate -- NTUSER.DAT - Created
+Enter ExpTree OnItemUpdate -- ntuser.dat.LOG1 - Created
+Enter ExpTree OnItemUpdate -- Desktop - UpdateDir
+Located Parent Node Desktop of Item ::{00021400-0000-0000-c000-000000000046}
+Leave WndProc -- Counter = 17
+Enter WndProc -- Counter = 18 UPDATEITEM
+Leave WndProc -- Counter = 18
+Enter WndProc -- Counter = 19 UPDATEITEM
+Leave WndProc -- Counter = 19
+Enter WndProc -- Counter = 20 UPDATEITEM
+ -- Counter = 20 dwItem1:  (5832768) Not Found
+ -- Counter = 20 dwItem2: Is Empty
+Leave WndProc -- Counter = 20
+Enter WndProc -- Counter = 21 UPDATEITEM
+ -- Counter = 21 dwItem1:  (5832768) Not Found
+ -- Counter = 21 dwItem2: Is Empty
+Leave WndProc -- Counter = 21
+Enter WndProc -- Counter = 22 UPDATEITEM
+Leave WndProc -- Counter = 22
+Enter WndProc -- Counter = 23 UPDATEITEM
+Leave WndProc -- Counter = 23
+Enter WndProc -- Counter = 24 UPDATEITEM
+ -- Counter = 24 dwItem1:  (5832768) Not Found
+ -- Counter = 24 dwItem2: Is Empty
+Leave WndProc -- Counter = 24
+Enter WndProc -- Counter = 25 UPDATEITEM
+ -- Counter = 25 dwItem1:  (5832768) Not Found
+ -- Counter = 25 dwItem2: Is Empty
+Leave WndProc -- Counter = 25
+The thread 0xa00 has exited with code 0 (0x0).
+The thread '<No Name>' (0x159c) has exited with code 0 (0x0).
+The program '[5140] ExpTree_Demo.vshost.exe: Managed' has exited with code 0 (0x0).
